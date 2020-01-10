@@ -1,10 +1,10 @@
 #include <iostream>
-#include "src/lib/Greeting.h"
+#include "src/lib/solution.h"
 
 int main()
 {
-    Greeting *greet = new Greeting();
-    std::cout << greet->getGreetingMessage() << std::endl;
+    Solution solution ;
+    std::cout << solution.PrintHelloWorld() << std::endl;
 
     return EXIT_SUCCESS;
 }

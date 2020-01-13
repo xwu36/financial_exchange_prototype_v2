@@ -7,7 +7,6 @@
 class Solution {
 public:
   std::string PrintHelloWorld();
-  int ReturnsSizeOfVector(std::vector<int> &inputs);
 };
 
 #endif

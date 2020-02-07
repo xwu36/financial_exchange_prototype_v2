@@ -43,7 +43,7 @@ There are two configurations available: `(lldb) launch` or `CodeLLDB`. You can u
 In order for CodeLLDB to work with Bazel on Visual studio code and provide pretty printing, you need the following:
 
 - Install [CodeLLDB Extension](https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb)
-- Run one of these commands depending on your system (copied from [launch.json](launch.json))
+- Run one of the following commands depending on your system (copied from [launch.json](launch.json))
 
 ```
 "Linux": "bazel  build --cxxopt='-std=c++11' src/main:main -c dbg",
@@ -51,7 +51,7 @@ In order for CodeLLDB to work with Bazel on Visual studio code and provide prett
 "mac":"command": "bazel build --cxxopt='-std=c++11' src/main:main -c dbg --spawn_strategy=standalone"
 ```
 
-- Run this in the root of your workspace:
+- Run this in the root of your workspace to find the target of `bazel-cpp-template` symlink that Bazel creates based on [this mapping](https://docs.bazel.build/versions/master/output_directories.html):
 ```
 readlink -n bazel-cpp-template
 ```
@@ -74,4 +74,4 @@ Example:
 
 ### Credit
 
-This repo was inspired by [this post](https://www.ratanparai.com/c++/writing-unit-tests-with-bazel/).
+The initial version of this repo was inspired by [this post](https://www.ratanparai.com/c++/writing-unit-tests-with-bazel/).

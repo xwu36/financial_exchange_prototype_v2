@@ -1,15 +1,16 @@
 #ifndef TEMPLATE_SOLUTION_H
 #define TEMPLATE_SOLUTION_H
 
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
 
 class Solution {
 public:
   std::string PrintHelloWorld();
   int fib(int N);
-  private:
+
+private:
   std::map<int, int> _m;
 };
 

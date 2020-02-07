@@ -2,11 +2,15 @@
 
 > Can be used in Visual Studio Code
 
-You can use this template for most of your C++ projects without the need for changing the BUILD files.
+Features:
+
+- [x] Building C++ files using Bazel in Visual Studio Code
+- [x] Testing your code using [Google Test](https://github.com/google/googletest)
+- [x] Debugging with [CodeLLDB Extension](https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb) to provide pretty printing for STL containers such as std::map and std::vector.
+
+You can use this template for most of your C++ projects without the need for changing the BUILD files. 
 
 ## Installation
-
-You can copy this using this command:
 
 ```bash
 git clone https://github.com/ourarash/cpp-template.git

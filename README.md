@@ -71,7 +71,7 @@ readlink -n bazel-cpp-template
 ```json
 "sourceMap": {
         "[output of readlink -n bazel-cpp-template]": "${workspaceFolder}/"
-      }
+ }
 ```
 
 Example:
@@ -79,7 +79,7 @@ Example:
 ```json
 "sourceMap": {
         "/private/var/tmp/_bazel_ari/asdfasdfasdfasdfasdfgadfgasdg/execroot/__main__": "${workspaceFolder}/"
-      }
+ }
 ```
 - Start debugging!
 

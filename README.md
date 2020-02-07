@@ -55,7 +55,7 @@ In order for CodeLLDB to work with Bazel on Visual studio code and provide prett
 
 - Run one of the following commands depending on your system (copied from [launch.json](.vscode/launch.json)) to build with bazel for debug.
 
-```
+```bash
 "Linux": "bazel  build --cxxopt='-std=c++11' src/main:main -c dbg",
 "windows": "bazel build --cxxopt='-std=c++11' src/main:main --experimental_enable_runfiles -c dbg"
 "mac":"command": "bazel build --cxxopt='-std=c++11' src/main:main -c dbg --spawn_strategy=standalone"

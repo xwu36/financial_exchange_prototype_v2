@@ -48,7 +48,7 @@ There are two configurations available: `(lldb) launch` or `CodeLLDB`. You can u
 In order for CodeLLDB to work with Bazel on Visual studio code and provide pretty printing, you need the following:
 
 - Install [CodeLLDB Extension](https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb)
-- Run one of the following commands depending on your system (copied from [launch.json](launch.json))
+- Run one of the following commands depending on your system (copied from [launch.json](.vscode/launch.json))
 
 ```
 "Linux": "bazel  build --cxxopt='-std=c++11' src/main:main -c dbg",
@@ -60,7 +60,7 @@ In order for CodeLLDB to work with Bazel on Visual studio code and provide prett
 ```
 readlink -n bazel-cpp-template
 ```
-- Put the output of that command in [launch.json](launch.json)'s sourcemap section:
+- Put the output of that command in [launch.json](.vscode/launch.json)'s sourcemap section:
 ```json
 "sourceMap": {
         "[output of readlink -n bazel-cpp-template]": "${workspaceFolder}/"

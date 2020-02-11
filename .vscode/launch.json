@@ -9,7 +9,7 @@
       "name": "(lldb) Launch",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/bazel-out/darwin-dbg/bin/src/main/main",
+      "program": "${workspaceFolder}/bazel-out/darwin-dbg/bin/src/main/${fileBasenameNoExtension}",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}/bazel-out/darwin-dbg/bin/src/main/main.runfiles/__main__",
@@ -22,7 +22,7 @@
       "name": "CodeLLDB",
       "type": "lldb",
       "request": "launch",
-      "program": "${workspaceFolder}/bazel-out/darwin-dbg/bin/src/main/main",
+      "program": "${workspaceFolder}/bazel-out/darwin-dbg/bin/src/main/${fileBasenameNoExtension}",
       "args": [],
       "env": {
         "SOURCEMAP": "`readlink -n bazel-cpp-template`"

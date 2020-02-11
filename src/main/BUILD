@@ -4,3 +4,9 @@ cc_binary(
     srcs = ["main.cc"],
     deps = ["//src/lib:SolutionLib"],
 )
+
+cc_binary(
+    name = "pointer_examle_main",
+    srcs = ["pointer_examle_main.cc"],
+    deps = ["//src/lib:SolutionLib"],
+)

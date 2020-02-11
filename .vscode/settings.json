@@ -72,6 +72,6 @@
     "vector": "cpp"
   },
   "lldb.displayFormat": "auto",
-  "lldb.showDisassembly": "auto",
+  "lldb.showDisassembly": "never",
   "lldb.dereferencePointers": true
 }

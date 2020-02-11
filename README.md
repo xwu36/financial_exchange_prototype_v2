@@ -8,7 +8,7 @@ Features:
 - [x] Testing your code using [Google Test](https://github.com/google/googletest)
 - [x] Debugging with [CodeLLDB Extension](https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb) to provide pretty printing for STL containers such as `std::map` and `std::vector`.
 
-You can use this template for most of your C++ projects without the need for changing the BUILD files. 
+You can use this template for most of your C++ projects without the need for changing the BUILD files.
 
 ## Installation
 
@@ -42,9 +42,11 @@ This repo uses `Bazel` for building C++ files.
 You can install Bazel using this [link](https://docs.bazel.build/versions/master/install.html).
 
 ## Debugging with Bazel
+
 There are two configurations available: `(lldb) launch` and `CodeLLDB`. You can use `(lldb) launch` without any modifications, but Currently only `CodeLLDB` provides correct pretty printing for STL containers such as map and vector.
 
 ### Using CodeLLDB
+
 <img alt="Directory Structure" src="https://github.com/ourarash/cpp-template/blob/master/codelldb1.png?raw=true" width="400">
 
 In order for CodeLLDB to work with Bazel on Visual studio code and provide pretty printing, you need the following:
@@ -68,6 +70,7 @@ readlink -n bazel-cpp-template
 ```
 
 - Put the output of that command in [launch.json](.vscode/launch.json)'s sourcemap section:
+
 ```json
 "sourceMap": {
         "[output of readlink -n bazel-cpp-template]": "${workspaceFolder}/"
@@ -81,8 +84,12 @@ Example:
         "/private/var/tmp/_bazel_ari/asdfasdfasdfasdfasdfgadfgasdg/execroot/__main__": "${workspaceFolder}/"
  }
 ```
+
 - Start debugging!
 
+# More Info On Debugging in VCS:
+
+Check this [page](https://code.visualstudio.com/docs/cpp/cpp-debug).
 
 ### Credit
 

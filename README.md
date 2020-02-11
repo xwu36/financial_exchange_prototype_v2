@@ -56,6 +56,7 @@ In order for CodeLLDB to work with Bazel on Visual studio code and provide prett
 <img alt="Directory Structure" src="https://github.com/ourarash/cpp-template/blob/master/codelldb2.png?raw=true" width="400">
 
 - Run this command to create Bazel symlinks:
+
 ```bash
 bazel build src/main:main
 ```
@@ -94,15 +95,7 @@ Example:
 
 Here is a video that explains more about how to use Visual Studio Code for debugging C++ programs:
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/https://-TUogVOs1Qg/0.jpg)](https://www.youtube.com/watch?v=-TUogVOs1Qg)
-
-<iframe width="560" height="315"
-src="https://www.youtube.com/embed/MUQfKFzIOeU" 
-frameborder="0" 
-allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
-allowfullscreen></iframe>
-
-
+[![Debugging C++ in Visual Studio Code using gcc/gdb and Bazel](https://img.youtube.com/vi/-TUogVOs1Qg/0.jpg)](https://www.youtube.com/watch?v=-TUogVOs1Qg)
 
 # More Info On Debugging in VCS:
 

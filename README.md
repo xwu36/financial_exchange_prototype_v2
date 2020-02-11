@@ -95,7 +95,16 @@ Example:
 
 Here is a video that explains more about how to use Visual Studio Code for debugging C++ programs:
 
-[![Debugging C++ in Visual Studio Code using gcc/gdb and Bazel](https://img.youtube.com/vi/-TUogVOs1Qg/0.jpg)](https://www.youtube.com/watch?v=-TUogVOs1Qg)
+<a href="https://www.youtube.com/watch?v=-TUogVOs1Qg/">
+<img alt="Debugging C++ in Visual Studio Code using gcc/gdb and Bazel" src="https://raw.githubusercontent.com/ourarash/cpp-template/master/VSCDebug_yt.png" width="400">
+</a>
+
+# More on using Google Test with Bazel in Visual Studio Code:
+Here is a video that explains more about how to use Google Test with Bazel in Visual Studio Code:
+
+<a href="https://www.youtube.com/watch?v=0wMNtl2xDT0/">
+<img alt="Debugging C++ in Visual Studio Code using gcc/gdb and Bazel" src="https://raw.githubusercontent.com/ourarash/cpp-template/master/VSCDebug_yt.png" width="400">
+</a>
 
 # More Info On Debugging in VCS:
 

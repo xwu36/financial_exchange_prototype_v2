@@ -6,7 +6,7 @@ cc_binary(
 )
 
 cc_binary(
-    name = "pointer_examle_main",
-    srcs = ["pointer_examle_main.cc"],
+    name = "pointer_example_main",
+    srcs = ["pointer_example_main.cc"],
     deps = ["//src/lib:SolutionLib"],
 )

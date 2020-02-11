@@ -24,9 +24,6 @@
       "request": "launch",
       "program": "${workspaceFolder}/bazel-out/darwin-dbg/bin/src/main/${fileBasenameNoExtension}",
       "args": [],
-      "env": {
-        "SOURCEMAP": "`readlink -n bazel-cpp-template`"
-      },
       
       // *** You need to change this part for your own system to work ***
       // Set sourceMap from output of (readlink -n bazel-cpp-template) to ${workspaceFolder}

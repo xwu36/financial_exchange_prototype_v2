@@ -12,7 +12,7 @@
       "program": "${workspaceFolder}/bazel-out/darwin-dbg/bin/src/main/${fileBasenameNoExtension}",
       "args": [],
       "stopAtEntry": false,
-      "cwd": "${workspaceFolder}/bazel-out/darwin-dbg/bin/src/main/main.runfiles/__main__",
+      "cwd": "${workspaceFolder}/bazel-out/darwin-dbg/bin/src/main/${fileBasenameNoExtension}.runfiles/__main__",
       "environment": [],
       "externalConsole": false,
       "MIMode": "lldb"

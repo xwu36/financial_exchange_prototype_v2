@@ -11,6 +11,8 @@ Features:
 
 You can use this template for most of your C++ projects without the need for changing the BUILD files.
 
+See [this link](https://docs.bazel.build/versions/master/install.html) to install Bazel.
+ 
 ## Installation
 
 ```bash

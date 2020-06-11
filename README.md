@@ -11,8 +11,11 @@ Features:
 
 You can use this template for most of your C++ projects without the need for changing the BUILD files.
 
-See [this link](https://docs.bazel.build/versions/master/install.html) to install Bazel.
- 
+## Installing Bazel
+
+This repo uses `Bazel` for building C++ files.
+You can install Bazel using this [link](https://docs.bazel.build/versions/master/install.html).
+
 ## Installation
 
 ```bash
@@ -46,11 +49,6 @@ bazel test tests:tests
 ## Directory Structure
 
 <img alt="Directory Structure" src="https://github.com/ourarash/cpp-template/blob/master/tree.png?raw=true" width="400">
-
-## Installing Bazel
-
-This repo uses `Bazel` for building C++ files.
-You can install Bazel using this [link](https://docs.bazel.build/versions/master/install.html).
 
 ## Debugging with Bazel
 

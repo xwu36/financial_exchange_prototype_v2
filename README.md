@@ -1,4 +1,4 @@
-# C++ Template for Bazel and Google Test
+# C++ Template for Bazel, Google Test, and Google Log
 
 > Can be used in Visual Studio Code
 
@@ -6,6 +6,7 @@ Features:
 
 - [x] Building C++ files using Bazel in Visual Studio Code
 - [x] Testing your code using [Google Test](https://github.com/google/googletest)
+- [x] Using Google's [glog](https://github.com/google/glog) logger for logging
 - [x] Debugging with [CodeLLDB Extension](https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb) to provide pretty printing for STL containers such as `std::map` and `std::vector`.
 
 You can use this template for most of your C++ projects without the need for changing the BUILD files.
@@ -22,6 +23,14 @@ You can run this using `bazel`:
 
 ```bash
 bazel run src/main:main
+```
+
+### Google's glog demo:
+
+You can run this using `bazel`:
+
+```bash
+bazel run src/main:main_logger
 ```
 
 ### Run Tests:
@@ -112,6 +121,37 @@ Here is a video that explains more about how to use Google Test with Bazel in Vi
 <img border="5" alt="Debugging C++ in Visual Studio Code using gcc/gdb and Bazel" src="https://raw.githubusercontent.com/ourarash/cpp-template/master/VSCDebug_yt.png" width="400">
 </a>
 </td></tr></table>
+
+# More info on GLOG
+GLOG is the C++ implementation of the Google logging module. 
+You can see complete usage instructions [here](https://github.com/google/glog/blob/master/doc/glog.html)
+
+A sample usage is included in this repo [here](src/main/main_logger.cc):
+
+```cpp
+int main(int argc, char* argv[]) {
+  google::InitGoogleLogging(argv[0]);
+
+  // Log both to log file and stderr
+  FLAGS_alsologtostderr = true;
+
+  std::vector<int> x = {1, 2, 3, 4};
+  std::map<int, int> y = {{1, 2}, {2, 3}};
+
+  LOG(INFO) << "ABC, it's easy as "
+            << "{" << x << "}";
+  LOG(INFO) << "ABC, it's easy as " << y;
+
+  LOG(INFO) << "This is an info  message";
+  LOG(WARNING) << "This is a warning message";
+  LOG(INFO) << "Hello, world again!";
+  LOG(ERROR) << "This is an error message";
+  LOG(FATAL) << "This is a fatal message";
+  CHECK(5 == 4) << "Check failed!";
+
+  return 0;
+}
+```
 
 # More Info On Debugging in VCS:
 

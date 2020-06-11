@@ -6,7 +6,11 @@ cc_binary(
 )
 
 cc_binary(
-    name = "pointer_example_main",
-    srcs = ["pointer_example_main.cc"],
-    deps = ["//src/lib:SolutionLib"],
+    name = "main_logger",
+    srcs = ["main_logger.cc"],
+    deps = [
+        "//src/lib:SolutionLib",
+        "@com_github_gflags_gflags//:gflags",
+        "@glog",
+    ],
 )

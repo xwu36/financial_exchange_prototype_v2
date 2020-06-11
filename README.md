@@ -11,7 +11,7 @@ Features:
 
 You can use this template for most of your C++ projects without the need for changing the BUILD files.
 
-## Installing Bazel
+## Prerequisite: Installing Bazel
 
 This repo uses `Bazel` for building C++ files.
 You can install Bazel using this [link](https://docs.bazel.build/versions/master/install.html).

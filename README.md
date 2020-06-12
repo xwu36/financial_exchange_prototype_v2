@@ -59,6 +59,99 @@ bazel test tests:tests
 
 <img alt="Directory Structure" src="https://github.com/ourarash/cpp-template/blob/master/tree.png?raw=true" width="400"> -->
 
+# More on using Google Test with Bazel in Visual Studio Code:
+
+Here is a video that explains more about how to use Google Test with Bazel in Visual Studio Code:
+
+<table><tr><td>
+
+<a href="https://www.youtube.com/watch?v=0wMNtl2xDT0/">
+<img border="5" alt="Debugging C++ in Visual Studio Code using gcc/gdb and Bazel" src="https://raw.githubusercontent.com/ourarash/cpp-template/master/VSCDebug_yt.png" width="400">
+</a>
+</td></tr></table>
+
+# More info on GLOG
+
+GLOG is the C++ implementation of the Google logging module.
+You can see complete usage instructions [here](https://github.com/google/glog/blob/master/doc/glog.html)
+
+A sample usage is included in this repo [here](src/main/main_logger.cc):
+
+```cpp
+int main(int argc, char* argv[]) {
+  google::InitGoogleLogging(argv[0]);
+
+  // Log both to log file and stderr
+  FLAGS_alsologtostderr = true;
+
+  std::vector<int> x = {1, 2, 3, 4};
+  std::map<int, int> y = {{1, 2}, {2, 3}};
+
+  LOG(INFO) << "ABC, it's easy as "
+            << "{" << x << "}";
+  LOG(INFO) << "ABC, it's easy as " << y;
+
+  LOG(INFO) << "This is an info  message";
+  LOG(WARNING) << "This is a warning message";
+  LOG(INFO) << "Hello, world again!";
+  LOG(ERROR) << "This is an error message";
+  LOG(FATAL) << "This is a fatal message";
+  CHECK(5 == 4) << "Check failed!";
+
+  return 0;
+}
+```
+
+# More Info On Debugging in Abseil:
+
+[Abseil library](https://github.com/abseil/abseil-cpp) is an open-source collection of C++ code (compliant to C++11) designed to augment the C++ standard library.
+
+A sample usage is included in this repo [here](src/main/main_flags_absl.cc):
+
+Abseil contains the following C++ library components:
+
+- [`base`](https://github.com/abseil/abseil-cpp/tree/master/absl/base/) Abseil Fundamentals
+  <br /> The `base` library contains initialization code and other code which
+  all other Abseil code depends on. Code within `base` may not depend on any
+  other code (other than the C++ standard library).
+- [`algorithm`](https://github.com/abseil/abseil-cpp/tree/master/absl/algorithm/)
+  <br /> The `algorithm` library contains additions to the C++ `<algorithm>`
+  library and container-based versions of such algorithms.
+- [`container`](https://github.com/abseil/abseil-cpp/tree/master/absl/container/)
+  <br /> The `container` library contains additional STL-style containers,
+  including Abseil's unordered "Swiss table" containers.
+- [`debugging`](https://github.com/abseil/abseil-cpp/tree/master/absl/debugging/)
+  <br /> The `debugging` library contains code useful for enabling leak
+  checks, and stacktrace and symbolization utilities.
+- [`hash`](https://github.com/abseil/abseil-cpp/tree/master/absl/hash/)
+  <br /> The `hash` library contains the hashing framework and default hash
+  functor implementations for hashable types in Abseil.
+- [`memory`](https://github.com/abseil/abseil-cpp/tree/master/absl/memory/)
+  <br /> The `memory` library contains C++11-compatible versions of
+  `std::make_unique()` and related memory management facilities.
+- [`meta`](https://github.com/abseil/abseil-cpp/tree/master/absl/meta/)
+  <br /> The `meta` library contains C++11-compatible versions of type checks
+  available within C++14 and C++17 versions of the C++ `<type_traits>` library.
+- [`numeric`](https://github.com/abseil/abseil-cpp/tree/master/absl/numeric/)
+  <br /> The `numeric` library contains C++11-compatible 128-bit integers.
+- [`strings`](https://github.com/abseil/abseil-cpp/tree/master/absl/strings/)
+  <br /> The `strings` library contains a variety of strings routines and
+  utilities, including a C++11-compatible version of the C++17
+  `std::string_view` type.
+- [`synchronization`](https://github.com/abseil/abseil-cpp/tree/master/absl/synchronization/)
+  <br /> The `synchronization` library contains concurrency primitives (Abseil's
+  `absl::Mutex` class, an alternative to `std::mutex`) and a variety of
+  synchronization abstractions.
+- [`time`](https://github.com/abseil/abseil-cpp/tree/master/absl/time/)
+  <br /> The `time` library contains abstractions for computing with absolute
+  points in time, durations of time, and formatting and parsing time within
+  time zones.
+- [`types`](https://github.com/abseil/abseil-cpp/tree/master/absl/types/)
+  <br /> The `types` library contains non-container utility types, like a
+  C++11-compatible version of the C++17 `std::optional` type.
+- [`utility`](https://github.com/abseil/abseil-cpp/tree/master/absl/utility/)
+  <br /> The `utility` library contains utility and helper code.
+
 ## Debugging with Bazel
 
 There are two configurations available: `(lldb) launch` and `CodeLLDB`. You can use `(lldb) launch` without any modifications, but Currently only `CodeLLDB` provides correct pretty printing for STL containers such as map and vector.
@@ -119,101 +212,6 @@ Here is a video that explains more about how to use Visual Studio Code for debug
 <img alt="Debugging C++ in Visual Studio Code using gcc/gdb and Bazel" src="https://raw.githubusercontent.com/ourarash/cpp-template/master/bazel_yt.png" width="400">
 </a>
 </td></tr></table>
-
-# More on using Google Test with Bazel in Visual Studio Code:
-
-Here is a video that explains more about how to use Google Test with Bazel in Visual Studio Code:
-
-<table><tr><td>
-
-<a href="https://www.youtube.com/watch?v=0wMNtl2xDT0/">
-<img border="5" alt="Debugging C++ in Visual Studio Code using gcc/gdb and Bazel" src="https://raw.githubusercontent.com/ourarash/cpp-template/master/VSCDebug_yt.png" width="400">
-</a>
-</td></tr></table>
-
-# More info on GLOG
-
-GLOG is the C++ implementation of the Google logging module.
-You can see complete usage instructions [here](https://github.com/google/glog/blob/master/doc/glog.html)
-
-A sample usage is included in this repo [here](src/main/main_logger.cc):
-
-```cpp
-int main(int argc, char* argv[]) {
-  google::InitGoogleLogging(argv[0]);
-
-  // Log both to log file and stderr
-  FLAGS_alsologtostderr = true;
-
-  std::vector<int> x = {1, 2, 3, 4};
-  std::map<int, int> y = {{1, 2}, {2, 3}};
-
-  LOG(INFO) << "ABC, it's easy as "
-            << "{" << x << "}";
-  LOG(INFO) << "ABC, it's easy as " << y;
-
-  LOG(INFO) << "This is an info  message";
-  LOG(WARNING) << "This is a warning message";
-  LOG(INFO) << "Hello, world again!";
-  LOG(ERROR) << "This is an error message";
-  LOG(FATAL) << "This is a fatal message";
-  CHECK(5 == 4) << "Check failed!";
-
-  return 0;
-}
-```
-
-# More Info On Debugging in Abseil:
-
-[Abseil library](https://github.com/abseil/abseil-cpp) is an open-source collection of C++ code (compliant to C++11) designed to augment the C++ standard library.
-
-A sample usage is included in this repo [here](src/main/main_flags_absl.cc):
-
-
-Abseil contains the following C++ library components:
-
-* [`base`](https://github.com/abseil/abseil-cpp/tree/master/absl/base/) Abseil Fundamentals
-  <br /> The `base` library contains initialization code and other code which
-  all other Abseil code depends on. Code within `base` may not depend on any
-  other code (other than the C++ standard library).
-* [`algorithm`](https://github.com/abseil/abseil-cpp/tree/master/absl/algorithm/)
-  <br /> The `algorithm` library contains additions to the C++ `<algorithm>`
-  library and container-based versions of such algorithms.
-* [`container`](https://github.com/abseil/abseil-cpp/tree/master/absl/container/)
-  <br /> The `container` library contains additional STL-style containers,
-  including Abseil's unordered "Swiss table" containers.
-* [`debugging`](https://github.com/abseil/abseil-cpp/tree/master/absl/debugging/)
-  <br /> The `debugging` library contains code useful for enabling leak
-  checks, and stacktrace and symbolization utilities.
-* [`hash`](https://github.com/abseil/abseil-cpp/tree/master/absl/hash/)
-  <br /> The `hash` library contains the hashing framework and default hash
-  functor implementations for hashable types in Abseil.
-* [`memory`](https://github.com/abseil/abseil-cpp/tree/master/absl/memory/)
-  <br /> The `memory` library contains C++11-compatible versions of
-  `std::make_unique()` and related memory management facilities.
-* [`meta`](https://github.com/abseil/abseil-cpp/tree/master/absl/meta/)
-  <br /> The `meta` library contains C++11-compatible versions of type checks
-  available within C++14 and C++17 versions of the C++ `<type_traits>` library.
-* [`numeric`](https://github.com/abseil/abseil-cpp/tree/master/absl/numeric/)
-  <br /> The `numeric` library contains C++11-compatible 128-bit integers.
-* [`strings`](https://github.com/abseil/abseil-cpp/tree/master/absl/strings/)
-  <br /> The `strings` library contains a variety of strings routines and
-  utilities, including a C++11-compatible version of the C++17
-  `std::string_view` type.
-* [`synchronization`](https://github.com/abseil/abseil-cpp/tree/master/absl/synchronization/)
-  <br /> The `synchronization` library contains concurrency primitives (Abseil's
-  `absl::Mutex` class, an alternative to `std::mutex`) and a variety of
-  synchronization abstractions.
-* [`time`](https://github.com/abseil/abseil-cpp/tree/master/absl/time/)
-  <br /> The `time` library contains abstractions for computing with absolute
-  points in time, durations of time, and formatting and parsing time within
-  time zones.
-* [`types`](https://github.com/abseil/abseil-cpp/tree/master/absl/types/)
-  <br /> The `types` library contains non-container utility types, like a
-  C++11-compatible version of the C++17 `std::optional` type.
-* [`utility`](https://github.com/abseil/abseil-cpp/tree/master/absl/utility/)
-  <br /> The `utility` library contains utility and helper code.
-
 # More Info On Debugging in VCS:
 
 Check this [page](https://code.visualstudio.com/docs/cpp/cpp-debug).

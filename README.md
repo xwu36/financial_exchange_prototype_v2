@@ -24,7 +24,7 @@ git clone https://github.com/ourarash/cpp-template.git
 ```
 ## Examples:
 
-### Run main:
+### Hello World Example:
 
 You can run this using `bazel`:
 

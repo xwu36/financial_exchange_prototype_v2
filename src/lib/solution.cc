@@ -2,13 +2,6 @@
 
 std::string Solution::PrintHelloWorld() { return "**** Hello World ****"; }
 
-Person *Solution::ReturnInvalidPointer() {
-  Person *p = nullptr;
-  p->first_name = "Ari";
-
-  return p;
-};
-
 // Calculates the Nth Fibonacci number
 int Solution::fib(int N) {
   if (N == 0) {

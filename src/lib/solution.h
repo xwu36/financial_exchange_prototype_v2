@@ -5,19 +5,17 @@
 #include <string>
 #include <vector>
 
-// Person class is defined for demonstration
-struct Person {
-  std::string first_name;
-  std::string last_name;
-  int age;
-};
-
+/**
+ *  Example class used for GTest demo
+ */
 class Solution {
-public:
+ public:
   std::string PrintHelloWorld();
-  Person *ReturnInvalidPointer();
+
+  // Calculates the Nth Fibonacci number
   int fib(int N);
-private:
+
+ private:
   std::map<int, int> _m;
 };
 

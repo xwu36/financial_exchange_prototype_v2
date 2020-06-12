@@ -17,7 +17,7 @@ You can use this template for most of your C++ projects without the need for cha
 This repo uses `Bazel` for building C++ files.
 You can install Bazel using this [link](https://docs.bazel.build/versions/master/install.html).
 
-## Installation
+## Cloning this repo
 
 ```bash
 git clone https://github.com/ourarash/cpp-template.git

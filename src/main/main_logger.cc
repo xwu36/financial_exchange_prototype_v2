@@ -1,4 +1,3 @@
-#include <gflags/gflags.h>
 #include <glog/logging.h>
 #include <glog/stl_logging.h>
 
@@ -7,7 +6,7 @@
 #include <vector>
 
 /**
- * Shows how to use glog
+ * Shows how to use GLOg 
  */
 int main(int argc, char* argv[]) {
   google::InitGoogleLogging(argv[0]);

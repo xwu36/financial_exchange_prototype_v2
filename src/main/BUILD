@@ -14,3 +14,15 @@ cc_binary(
         "@glog",
     ],
 )
+
+
+cc_binary(
+    name = "main_flags_absl",
+    srcs = ["main_flags_absl.cc"],
+    deps = [
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@glog",
+    ],
+)

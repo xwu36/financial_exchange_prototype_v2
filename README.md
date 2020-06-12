@@ -22,6 +22,7 @@ You can install Bazel using this [link](https://docs.bazel.build/versions/master
 ```bash
 git clone https://github.com/ourarash/cpp-template.git
 ```
+## Examples:
 
 ### Run main:
 
@@ -47,19 +48,7 @@ You can run this using `bazel`:
 bazel run src/main:main_flags_absl
 ```
 
-### Run Tests:
-
-You can run unit tests using [`bazel`](installing-bazel):
-
-```bash
-bazel test tests:tests
-```
-
-<!-- ## Directory Structure
-
-<img alt="Directory Structure" src="https://github.com/ourarash/cpp-template/blob/master/tree.png?raw=true" width="400"> -->
-
-# More on using Google Test with Bazel in Visual Studio Code:
+# Using Google Test with Bazel in Visual Studio Code:
 
 Here is a video that explains more about how to use Google Test with Bazel in Visual Studio Code:
 
@@ -69,6 +58,14 @@ Here is a video that explains more about how to use Google Test with Bazel in Vi
 <img border="5" alt="Debugging C++ in Visual Studio Code using gcc/gdb and Bazel" src="https://raw.githubusercontent.com/ourarash/cpp-template/master/VSCDebug_yt.png" width="400">
 </a>
 </td></tr></table>
+
+## Example of running a test:
+
+You can run unit tests using [`bazel`](installing-bazel):
+
+```bash
+bazel test tests:tests
+```
 
 # More info on GLOG
 
@@ -102,7 +99,7 @@ int main(int argc, char* argv[]) {
 }
 ```
 
-# More Info On Debugging in Abseil:
+# More Info On Abseil Library:
 
 [Abseil library](https://github.com/abseil/abseil-cpp) is an open-source collection of C++ code (compliant to C++11) designed to augment the C++ standard library.
 
@@ -152,11 +149,11 @@ Abseil contains the following C++ library components:
 - [`utility`](https://github.com/abseil/abseil-cpp/tree/master/absl/utility/)
   <br /> The `utility` library contains utility and helper code.
 
-## Debugging with Bazel
+# Debugging with Bazel
 
 There are two configurations available: `(lldb) launch` and `CodeLLDB`. You can use `(lldb) launch` without any modifications, but Currently only `CodeLLDB` provides correct pretty printing for STL containers such as map and vector.
 
-### Using CodeLLDB
+## Using CodeLLDB
 
 <img alt="Directory Structure" src="https://github.com/ourarash/cpp-template/blob/master/codelldb1.png?raw=true" width="400">
 
@@ -212,7 +209,8 @@ Here is a video that explains more about how to use Visual Studio Code for debug
 <img alt="Debugging C++ in Visual Studio Code using gcc/gdb and Bazel" src="https://raw.githubusercontent.com/ourarash/cpp-template/master/bazel_yt.png" width="400">
 </a>
 </td></tr></table>
-# More Info On Debugging in VCS:
+
+# More Info On Debugging in VSC:
 
 Check this [page](https://code.visualstudio.com/docs/cpp/cpp-debug).
 

@@ -55,9 +55,9 @@ You can run unit tests using [`bazel`](installing-bazel):
 bazel test tests:tests
 ```
 
-## Directory Structure
+<!-- ## Directory Structure
 
-<img alt="Directory Structure" src="https://github.com/ourarash/cpp-template/blob/master/tree.png?raw=true" width="400">
+<img alt="Directory Structure" src="https://github.com/ourarash/cpp-template/blob/master/tree.png?raw=true" width="400"> -->
 
 ## Debugging with Bazel
 

@@ -210,9 +210,7 @@ Here is a video that explains more about how to use Visual Studio Code for debug
 </a>
 </td></tr></table>
 
-# More Info On Debugging in VSC:
-
-Check this [page](https://code.visualstudio.com/docs/cpp/cpp-debug).
+More Info On Debugging in VSC is [here](https://code.visualstudio.com/docs/cpp/cpp-debug).
 
 ### Credit
 

@@ -1,4 +1,4 @@
-# C++ Template for Bazel, Google Test, Google Log, and Abseil (ABSL)
+# C++ Template for Google Bazel, Test, Log, and Abseil (ABSL)
 
 > Can be used in Visual Studio Code
 

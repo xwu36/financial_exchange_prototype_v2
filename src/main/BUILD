@@ -32,3 +32,12 @@ cc_binary(
         "@glog",
     ],
 )
+
+cc_binary(
+    name = "main_benchmark",
+    srcs = ["main_benchmark.cc"],
+    deps = [
+        "@com_google_benchmark//:benchmark",
+    ],
+)
+

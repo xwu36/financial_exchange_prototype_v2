@@ -1,3 +1,8 @@
+/**
+ * Example main file for C++ starter template
+ * showcasing using a library target and calling its methods
+ * By: Ari Saif
+ */
 #include "src/lib/cpplib.h"
 #include <iostream>
 #include <map>

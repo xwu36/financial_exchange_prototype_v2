@@ -1,3 +1,8 @@
+/**
+ * Example main file for C++ starter template
+ * showcasing the usage of GLog library 
+ * By: Ari Saif
+ */
 #include <glog/logging.h>
 #include <glog/stl_logging.h>
 

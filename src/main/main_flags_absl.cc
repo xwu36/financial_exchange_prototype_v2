@@ -1,3 +1,8 @@
+/**
+ * Example main file for C++ starter template
+ * showcasing Abseil's flags library 
+ * By: Ari Saif
+ */
 #include <iostream>
 #include <string>
 

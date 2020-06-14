@@ -18,6 +18,12 @@ git_repository(
     tag = "20200225.2",
 )
 
+git_repository(
+    name = "com_google_benchmark",
+    remote = "https://github.com/google/benchmark.git",
+    tag = "v1.5.1",
+)
+
 new_local_repository(
     name = "usr_local",
     build_file = "third_party/usr_local.BUILD",

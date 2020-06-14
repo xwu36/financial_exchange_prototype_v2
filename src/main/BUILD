@@ -1,14 +1,21 @@
 cc_binary(
     name = "main",
     srcs = ["main.cc"],
-    deps = ["//src/lib:SolutionLib"],
+    deps = ["//src/lib:CPPLib"],
 )
+
+cc_binary(
+    name = "main_fib",
+    srcs = ["main_fib.cc"],
+    deps = ["//src/lib:CPPLib"],
+)
+
 
 cc_binary(
     name = "main_logger",
     srcs = ["main_logger.cc"],
     deps = [
-        "//src/lib:SolutionLib",
+        "//src/lib:CPPLib",
         "@com_github_gflags_gflags//:gflags",
         "@glog",
     ],

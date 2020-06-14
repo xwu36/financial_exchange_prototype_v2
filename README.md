@@ -8,9 +8,16 @@ Features:
 - [x] [Google Test](https://github.com/google/googletest) for unit tests
 - [x] Google's [glog](https://github.com/google/glog) logger for logging
 - [x] Google's [Abseil library](https://github.com/abseil/abseil-cpp)
-- [x] Debugging with [CodeLLDB Extension](https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb) to provide pretty printing for STL containers such as `std::map` and `std::vector`.
+- [x] Debugging with Visual Studio Code to provide breakpoints, watch, call stack, and pretty printing for STL containers such as `std::map` and `std::vector`
 
-You can use this template for most of your C++ projects without the need for changing the BUILD files.
+You can use this template for most of your C++ projects with minimal changes.
+
+<table><tr><td>
+
+<a href="https://www.youtube.com/watch?v=0wMNtl2xDT0/">
+<img border="5" alt="C++ starter repo for Bazel & Visual Studio Code with GTest, Glog and Abseil" src="https://raw.githubusercontent.com/ourarash/cpp-template/master/abseil_thumbnail_play.png" width="400">
+</a>
+</td></tr></table>
 
 ## Prerequisite: Installing Bazel
 
@@ -22,6 +29,7 @@ You can install Bazel using this [link](https://docs.bazel.build/versions/master
 ```bash
 git clone https://github.com/ourarash/cpp-template.git
 ```
+
 ## Examples:
 
 ### Hello World Example:
@@ -55,13 +63,15 @@ Here is a video that explains more about how to use Google Test with Bazel in Vi
 <table><tr><td>
 
 <a href="https://www.youtube.com/watch?v=0wMNtl2xDT0/">
-<img border="5" alt="Debugging C++ in Visual Studio Code using gcc/gdb and Bazel" src="https://raw.githubusercontent.com/ourarash/cpp-template/master/VSCDebug_yt.png" width="400">
+<img border="5" alt="Bazel & Google Test in Visual Studio Code" src="https://raw.githubusercontent.com/ourarash/cpp-template/master/bazel_yt.png" width="400">
 </a>
 </td></tr></table>
 
 ## Example of running a test:
 
-You can run unit tests using [`bazel`](installing-bazel):
+A sample test file is [tests/cpplib_test.cc](tests/cpplib_test.cc) which uses [tests/BUILD](tests/BUILD) file.
+
+You can run the test using [`bazel`](installing-bazel):
 
 ```bash
 bazel test tests:tests
@@ -149,64 +159,22 @@ Abseil contains the following C++ library components:
 - [`utility`](https://github.com/abseil/abseil-cpp/tree/master/absl/utility/)
   <br /> The `utility` library contains utility and helper code.
 
-# Debugging with Bazel
+# Debugging with Bazel and Visual Studio Code
 
-There are two configurations available: `(lldb) launch` and `CodeLLDB`. You can use `(lldb) launch` without any modifications, but Currently only `CodeLLDB` provides correct pretty printing for STL containers such as map and vector.
+## Build for debug:
 
-## Using CodeLLDB
-
-<img alt="Directory Structure" src="https://github.com/ourarash/cpp-template/blob/master/codelldb1.png?raw=true" width="400">
-
-In order for CodeLLDB to work with Bazel on Visual studio code and provide pretty printing, you need the following:
-
-- Install [CodeLLDB Extension](https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb)
-
-<img alt="Directory Structure" src="https://github.com/ourarash/cpp-template/blob/master/codelldb2.png?raw=true" width="400">
-
-- Run this command to create Bazel symlinks:
+In order to generate debug information, use `-c dbg`:
 
 ```bash
-bazel build src/main:main
+bazel build src/main:main_logger  -c dbg
 ```
 
-- Run one of the following commands depending on your system (copied from [launch.json](.vscode/launch.json)) to build with bazel for debug.
-
-```bash
-"Linux": "bazel  build --cxxopt='-std=c++11' src/main:main -c dbg",
-"windows": "bazel build --cxxopt='-std=c++11' src/main:main --experimental_enable_runfiles -c dbg"
-"mac":"command": "bazel build --cxxopt='-std=c++11' src/main:main -c dbg --spawn_strategy=standalone"
-```
-
-- Run this in the root of your workspace to find the target of `bazel-cpp-template` symlink that Bazel creates based. These symlinks are documented [here](https://docs.bazel.build/versions/master/output_directories.html):
-
-```bash
-readlink -n bazel-cpp-template
-```
-
-- Put the output of that command in [launch.json](.vscode/launch.json)'s sourcemap section:
-
-```json
-"sourceMap": {
-        "[output of readlink -n bazel-cpp-template]": "${workspaceFolder}/"
- }
-```
-
-Example:
-
-```json
-"sourceMap": {
-        "/private/var/tmp/_bazel_ari/asdfasdfasdfasdfasdfgadfgasdg/execroot/__main__": "${workspaceFolder}/"
- }
-```
-
-- Start debugging!
-
-Here is a video that explains more about how to use Visual Studio Code for debugging C++ programs:
+Visual Studio Code's [launch.json](.vscode/launch.json) file is currently set so that if you hit `F5` while any file under `src/main` is open (for example [src/main/main_fib.cc](src/main/main_fib.cc)), bazel will automatically build it for debug and run it in debug mode provided that a target with the name of the file without the `.cc` extension (e.g. `main_fib`) exists in [src/main/BUILD](src/main/BUILD) file.
 
 <table><tr><td>
 
-<a href="https://www.youtube.com/watch?v=-TUogVOs1Qg/">
-<img alt="Debugging C++ in Visual Studio Code using gcc/gdb and Bazel" src="https://raw.githubusercontent.com/ourarash/cpp-template/master/bazel_yt.png" width="400">
+<a href="https://www.youtube.com/watch?v=0wMNtl2xDT0/">
+<img border="5" alt="Debugging C++ in Visual Studio Code using gcc/gdb and Bazel" src="https://raw.githubusercontent.com/ourarash/cpp-template/master/VSCDebug_yt.png" width="400">
 </a>
 </td></tr></table>
 

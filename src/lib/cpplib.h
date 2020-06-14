@@ -1,5 +1,5 @@
-#ifndef TEMPLATE_SOLUTION_H
-#define TEMPLATE_SOLUTION_H
+#ifndef TEMPLATE_CPPLIB_H
+#define TEMPLATE_CPPLIB_H
 
 #include <map>
 #include <string>
@@ -8,15 +8,17 @@
 /**
  *  Example class used for GTest demo
  */
-class Solution {
+class CPPLib {
  public:
   std::string PrintHelloWorld();
 
   // Calculates the Nth Fibonacci number
   int fib(int N);
-
- private:
-  std::map<int, int> _m;
+  
+  // Finds the max element in a vector
+  int FindMax(const std::vector<int> &inputs); 
+  
+  private : std::map<int, int> _m;
 };
 
 #endif

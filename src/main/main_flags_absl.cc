@@ -10,8 +10,12 @@ ABSL_FLAG(bool, verbose, false,
 ABSL_FLAG(std::string, message, "Hello world!", "Message to print");
 ABSL_FLAG(uint32_t, year, 2020, "Current year");
 
+ABSL_FLAG(std::vector<std::string>, names,
+          std::vector<std::string>({"jack", "jim", "jamal"}),
+          "comma-separated list of names the program accepts");
+
 int main(int argc, char *argv[]) {
-  absl::SetProgramUsageMessage("--massage: custom message");
+  // absl::SetProgramUsageMessage("--massage: custom message");
   absl::ParseCommandLine(argc, argv);
 
   if (absl::GetFlag(FLAGS_verbose)) {

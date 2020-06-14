@@ -15,7 +15,7 @@ You can use this template for most of your C++ projects with minimal changes.
 
 <table><tr><td>
 
-<a href="https://www.youtube.com/watch?v=0wMNtl2xDT0/">
+<a href="https://youtu.be/JfOzsBi_irY">
 <img border="5" alt="C++ starter repo for Bazel & Visual Studio Code with GTest, Glog and Abseil" src="https://raw.githubusercontent.com/ourarash/cpp-template/master/abseil_thumbnail_play.png" width="400">
 </a>
 </td></tr></table>

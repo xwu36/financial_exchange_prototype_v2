@@ -69,7 +69,17 @@
     "typeinfo": "cpp",
     "unordered_map": "cpp",
     "utility": "cpp",
-    "vector": "cpp"
+    "vector": "cpp",
+    "codecvt": "cpp",
+    "condition_variable": "cpp",
+    "list": "cpp",
+    "numeric": "cpp",
+    "random": "cpp",
+    "regex": "cpp",
+    "unordered_set": "cpp",
+    "hash_map": "cpp",
+    "hash_set": "cpp",
+    "future": "cpp"
   },
   "lldb.displayFormat": "auto",
   "lldb.showDisassembly": "never",

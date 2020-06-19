@@ -10,7 +10,6 @@ cc_binary(
     deps = ["//src/lib:CPPLib"],
 )
 
-
 cc_binary(
     name = "main_logger",
     srcs = ["main_logger.cc"],
@@ -20,7 +19,6 @@ cc_binary(
         "@glog",
     ],
 )
-
 
 cc_binary(
     name = "main_flags_absl",
@@ -34,10 +32,10 @@ cc_binary(
 )
 
 cc_binary(
-    name = "main_benchmark",
-    srcs = ["main_benchmark.cc"],
+    name = "main_benchmark_sort",
+    srcs = ["main_benchmark_sort.cc"],
     deps = [
+        "//src/lib/sort:SortLib",
         "@com_google_benchmark//:benchmark",
     ],
 )
-

@@ -1,3 +1,5 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+
 cc_binary(
     name = "main",
     srcs = ["main.cc"],
@@ -28,6 +30,14 @@ cc_binary(
         "@com_google_absl//absl/flags:parse",
         "@com_google_absl//absl/flags:usage",
         "@glog",
+    ],
+)
+
+cc_binary(
+    name = "main_benchmark",
+    srcs = ["main_benchmark.cc"],
+    deps = [
+        "@com_google_benchmark//:benchmark",
     ],
 )
 

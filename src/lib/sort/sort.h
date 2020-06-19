@@ -44,8 +44,6 @@ class Sort {
   static void QuickSortImp_iterative(std::vector<int> &input, int low,
                                      int high);
 
-  // static void QuickSortImp(std::vector<int> &input, int low, int high);
-
   static void QuickSortParImp(std::vector<int> &input, int low, int high);
 
   static void InsertionSort(std::vector<int> &arr) {
@@ -66,9 +64,10 @@ class Sort {
   static void IntrosortPar(std::vector<int> &arr) {
     IntrosortImp(arr, 0, arr.size() - 1, /*par=*/true);
   }
-  static const int QUICKSORT_THREASHOLD = 10000;
-  static const int MERGESORT_THREASHOLD = 10000;
-  static const int INTROSORT_THREASHOLD = 10000;
+
+  static int QUICKSORT_THREASHOLD;
+  static int MERGESORT_THREASHOLD;
+  static int INTROSORT_THREASHOLD;
 };
 
 #endif

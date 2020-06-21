@@ -230,11 +230,13 @@ void Sort::InsertionSortImp(std::vector<int> &arr, int left, int right) {
 // }
 
 int Sort::Partition(std::vector<int> &input, int low, int high) {
-  // int median_index = MedianOfThree(input, low, (low + high) / 2, high - 1);
-  // int pivot = input[median_index];
+  int median_index = MedianOfThree(input, low, (low + high) / 2, high - 1);
+  int pivot = input[median_index];
 
-  int pivot = input[(high + low) / 2];
+  // int pivot = input[(high + low) / 2];
   // int pivot = input[high-1];
+    // int pivot = input[low];
+
   int i = low;
   int j = high;
   while (true) {
@@ -260,18 +262,14 @@ low --> Starting index,
 high --> Ending index */
 void Sort::QuickSortImp_twoCalls(std::vector<int> &input, int low, int high) {
   if (low < high) {
-    if (high - low < 10) {
-      InsertionSortImp(input, low, high);
-    } else {
-      /* pi is partitioning index, arr[p] is now
-      at right place */
-      int pi = Partition(input, low, high);
+    /* pi is partitioning index, arr[p] is now
+     at right place */
+    int pi = Partition(input, low, high);
 
-      // Separately sort elements before
-      // partition and after partition
-      QuickSortImp_twoCalls(input, low, pi);
-      QuickSortImp_twoCalls(input, pi + 1, high);
-    }
+    // Separately sort elements before
+    // partition and after partition
+    QuickSortImp_twoCalls(input, low, pi);
+    QuickSortImp_twoCalls(input, pi + 1, high);
   }
 }
 
@@ -423,14 +421,11 @@ void Sort::IntrosortUtil(std::vector<int> &arr, int begin, int end,
 
 /* Implementation of introsort*/
 void Sort::IntrosortImp(std::vector<int> &arr, int begin, int end, bool par) {
-  int depthLimit = (end - begin) * std::log(end - begin);
-  // int depthLimit = 20;
+  int depthLimit = 2 * log(arr.size());
+
+  // // std::cout << "depthLimit: " << depthLimit << std::endl;
 
   // Perform a recursive Introsort
   IntrosortUtil(arr, begin, end, depthLimit, par);
-
   return;
 }
-
-
-

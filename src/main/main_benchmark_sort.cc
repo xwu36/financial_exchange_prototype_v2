@@ -16,7 +16,10 @@
 #include "src/lib/sort/sort.h"
 class Data {
  public:
-  Data(int size) { ConstructRandomVector(size); }
+  Data(int size) {
+    // ConstructRandomVector(size);
+    ReverseSort(size);
+  }
   void ReverseSort(int size) {
     for (int i = 0; i < size; ++i) {
       v.push_back(size - i);
@@ -31,7 +34,7 @@ class Data {
   std::vector<int> v;
 };
 
-const int g_size = 10000000;
+const int g_size = 1000000;
 
 int Sort::QUICKSORT_THREASHOLD;
 int Sort::MERGESORT_THREASHOLD;
@@ -215,6 +218,18 @@ static void BM_StdQSort(benchmark::State& state) {
   state.SetItemsProcessed(state.iterations() * g_size);
 }
 
+// BENCHMARK(BM_QuickSort_iterative)
+//     ->RangeMultiplier(2)
+//     ->Range(1 << 10, 1 << 23)
+//     ->Complexity();
+// ;
+
+// BENCHMARK(BM_QuickSortPar)
+//     ->RangeMultiplier(2)
+//     ->Range(1 << 10, 1 << 23)
+//     ->Complexity();
+// ;
+
 // static void BM_StdParSort(benchmark::State& state) {
 //   for (auto _ : state) {
 //     state.PauseTiming();
@@ -233,27 +248,20 @@ static void BM_StdQSort(benchmark::State& state) {
 //     ->Range(1 << 10, 1 << 18)
 //     ->Complexity();
 // ;
+BENCHMARK(BM_StdSort)->Arg(g_size);
+BENCHMARK(BM_QuickSort_twoCalls)->Arg(g_size);
 
-BENCHMARK(BM_QuickSort_iterative)
-    ->RangeMultiplier(2)
-    ->Range(1 << 10, 1 << 23)
-    ->Complexity();
-;
+// BENCHMARK(BM_QuickSortPar);
 
-BENCHMARK(BM_QuickSortPar)
-    ->RangeMultiplier(2)
-    ->Range(1 << 10, 1 << 23)
-    ->Complexity();
-;
+BENCHMARK(BM_IntroSort)->Arg(g_size)->UseRealTime();
 
-// BENCHMARK(BM_IntroSort)->UseRealTime();
 // BENCHMARK(BM_QuickSort_iterative);
 // BENCHMARK(BM_QuickSort_oneCall);
 // BENCHMARK(BM_QuickSort_twoCalls);
 
 // BENCHMARK(BM_QuickSortPar)->UseRealTime();
 
-// BENCHMARK(BM_IntroSortPar)->UseRealTime();
+BENCHMARK(BM_IntroSortPar)->Arg(g_size)->UseRealTime();
 
 // BENCHMARK(BM_MergeSortPar)->UseRealTime();
 // BENCHMARK(BM_MergeSort);

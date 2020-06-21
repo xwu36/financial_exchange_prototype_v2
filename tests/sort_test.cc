@@ -10,7 +10,8 @@ int Sort::QUICKSORT_THREASHOLD = 100;
 int Sort::MERGESORT_THREASHOLD = 100;
 int Sort::INTROSORT_THREASHOLD = 100;
 
-void TestSort(std::function<void(std::vector<int>&)> sort_func) {
+template <class T>
+void TestSort(T sort_func) {
   std::vector<int> in;
   std::vector<int> expected;
 

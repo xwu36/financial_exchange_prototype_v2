@@ -80,7 +80,8 @@
     "hash_map": "cpp",
     "hash_set": "cpp",
     "future": "cpp",
-    "forward_list": "cpp"
+    "forward_list": "cpp",
+    "queue": "cpp"
   },
   "lldb.displayFormat": "auto",
   "lldb.showDisassembly": "never",

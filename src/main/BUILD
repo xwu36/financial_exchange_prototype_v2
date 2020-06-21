@@ -49,3 +49,12 @@ cc_binary(
         "@com_google_benchmark//:benchmark",
     ],
 )
+
+cc_binary(
+    name = "main_benchmark_search",
+    srcs = ["main_benchmark_search.cc"],
+    deps = [
+        "//src/lib/search:SearchLib",
+        "@com_google_benchmark//:benchmark",
+    ],
+)

@@ -1,6 +1,7 @@
 #ifndef SORT_H
 #define SORT_H
 
+#include <algorithm>
 #include <vector>
 
 class Sort {
@@ -30,10 +31,11 @@ class Sort {
     QuickSortImp_iterative(input, 0, input.size() - 1);
   }
   static void QuickSort_twoCalls(std::vector<int> &input) {
-    QuickSortImp_iterative(input, 0, input.size() - 1);
+    // std::random_shuffle(input.begin(), input.end());
+    QuickSortImp_twoCalls(input, 0, input.size() - 1);
   }
   static void QuickSort_oneCall(std::vector<int> &input) {
-    QuickSortImp_iterative(input, 0, input.size() - 1);
+    QuickSortImp_oneCall(input, 0, input.size() - 1);
   }
   static void QuickSortPar(std::vector<int> &input) {
     QuickSortParImp(input, 0, input.size() - 1);
@@ -58,6 +60,8 @@ class Sort {
 
   static void IntrosortImp(std::vector<int> &arr, int begin, int end, bool par);
   static void Introsort(std::vector<int> &arr) {
+    // std::random_shuffle(arr.begin(), arr.end());
+
     IntrosortImp(arr, 0, arr.size() - 1, /*par=*/false);
   }
 

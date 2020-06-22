@@ -1,5 +1,8 @@
+#ifndef SORT_H
+#define SORT_H
 
-#include "search.h"
+#include <glog/logging.h>
+#include <glog/stl_logging.h>
 
 #include <algorithm>
 #include <cmath>
@@ -7,14 +10,34 @@
 #include <iostream>
 #include <thread>
 #include <vector>
+template <class T>
+class Search {
+ public:
+  static T BinarySearch(std::vector<T> &nums, T n);
+  static T TernarySearch(std::vector<T> &nums, T n);
+  static T ExponentialSearch(std::vector<T> &nums, T n);
 
-#include "search.h"
+  static T BinarySearchPar(std::vector<T> &nums, T n);
+  static T BinarySearchImp(std::vector<T> &nums, int l, int r, T n);
+  static T TernarySearchImp(std::vector<T> &nums, int l, int r, T n);
+  static void BinarySearchRefImp(std::vector<T> &nums, int l, int r, T n,
+                                 T &result);
+  static T BinarySearchParTask(std::vector<T> &nums, T n);
 
-int Search::BinarySearch(std::vector<int> &nums, int n) {
+  static int number_of_threads;
+};
+
+/**
+ * Performs classic binary search
+ * @returns the index of n in nums. -1 if not found
+ */
+template <class T>
+T Search<T>::BinarySearch(std::vector<T> &nums, T n) {
   return BinarySearchImp(nums, 0, nums.size() - 1, n);
 }
-
-int Search::BinarySearchImp(std::vector<int> &nums, int l, int r, int n) {
+//-----------------------------------------------------
+template <class T>
+T Search<T>::BinarySearchImp(std::vector<T> &nums, int l, int r, T n) {
   if (l > r || nums.size() == 0) {
     return -1;
   }
@@ -31,8 +54,10 @@ int Search::BinarySearchImp(std::vector<int> &nums, int l, int r, int n) {
   }
 };
 
-void Search::BinarySearchRefImp(std::vector<int> &nums, int l, int r, int n,
-                                int &result) {
+//-----------------------------------------------------
+template <class T>
+void Search<T>::BinarySearchRefImp(std::vector<T> &nums, int l, int r, T n,
+                                   T &result) {
   if (l > r || nums.size() == 0) {
     result = -1;
 
@@ -54,7 +79,9 @@ void Search::BinarySearchRefImp(std::vector<int> &nums, int l, int r, int n,
   }
 };
 
-int Search::BinarySearchPar2(std::vector<int> &nums, int n) {
+//-----------------------------------------------------
+template <class T>
+T Search<T>::BinarySearchParTask(std::vector<T> &nums, T n) {
   if (nums.size() == 0) {
     return -1;
   }
@@ -63,22 +90,19 @@ int Search::BinarySearchPar2(std::vector<int> &nums, int n) {
     return nums[0] == n ? 0 : -1;
   }
 
-  const int number_of_threads = 1;
+  const T number_of_threads = 1;
   int step = nums.size() / number_of_threads;
-  std::vector<std::future<int>> tasks;
+  std::vector<std::future<T>> tasks;
 
-  int num_chunks = step == 0 ? 1 : std::ceil((float)nums.size() / (float)step);
+  T num_chunks = step == 0 ? 1 : std::ceil((float)nums.size() / (float)step);
 
-  // std::cout << "step: " << step << std::endl;
-  // std::cout << "num_chunks: " << num_chunks << std::endl;
   for (int i = 0; i < num_chunks; i++) {
     int low = i * step;
     int high = std::max((i + 1) * step - 1, (int)nums.size() - 1);
     high = std::max(0, high);
-    // std::cout << "low: " << low << std::endl;
-    // std::cout << "high: " << high << std::endl;
+
     tasks.push_back(
-        std::async(Search::BinarySearchImp, std::ref(nums), low, high, n));
+        std::async(Search<T>::BinarySearchImp, std::ref(nums), low, high, n));
   }
 
   int cur_offset = 0;
@@ -93,26 +117,36 @@ int Search::BinarySearchPar2(std::vector<int> &nums, int n) {
   return -1;
 }
 
-int Search::BinarySearchPar(std::vector<int> &nums, int n) {
+//-----------------------------------------------------
+template <class T>
+T Search<T>::BinarySearchPar(std::vector<T> &nums, T n) {
+  size_t step = std::ceil((float)nums.size() / (float)number_of_threads);
 
-  const int number_of_threads = 12;
-  int step = std::ceil((float)nums.size() / (float)number_of_threads);
-
-  std::vector<int> results(number_of_threads, -1);
+  std::vector<T> results(number_of_threads, -1);
   std::vector<std::thread> threads(number_of_threads);
-
+  std::cout << "number_of_threads: " << number_of_threads << std::endl;
+  std::cout << "nums.size(): " << nums.size() << std::endl;
   for (int i = 0; i < number_of_threads; i++) {
-    int low = i * step;
-    int high = std::min((i + 1) * step - 1, (int)nums.size() - 1);
-    high = std::max(0, high);
+    size_t low = i * step;
+    size_t high = std::min((i + 1) * step - 1, (size_t)nums.size() - 1);
+    high = std::max((size_t)0, high);
 
-    threads[i] = std::thread(Search::BinarySearchRefImp, std::ref(nums), low,
-                             high, n, std::ref(results[i]));
+    std::cout << "low: " << low << ", high: " << high << std::endl;
+    std::cout << "i: " << i << std::endl;
+    CHECK(low < high) << "high - low = ", high - low;
+    CHECK(high < nums.size());
+    threads[i] = std::thread([&nums, low, high, n, i, &results]() {
+      Search<T>::BinarySearchRefImp(nums, low, high, n, results[i]);
+    });
   }
-
+  std::cout << "Joining" << std::endl;
   for (auto &t : threads) {
-    t.join();
+    if (t.joinable()) {
+      t.join();
+    }
   }
+  std::cout << "Joining done." << std::endl;
+
   for (auto &r : results) {
     if (r != -1) {
       return r;
@@ -121,12 +155,14 @@ int Search::BinarySearchPar(std::vector<int> &nums, int n) {
 
   return -1;
 }
-
-int Search::TernarySearch(std::vector<int> &nums, int n) {
+//-----------------------------------------------------
+template <class T>
+T Search<T>::TernarySearch(std::vector<T> &nums, T n) {
   return TernarySearchImp(nums, 0, nums.size() - 1, n);
 }
-
-int Search::TernarySearchImp(std::vector<int> &nums, int l, int r, int n) {
+//-----------------------------------------------------
+template <class T>
+T Search<T>::TernarySearchImp(std::vector<T> &nums, int l, int r, T n) {
   if (l > r || nums.size() == 0) {
     return -1;
   }
@@ -151,3 +187,19 @@ int Search::TernarySearchImp(std::vector<int> &nums, int l, int r, int n) {
     return BinarySearchImp(nums, mid1 + 1, mid2 - 1, n);
   }
 };
+//-----------------------------------------------------
+template <class T>
+T Search<T>::ExponentialSearch(std::vector<T> &nums, T n) {
+  if (nums.size() == 0) {
+    return -1;
+  }
+
+  int bound = 1;
+  while (bound < nums.size() && nums[bound] < n) {
+    bound *= 2;
+  }
+  return Search<T>::BinarySearchImp(
+      nums, bound / 2, std::min((size_t)bound + 1, nums.size() - 1), n);
+}
+
+#endif

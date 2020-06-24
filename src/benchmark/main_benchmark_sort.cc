@@ -11,20 +11,23 @@
 #include <thread>
 #include <vector>
 
-// #include <execution>
-
 #include "src/lib/sort/sort.h"
 class Data {
  public:
-  Data(int size) {
-    // ConstructRandomVector(size);
-    ReverseSort(size);
-  }
+  Data(int size) { ReverseSort(size); }
+
+  /**
+   * Creates a reversely sorted vector
+   */
   void ReverseSort(int size) {
     for (int i = 0; i < size; ++i) {
       v.push_back(size - i);
     }
   }
+
+  /**
+   * Creates a random vector
+   */
   void ConstructRandomVector(int size) {
     std::srand(10);
     v.resize(size);
@@ -34,7 +37,7 @@ class Data {
   std::vector<int> v;
 };
 
-const int g_size = 1000000;
+const int g_size = 10000;
 
 int Sort::QUICKSORT_THREASHOLD;
 int Sort::MERGESORT_THREASHOLD;
@@ -218,6 +221,8 @@ static void BM_StdQSort(benchmark::State& state) {
   state.SetItemsProcessed(state.iterations() * g_size);
 }
 
+// Below are various benchmar registrations for measuring sort algorithms:
+
 // BENCHMARK(BM_QuickSort_iterative)
 //     ->RangeMultiplier(2)
 //     ->Range(1 << 10, 1 << 23)
@@ -248,28 +253,11 @@ static void BM_StdQSort(benchmark::State& state) {
 //     ->Range(1 << 10, 1 << 18)
 //     ->Complexity();
 // ;
-BENCHMARK(BM_StdSort)->Arg(g_size);
-BENCHMARK(BM_QuickSort_twoCalls)->Arg(g_size);
 
-// BENCHMARK(BM_QuickSortPar);
-
-BENCHMARK(BM_IntroSort)->Arg(g_size)->UseRealTime();
-
-// BENCHMARK(BM_QuickSort_iterative);
-// BENCHMARK(BM_QuickSort_oneCall);
-// BENCHMARK(BM_QuickSort_twoCalls);
-
-// BENCHMARK(BM_QuickSortPar)->UseRealTime();
-
-BENCHMARK(BM_IntroSortPar)->Arg(g_size)->UseRealTime();
-
-// BENCHMARK(BM_MergeSortPar)->UseRealTime();
-// BENCHMARK(BM_MergeSort);
-// BENCHMARK(BM_HeapSort);
-
-// BENCHMARK(BM_InsertionSort);
-
-// BENCHMARK(BM_SelectionSort);
-// BENCHMARK(BM_BubbleSortImproved);
-// BENCHMARK(BM_BubbleSort);
+BENCHMARK(BM_MergeSort)->Arg(g_size);
+BENCHMARK(BM_HeapSort)->Arg(g_size);
+BENCHMARK(BM_InsertionSort)->Arg(g_size);
+BENCHMARK(BM_SelectionSort)->Arg(g_size);
+BENCHMARK(BM_BubbleSortImproved)->Arg(g_size);
+BENCHMARK(BM_BubbleSort)->Arg(g_size);
 BENCHMARK_MAIN();

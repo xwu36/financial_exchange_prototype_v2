@@ -19,7 +19,7 @@ unsigned long Increment(unsigned long n) {
 }
 
 /**
- * Ads value n times and returns the result
+ * Adds value n times and returns the result
  */
 unsigned long AddByValue(unsigned long n, unsigned long value) {
   unsigned long sum = 0;
@@ -54,13 +54,11 @@ static void BM_AddByValue(benchmark::State& state) {
 // Register the function as a benchmark
 // BENCHMARK(BM_Increment);
 
+// Using arguments
 // BENCHMARK(BM_Increment)->Arg(1000);
 // BENCHMARK(BM_Increment)->Arg(2000);
-
 // BENCHMARK(BM_AddByValue)->Args({2000, 2});
-
 // BENCHMARK(BM_Increment)->RangeMultiplier(2)->Range(1 << 8, 1 << 18);
-
 BENCHMARK(BM_Increment)
     ->RangeMultiplier(2)
     ->Ranges({{1 << 8, 1 << 10}, {1, 8}});

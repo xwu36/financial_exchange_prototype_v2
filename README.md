@@ -1,4 +1,4 @@
-# C++ Template for Google Bazel, Test, Log, and Abseil (ABSL)
+# C++ Template for Google Bazel, Test, Benchmark, Log, and Abseil (ABSL)
 
 > Can be used in Visual Studio Code
 
@@ -6,6 +6,7 @@ Features:
 
 - [x] Building C++ files using Bazel in Visual Studio Code
 - [x] [Google Test](https://github.com/google/googletest) for unit tests
+- [x] [Google Benchmark](https://github.com/google/benchmark) for benchmarking
 - [x] Google's [glog](https://github.com/google/glog) logger for logging
 - [x] Google's [Abseil library](https://github.com/abseil/abseil-cpp)
 - [x] Debugging with Visual Studio Code to provide breakpoints, watch, call stack, and pretty printing for STL containers such as `std::map` and `std::vector`
@@ -47,6 +48,14 @@ You can run this using `bazel`:
 
 ```bash
 bazel run src/main:main_logger
+```
+
+### Google's Benchmark demo:
+
+You can run this using `bazel`:
+
+```bash
+bazel run --cxxopt='-std=c++17' -c opt src/benchmark/main_benchmark
 ```
 
 ### Google's Abseil's flags demo:

@@ -14,7 +14,7 @@
 
 #include "src/lib/search/search.h"
 
-const long g_size = 10000000000;
+const long g_size = 1000000000000;
 template <class T>
 int Search<T>::number_of_threads = 10;
 
@@ -88,39 +88,44 @@ static void BM_BinarySearchPar(benchmark::State& state) {
   state.SetComplexityN(state.range(0));
 }
 
-// BENCHMARK(BM_BinarySearchPar)
-//     ->RangeMultiplier(2)
-//     ->Ranges({{g_size, g_size}, {1, 16}})
-//     ->UseRealTime();
 
 // Compare binary search, ternary search, and exponential search
-// BENCHMARK(BM_BinarySearch)
-//     ->RangeMultiplier(2)
-//     ->Range(1 << 8, 1 << 18)
-//     ->Complexity();
+BENCHMARK(BM_BinarySearch)
+    ->RangeMultiplier(2)
+    ->Range(1 << 15, 1 << 23)
+    ->Complexity(benchmark::oLogN);
 
-// BENCHMARK(BM_ExponentialSearch)
-//     ->RangeMultiplier(2)
-//     ->Range(1 << 8, 1 << 18)
-//     ->Complexity();
+BENCHMARK(BM_TernarySearch)
+    ->RangeMultiplier(2)
+    ->Range(1 << 15, 1 << 23)
+    ->Complexity(benchmark::oLogN);
 
-// BENCHMARK(BM_BinarySearchPar)
-//     ->RangeMultiplier(2)
-//     ->Ranges({{1 << 8, 1 << 18}, {5, 5}})
-//     ->Complexity();
+BENCHMARK(BM_ExponentialSearch)
+    ->RangeMultiplier(2)
+    ->Range(1 << 15, 1 << 23)
+    ->Complexity(benchmark::oLogN);
 
-// BENCHMARK(BM_TernarySearch)
-//     ->RangeMultiplier(2)
-//     ->Range(1 << 8, 1 << 18)
-//     ->Complexity();
-
-// BENCHMARK(BM_BinarySearch)->Arg(g_size);
-// BENCHMARK(BM_TernarySearch)->Arg(g_size);
-
-// BENCHMARK(BM_BinarySearchPar)->Arg(g_size);
 BENCHMARK(BM_BinarySearchPar)
     ->RangeMultiplier(2)
-    ->Ranges({{g_size, g_size}, {1, 16}})
-    ->UseRealTime();
+    ->Ranges({{1 << 15, 1 << 23}, {2, 2}})
+    ->Complexity(benchmark::oLogN);
+
+//-----------------------------------------------------
+// Comparison of BinarySearch and BinarySearchPar changing number of threads
+// Run with:
+// bazel run --cxxopt='-std=c++17' -c opt src/benchmark/main_benchmark_search -- --benchmark_format=csv | tee bs_vs_bs_par_10k.csv 
+// BENCHMARK(BM_BinarySearch)->Arg(g_size);
+// BENCHMARK(BM_BinarySearchPar)
+//     ->UseRealTime()
+//     ->Args({g_size, 2})
+//     ->Args({g_size, 3})
+//     ->Args({g_size, 4})
+//     ->Args({g_size, 5})
+//     ->Args({g_size, 6})
+//     ->Args({g_size, 7})
+//     ->Args({g_size, 8})
+//     ->Args({g_size, 9})
+//     ->Args({g_size, 10});
+//-----------------------------------------------------
 
 BENCHMARK_MAIN();

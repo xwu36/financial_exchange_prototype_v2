@@ -4,19 +4,20 @@
  */
 #include <benchmark/benchmark.h>
 
+#include <chrono>
 #include <string>
 
-void SomeFunction(int a, int b){
-  // ...
+void SomeFunction(size_t size) {
+  std::string s1(size, '-');
+  std::string s2(size, '-');
+  benchmark::DoNotOptimize(s1.compare(s2));
 }
 
 static void BM_SomeFunction(benchmark::State& state) {
   // Perform setup here
   for (auto _ : state) {
     // This code gets timed
-    std::string s1(state.range(0), '-');
-    std::string s2(state.range(0), '-');
-    benchmark::DoNotOptimize(s1.compare(s2));
+    SomeFunction(state.range(0);
   }
 }
 // Register the function as a benchmark

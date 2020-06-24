@@ -9,8 +9,8 @@ cc_binary(
 )
 
 cc_binary(
-    name = "main_benchmark_bad_example",
-    srcs = ["main_benchmark_bad_example.cc"],
+    name = "main_benchmark_adder",
+    srcs = ["main_benchmark_adder.cc"],
     deps = [
         "//src/lib/search:SearchLib",
         "@com_google_benchmark//:benchmark",

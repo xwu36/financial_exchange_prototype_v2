@@ -17,10 +17,13 @@ static void BM_SomeFunction(benchmark::State& state) {
   // Perform setup here
   for (auto _ : state) {
     // This code gets timed
-    SomeFunction(1000);
+    SomeFunction(state.range(0));
   }
 }
 // Register the function as a benchmark
-BENCHMARK(BM_SomeFunction);
+// BENCHMARK(BM_SomeFunction)->Arg(100000)->Arg(200000)->Arg(400000);
+
+BENCHMARK(BM_SomeFunction)->RangeMultiplier(2)->Range(1 << 10, 1 << 20);
+
 // Run the benchmark
 BENCHMARK_MAIN();

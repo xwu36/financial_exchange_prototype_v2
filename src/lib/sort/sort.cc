@@ -8,6 +8,7 @@
 #include <iostream>
 #include <random>
 #include <vector>
+#include <functional>
 
 
 template <class T>
@@ -29,7 +30,7 @@ bool Sort::IsArraySorted(std::vector<int> &nums, int low, int high) {
 int Sort::FindMinIndex(const std::vector<int> &input, int start_index) {
   int min_index = start_index;
   int cur_min = input[start_index];
-  for (int i = start_index; i < input.size(); i++) {
+  for (size_t i = start_index; i < input.size(); i++) {
     if (input[i] < cur_min) {
       cur_min = input[i];
       min_index = i;

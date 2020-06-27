@@ -60,9 +60,35 @@ void TestSort(T sort_func) {
 
   // Random large vector, testing with multiple seeds
   for (size_t i = 0; i < 50; i++) {
-    std::srand(i);  // use a constant seed to make the test repeatable
+    std::srand(i * 2);  // use a constant seed to make the test repeatable
     in.resize(1000);
     std::generate(in.begin(), in.end(), std::rand);
+    expected = in;
+    std::sort(expected.begin(), expected.end());
+    sort_func(in);
+    EXPECT_EQ(expected, in);
+    EXPECT_EQ(expected.size(), in.size());
+  }
+
+  //  large vector sorted
+  for (size_t i = 0; i < 50; i++) {
+    std::srand(i * 2);  // use a constant seed to make the test repeatable
+    in.resize(1000);
+    std::generate(in.begin(), in.end(), std::rand);
+    std::sort(in.begin(), in.end());
+    expected = in;
+    std::sort(expected.begin(), expected.end());
+    sort_func(in);
+    EXPECT_EQ(expected, in);
+    EXPECT_EQ(expected.size(), in.size());
+  }
+
+  //  large vector reverse sorted
+  for (size_t i = 0; i < 50; i++) {
+    std::srand(i * 2);  // use a constant seed to make the test repeatable
+    in.resize(1000);
+    std::generate(in.begin(), in.end(), std::rand);
+    std::sort(in.begin(), in.end(), std::greater<int>());
     expected = in;
     std::sort(expected.begin(), expected.end());
     sort_func(in);
@@ -75,6 +101,19 @@ void TestSort(T sort_func) {
     std::srand(i);  // use a constant seed to make the test repeatable
     in.resize(5000);
     std::generate(in.begin(), in.end(), std::rand);
+    expected = in;
+    std::sort(expected.begin(), expected.end());
+    sort_func(in);
+    EXPECT_EQ(expected, in);
+    EXPECT_EQ(expected.size(), in.size());
+  }
+
+  //  large vector reverse sorted
+  for (size_t i = 0; i < 5; i++) {
+    std::srand(i * 2);  // use a constant seed to make the test repeatable
+    in.resize(5000);
+    std::generate(in.begin(), in.end(), std::rand);
+    std::sort(in.begin(), in.end(), std::greater<int>());
     expected = in;
     std::sort(expected.begin(), expected.end());
     sort_func(in);

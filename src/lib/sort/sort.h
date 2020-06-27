@@ -69,6 +69,10 @@ class Sort {
     IntrosortImp(arr, 0, arr.size() - 1, /*par=*/true);
   }
 
+  
+
+  static bool IsArraySorted(std::vector<int> &nums, int low, int high);
+
   static int QUICKSORT_THREASHOLD;
   static int MERGESORT_THREASHOLD;
   static int INTROSORT_THREASHOLD;

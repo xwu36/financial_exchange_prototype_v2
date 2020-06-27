@@ -2,7 +2,7 @@
  * Demo for using Benchmarking using Google's benchmark platform:
  * https://github.com/google/benchmark
  */
-#include <benchmark/benchmark.h>
+#include "benchmark/benchmark.h"
 #include <stdlib.h> /* qsort */
 
 #include <cstdlib>
@@ -12,16 +12,41 @@
 #include <vector>
 
 #include "src/lib/sort/sort.h"
+
+template <class T>
+void Swap(T& i, T& j) {
+  T temp = i;
+  i = j;
+  j = temp;
+}
 class Data {
  public:
-  Data(int size) { ReverseSort(size); }
+  Data(int size) {
+    // Sort(size);
+    // ReverseSort(size);
+
+    ConstructRandomVector(size);
+  }
 
   /**
    * Creates a reversely sorted vector
    */
   void ReverseSort(int size) {
+    v.resize(size);
+
     for (int i = 0; i < size; ++i) {
-      v.push_back(size - i);
+      v[i] = (size - i);
+    }
+  }
+
+  /**
+   * Creates a  sorted vector
+   */
+  void Sort(int size) {
+    v.resize(size);
+
+    for (int i = 0; i < size; ++i) {
+      v[i] = i;
     }
   }
 
@@ -29,7 +54,7 @@ class Data {
    * Creates a random vector
    */
   void ConstructRandomVector(int size) {
-    std::srand(10);
+    std::srand(100);
     v.resize(size);
     std::generate(v.begin(), v.end(), std::rand);
   }
@@ -37,7 +62,7 @@ class Data {
   std::vector<int> v;
 };
 
-const int g_size = 10000;
+const int g_size = 10000000;
 
 int Sort::QUICKSORT_THREASHOLD;
 int Sort::MERGESORT_THREASHOLD;
@@ -254,8 +279,17 @@ static void BM_StdQSort(benchmark::State& state) {
 //     ->Complexity();
 // ;
 
-BENCHMARK(BM_MergeSort)->Arg(g_size);
+BENCHMARK(BM_IntroSort)->Arg(g_size);
+BENCHMARK(BM_StdSort)->Arg(g_size);
+
+BENCHMARK(BM_IntroSortPar)->Arg(g_size);
+
+BENCHMARK(BM_QuickSort_iterative)->Arg(g_size);
+BENCHMARK(BM_QuickSort_twoCalls)->Arg(g_size);
 BENCHMARK(BM_HeapSort)->Arg(g_size);
+BENCHMARK(BM_MergeSort)->Arg(g_size);
+BENCHMARK(BM_MergeSortPar)->Arg(g_size);
+
 BENCHMARK(BM_InsertionSort)->Arg(g_size);
 BENCHMARK(BM_SelectionSort)->Arg(g_size);
 BENCHMARK(BM_BubbleSortImproved)->Arg(g_size);

@@ -6,13 +6,24 @@
 #include <cmath>
 #include <future>
 #include <iostream>
+#include <random>
 #include <vector>
+
 
 template <class T>
 void Swap(T &i, T &j) {
   T temp = i;
   i = j;
   j = temp;
+}
+
+bool Sort::IsArraySorted(std::vector<int> &nums, int low, int high) {
+  for (int i = low + 1; i <= high; ++i) {
+    if (nums[i - 1] > nums[i]) {
+      return false;
+    }
+  }
+  return true;
 }
 
 int Sort::FindMinIndex(const std::vector<int> &input, int start_index) {
@@ -107,7 +118,9 @@ void Sort::Heapify(std::vector<int> &arr, int n, int i) {
 void Sort::HeapSort(std::vector<int> &arr) {
   int n = arr.size();
   // Build heap (rearrange array)
-  for (int i = n / 2 - 1; i >= 0; i--) Heapify(arr, n, i);
+  for (int i = n / 2 - 1; i >= 0; i--) {
+    Heapify(arr, n, i);
+  }
 
   // One by one extract an element from heap
   for (int i = n - 1; i > 0; i--) {
@@ -211,31 +224,35 @@ void Sort::InsertionSortImp(std::vector<int> &arr, int left, int right) {
   return;
 }
 
-// int Sort::Partition(std::vector<int> &input, int low, int high) {
-//   int pivot = input[high];  // pivot
-//   // int pivot_index = MedianOfThree(input, low, (low + high) / 2, high);
-//   // int pivot = input[pivot_index];
+// Generates Random Pivot, swaps pivot with
+// end element and calls the partition function
+// In Hoare partition the low element is selected
+// as first pivot
+int Partition_r(std::vector<int> &input, int low, int high) {
+  // Generate a random number in between
+  auto GenRandomValue = std::bind(std::uniform_int_distribution<>(low, high),
+                                  std::default_random_engine());
 
-//   int i = (low - 1);  // Index of smaller element
+  int random = GenRandomValue();
 
-//   for (int j = low; j <= high - 1; j++) {
-//     // If current element is smaller than the pivot
-//     if (input[j] < pivot) {
-//       i++;  // increment index of smaller element
-//       Swap(input[i], input[j]);
-//     }
-//   }
-//   Swap(input[i + 1], input[high]);
-//   return (i );
-// }
+  // Swap A[random] with A[high]
+  Swap(input[random], input[low]);
+
+  return Sort::Partition(input, low, high);
+}
 
 int Sort::Partition(std::vector<int> &input, int low, int high) {
   int median_index = MedianOfThree(input, low, (low + high) / 2, high - 1);
   int pivot = input[median_index];
 
-  // int pivot = input[(high + low) / 2];
-  // int pivot = input[high-1];
-    // int pivot = input[low];
+  // Swap(input[low], input[median_index]);
+  // int pivot = input[low];
+  // int pivot = input[low + (high - low) / 2];
+
+  // auto GenRandomValue = std::bind(std::uniform_int_distribution<>(low, high),
+  //                                 std::default_random_engine());
+
+  // int pivot = input[GenRandomValue()];
 
   int i = low;
   int j = high;
@@ -252,8 +269,8 @@ int Sort::Partition(std::vector<int> &input, int low, int high) {
       return j;
     }
     Swap(input[i], input[j]);
-    i = i + 1;
-    j = j - 1;
+    i++;
+    j--;
   }
 }
 /* The main function that implements quickSortImp
@@ -382,48 +399,51 @@ void Sort::IntrosortUtil(std::vector<int> &arr, int begin, int end,
                          int depthLimit, bool par) {
   // Count the number of elements
   int size = end - begin;
+  if (size > 0) {
+    // If partition size is low then do insertion sort
+    if (size < 16) {
+      InsertionSortImp(arr, begin, end);
+      return;
+    }
 
-  // If partition size is low then do insertion sort
-  if (size < 16) {
-    InsertionSortImp(arr, begin, end);
-    return;
+    // If the depth is zero use heapsort
+    if (depthLimit == 0) {
+      std::make_heap(arr.begin() + begin, arr.begin() + end + 1);
+      std::sort_heap(arr.begin() + begin, arr.begin() + end + 1);
+      return;
+    }
+
+    // Else use a median-of-three concept to
+    // find a good pivot
+    int partitionPoint = Sort::Partition(arr, begin, end);
+
+    // Perform Quick Sort
+    auto first_half = [&]() {
+      if (!IsArraySorted(arr, begin, partitionPoint)) {
+        IntrosortUtil(arr, begin, partitionPoint, depthLimit - 1, par);
+      }
+    };
+    auto second_half = [&]() {
+      if (!IsArraySorted(arr, partitionPoint + 1, end)) {
+        IntrosortUtil(arr, partitionPoint + 1, end, depthLimit - 1, par);
+      }
+    };
+    if (par && (size > INTROSORT_THREASHOLD)) {
+      auto t1 = std::thread(first_half);
+      auto t2 = std::thread(second_half);
+      t1.join();
+      t2.join();
+    } else {
+      first_half();
+      second_half();
+    }
   }
-
-  // If the depth is zero use heapsort
-  if (depthLimit == 0) {
-    Sort::HeapSort(arr);
-
-    return;
-  }
-
-  // Else use a median-of-three concept to
-  // find a good pivot
-  int partitionPoint = Partition(arr, begin, end);
-
-  // Swap the values pointed by the two pointers
-  // Swap(arr[pivot], arr[end]);
-
-  // Perform Quick Sort
-  // int partitionPoint = Partition(arr, begin, end);
-  if (par && size > INTROSORT_THREASHOLD) {
-    auto t1 = std::thread(IntrosortUtil, std::ref(arr), begin, partitionPoint,
-                          depthLimit - 1, par);
-    auto t2 = std::thread(IntrosortUtil, std::ref(arr), partitionPoint + 1, end,
-                          depthLimit - 1, par);
-    t1.join();
-    t2.join();
-  } else {
-    IntrosortUtil(arr, begin, partitionPoint, depthLimit - 1, par);
-    IntrosortUtil(arr, partitionPoint + 1, end, depthLimit - 1, par);
-  }
-  return;
 }
+
 
 /* Implementation of introsort*/
 void Sort::IntrosortImp(std::vector<int> &arr, int begin, int end, bool par) {
-  int depthLimit = 2 * log(arr.size());
-
-  // // std::cout << "depthLimit: " << depthLimit << std::endl;
+  int depthLimit = 8 * log(arr.size());
 
   // Perform a recursive Introsort
   IntrosortUtil(arr, begin, end, depthLimit, par);

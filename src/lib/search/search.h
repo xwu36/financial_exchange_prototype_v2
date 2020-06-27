@@ -16,8 +16,8 @@ class Search {
   static T BinarySearch(std::vector<T> &nums, T n);
   static T TernarySearch(std::vector<T> &nums, T n);
   static T ExponentialSearch(std::vector<T> &nums, T n);
-
   static T BinarySearchPar(std::vector<T> &nums, T n);
+
   static T BinarySearchImp(std::vector<T> &nums, size_t l, size_t r, T n);
   static T TernarySearchImp(std::vector<T> &nums, size_t l, size_t r, T n);
   static void BinarySearchRefImp(std::vector<T> &nums, size_t l, size_t r, T n,
@@ -95,8 +95,7 @@ T Search<T>::BinarySearchPar(std::vector<T> &nums, T n) {
     CHECK(high < nums.size());
     if (low <= high) {
       threads.push_back(std::thread([&nums, low, high, n, i, &results]() {
-        Search<T>::BinarySearchRefImp(nums, low, high, n,
-                                      results[i]);
+        Search<T>::BinarySearchRefImp(nums, low, high, n, results[i]);
       }));
     }
   }

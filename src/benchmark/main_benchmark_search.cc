@@ -47,7 +47,7 @@ static void BM_BinarySearch(benchmark::State& state) {
     state.PauseTiming();
     auto d = init(state.range(0));
     state.ResumeTiming();
-    Search<unsigned long>::BinarySearch(d.v, d.v[d.v.size() - 1]);
+    Search<unsigned long>::BinarySearch(d.v, d.v[100]);
   }
   state.SetItemsProcessed(state.iterations() * state.range(0));
   state.SetComplexityN(state.range(0));
@@ -58,7 +58,7 @@ static void BM_ExponentialSearch(benchmark::State& state) {
     state.PauseTiming();
     auto d = init(state.range(0));
     state.ResumeTiming();
-    Search<unsigned long>::ExponentialSearch(d.v, d.v[d.v.size() - 1]);
+    Search<unsigned long>::ExponentialSearch(d.v, d.v[100]);
   }
   state.SetItemsProcessed(state.iterations() * state.range(0));
   state.SetComplexityN(state.range(0));
@@ -69,7 +69,7 @@ static void BM_TernarySearch(benchmark::State& state) {
     state.PauseTiming();
     auto d = init(state.range(0));
     state.ResumeTiming();
-    Search<unsigned long>::TernarySearch(d.v, d.v[d.v.size() - 1]);
+    Search<unsigned long>::TernarySearch(d.v, d.v[10000]);
   }
   state.SetItemsProcessed(state.iterations() * state.range(0));
   state.SetComplexityN(state.range(0));
@@ -82,7 +82,7 @@ static void BM_BinarySearchPar(benchmark::State& state) {
     Search<unsigned long>::number_of_threads = state.range(1);
 
     state.ResumeTiming();
-    Search<unsigned long>::BinarySearchPar(d.v, d.v[d.v.size() - 1]);
+    Search<unsigned long>::BinarySearchPar(d.v, d.v[100]);
   }
   state.SetItemsProcessed(state.iterations() * state.range(0));
   state.SetComplexityN(state.range(0));
@@ -92,22 +92,22 @@ static void BM_BinarySearchPar(benchmark::State& state) {
 // Compare binary search, ternary search, and exponential search
 BENCHMARK(BM_BinarySearch)
     ->RangeMultiplier(2)
-    ->Range(1 << 15, 1 << 23)
+    ->Range(1 << 15, 1 << 18)
     ->Complexity(benchmark::oLogN);
 
-BENCHMARK(BM_TernarySearch)
-    ->RangeMultiplier(2)
-    ->Range(1 << 15, 1 << 23)
-    ->Complexity(benchmark::oLogN);
+// BENCHMARK(BM_TernarySearch)
+//     ->RangeMultiplier(2)
+//     ->Range(1 << 15, 1 << 18)
+//     ->Complexity(benchmark::oLogN);
 
 BENCHMARK(BM_ExponentialSearch)
     ->RangeMultiplier(2)
-    ->Range(1 << 15, 1 << 23)
+    ->Range(1 << 15, 1 << 18)
     ->Complexity(benchmark::oLogN);
 
 BENCHMARK(BM_BinarySearchPar)
     ->RangeMultiplier(2)
-    ->Ranges({{1 << 15, 1 << 23}, {2, 2}})
+    ->Ranges({{1 << 15, 1 << 18}, {2, 2}})
     ->Complexity(benchmark::oLogN);
 
 //-----------------------------------------------------

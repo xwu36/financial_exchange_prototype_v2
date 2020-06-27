@@ -2,7 +2,7 @@
  * Demo for using Benchmarking using Google's benchmark platform:
  * https://github.com/google/benchmark
  */
-#include <benchmark/benchmark.h>
+#include "benchmark/benchmark.h"
 #include <stdlib.h> /* qsort */
 
 #include <cstdlib>

@@ -1,8 +1,8 @@
 #ifndef SORT_H
 #define SORT_H
 
-#include <glog/logging.h>
-#include <glog/stl_logging.h>
+#include "glog/logging.h"
+#include "glog/stl_logging.h"
 
 #include <algorithm>
 #include <cmath>

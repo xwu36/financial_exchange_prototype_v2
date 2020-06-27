@@ -3,8 +3,8 @@
  * showcasing the usage of GLog library 
  * By: Ari Saif
  */
-#include <glog/logging.h>
-#include <glog/stl_logging.h>
+#include "glog/logging.h"
+#include "glog/stl_logging.h"
 
 #include <iostream>
 #include <map>

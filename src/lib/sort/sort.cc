@@ -4,12 +4,11 @@
 
 #include <algorithm>
 #include <cmath>
+#include <functional>
 #include <future>
 #include <iostream>
 #include <random>
 #include <vector>
-#include <functional>
-
 
 template <class T>
 void Swap(T &i, T &j) {
@@ -18,7 +17,7 @@ void Swap(T &i, T &j) {
   j = temp;
 }
 
-bool Sort::IsArraySorted(std::vector<int> &nums, int low, int high) {
+bool Sort::IsSorted(std::vector<int> &nums, int low, int high) {
   for (int i = low + 1; i <= high; ++i) {
     if (nums[i - 1] > nums[i]) {
       return false;
@@ -45,23 +44,6 @@ void Sort::SelectionSort(std::vector<int> &input) {
     Swap(input[i], input[min_index]);
   }
 }
-
-// void Sort::SelectionSort(std::vector<int> &input) {
-//   int i, j, min_idx;
-
-//   // One by one move boundary of unsorted subarray
-//   for (i = 0; i < input.size() - 1; i++) {
-//     // Find the minimum element in unsorted array
-//     min_idx = i;
-//     for (j = i + 1; j < input.size(); j++)
-//       if (input[j] < input[min_idx]) {
-//         min_idx = j;
-//       }
-
-//     // Swap the found minimum element with the first element
-//     Swap(input[min_idx], input[i]);
-//   }
-// }
 
 void Sort::BubbleSort(std::vector<int> &input) {
   bool go;
@@ -293,20 +275,20 @@ void Sort::QuickSortImp_twoCalls(std::vector<int> &input, int low, int high) {
 
 void Sort::QuickSortImp_oneCall(std::vector<int> &input, int low, int high) {
   while (low < high) {
-    /* pi is partitioning index, arr[p] is now
-       at right place */
     int pi = Partition(input, low, high);
 
     // If left part is smaller, then recur for left
-    // part and handle right part iteratively
     if (pi - low > high - pi) {
       QuickSortImp_oneCall(input, low, pi);
+
+      // Adjust index for the second call
       low = pi + 1;
     }
-
     // Else recur for right part
     else {
       QuickSortImp_oneCall(input, pi + 1, high);
+
+      // Adjust index for the second call
       high = pi;
     }
   }
@@ -418,17 +400,19 @@ void Sort::IntrosortUtil(std::vector<int> &arr, int begin, int end,
     // find a good pivot
     int partitionPoint = Sort::Partition(arr, begin, end);
 
-    // Perform Quick Sort
+    // Create an std::function for each half to be called either serially or
+    // concurrently
     auto first_half = [&]() {
-      if (!IsArraySorted(arr, begin, partitionPoint)) {
+      if (!IsSorted(arr, begin, partitionPoint)) {
         IntrosortUtil(arr, begin, partitionPoint, depthLimit - 1, par);
       }
     };
     auto second_half = [&]() {
-      if (!IsArraySorted(arr, partitionPoint + 1, end)) {
+      if (!IsSorted(arr, partitionPoint + 1, end)) {
         IntrosortUtil(arr, partitionPoint + 1, end, depthLimit - 1, par);
       }
     };
+
     if (par && (size > INTROSORT_THREASHOLD)) {
       auto t1 = std::thread(first_half);
       auto t2 = std::thread(second_half);
@@ -441,10 +425,9 @@ void Sort::IntrosortUtil(std::vector<int> &arr, int begin, int end,
   }
 }
 
-
 /* Implementation of introsort*/
 void Sort::IntrosortImp(std::vector<int> &arr, int begin, int end, bool par) {
-  int depthLimit = 8 * log(arr.size());
+  int depthLimit = 2 * log(arr.size());
 
   // Perform a recursive Introsort
   IntrosortUtil(arr, begin, end, depthLimit, par);

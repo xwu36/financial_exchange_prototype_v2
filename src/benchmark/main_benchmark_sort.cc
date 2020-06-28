@@ -2,15 +2,16 @@
  * Demo for using Benchmarking using Google's benchmark platform:
  * https://github.com/google/benchmark
  */
-#include "benchmark/benchmark.h"
 #include <stdlib.h> /* qsort */
 
+#include <cmath>
 #include <cstdlib>
 #include <iostream>
 #include <string>
 #include <thread>
 #include <vector>
 
+#include "benchmark/benchmark.h"
 #include "src/lib/sort/sort.h"
 
 template <class T>
@@ -234,6 +235,18 @@ static void BM_StdSort(benchmark::State& state) {
   state.SetComplexityN(state.range(0));
 }
 
+static void BM_IsSorted(benchmark::State& state) {
+  for (auto _ : state) {
+    state.PauseTiming();
+    auto d = init(state.range(0));
+    state.ResumeTiming();
+
+    Sort::IsSorted(d.v, 0, d.v.size() - 1);
+  }
+  state.SetItemsProcessed(state.iterations() * g_size);
+  state.SetComplexityN(state.range(0));
+}
+
 int compare(const void* a, const void* b) { return (*(int*)a - *(int*)b); }
 static void BM_StdQSort(benchmark::State& state) {
   for (auto _ : state) {
@@ -246,52 +259,41 @@ static void BM_StdQSort(benchmark::State& state) {
   state.SetItemsProcessed(state.iterations() * g_size);
 }
 
-// Below are various benchmar registrations for measuring sort algorithms:
+// Below are various benchmark registrations for measuring sort algorithms:
 
-// BENCHMARK(BM_QuickSort_iterative)
-//     ->RangeMultiplier(2)
-//     ->Range(1 << 10, 1 << 23)
-//     ->Complexity();
-// ;
+// Compare with std::sort with quicksort and introsort:
+BENCHMARK(BM_StdSort)
+    ->RangeMultiplier(2)
+    ->Range(1 << 10, 1 << 25)
+    ->Complexity(benchmark::oNLogN);
 
-// BENCHMARK(BM_QuickSortPar)
-//     ->RangeMultiplier(2)
-//     ->Range(1 << 10, 1 << 23)
-//     ->Complexity();
-// ;
+BENCHMARK(BM_IntroSort)
+    ->RangeMultiplier(2)
+    ->Range(1 << 10, 1 << 25)
+    ->Complexity(benchmark::oNLogN);
 
-// static void BM_StdParSort(benchmark::State& state) {
-//   for (auto _ : state) {
-//     state.PauseTiming();
-//      auto d = init(state.range(0));
-//     state.ResumeTiming();
-//     std::sort(std::execution::par_unseq, d.v.begin(), d.v.end());
+BENCHMARK(BM_IntroSortPar)
+    ->RangeMultiplier(2)
+    ->Range(1 << 10, 1 << 25)
+    ->Complexity(benchmark::oNLogN);
 
-//     std::sort(d.v.begin(), d.v.end());
-//   }
-//   state.SetItemsProcessed(state.iterations() * g_size);
-// }
+BENCHMARK(BM_QuickSort_twoCalls)
+    ->RangeMultiplier(2)
+    ->Range(1 << 5, 1 << 25)
+    ->Complexity(benchmark::oNLogN);
+BENCHMARK(BM_QuickSort_iterative)
+    ->RangeMultiplier(2)
+    ->Range(1 << 5, 1 << 25)
+    ->Complexity(benchmark::oNLogN);
 
-// Register the function as a benchmark
-// BENCHMARK(BM_StdSort)
-//     ->RangeMultiplier(2)
-//     ->Range(1 << 10, 1 << 18)
-//     ->Complexity();
-// ;
+BENCHMARK(BM_QuickSort_oneCall)
+    ->RangeMultiplier(2)
+    ->Range(1 << 5, 1 << 25)
+    ->Complexity(benchmark::oNLogN);
 
-BENCHMARK(BM_IntroSort)->Arg(g_size);
-BENCHMARK(BM_StdSort)->Arg(g_size);
+BENCHMARK(BM_QuickSortPar)
+    ->RangeMultiplier(2)
+    ->Range(1 << 5, 1 << 25)
+    ->Complexity(benchmark::oNLogN);
 
-BENCHMARK(BM_IntroSortPar)->Arg(g_size);
-
-BENCHMARK(BM_QuickSort_iterative)->Arg(g_size);
-BENCHMARK(BM_QuickSort_twoCalls)->Arg(g_size);
-BENCHMARK(BM_HeapSort)->Arg(g_size);
-BENCHMARK(BM_MergeSort)->Arg(g_size);
-BENCHMARK(BM_MergeSortPar)->Arg(g_size);
-
-BENCHMARK(BM_InsertionSort)->Arg(g_size);
-BENCHMARK(BM_SelectionSort)->Arg(g_size);
-BENCHMARK(BM_BubbleSortImproved)->Arg(g_size);
-BENCHMARK(BM_BubbleSort)->Arg(g_size);
 BENCHMARK_MAIN();

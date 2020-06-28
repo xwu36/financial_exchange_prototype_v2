@@ -60,8 +60,6 @@ class Sort {
 
   static void IntrosortImp(std::vector<int> &arr, int begin, int end, bool par);
   static void Introsort(std::vector<int> &arr) {
-    // std::random_shuffle(arr.begin(), arr.end());
-
     IntrosortImp(arr, 0, arr.size() - 1, /*par=*/false);
   }
 
@@ -69,9 +67,7 @@ class Sort {
     IntrosortImp(arr, 0, arr.size() - 1, /*par=*/true);
   }
 
-  
-
-  static bool IsArraySorted(std::vector<int> &nums, int low, int high);
+  static bool IsSorted(std::vector<int> &nums, int low, int high);
 
   static int QUICKSORT_THREASHOLD;
   static int MERGESORT_THREASHOLD;

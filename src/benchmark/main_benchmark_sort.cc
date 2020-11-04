@@ -261,39 +261,54 @@ static void BM_StdQSort(benchmark::State& state) {
 
 // Below are various benchmark registrations for measuring sort algorithms:
 
-// Compare with std::sort with quicksort and introsort:
-BENCHMARK(BM_StdSort)
-    ->RangeMultiplier(2)
-    ->Range(1 << 10, 1 << 25)
-    ->Complexity(benchmark::oNLogN);
-
-BENCHMARK(BM_IntroSort)
-    ->RangeMultiplier(2)
-    ->Range(1 << 10, 1 << 25)
-    ->Complexity(benchmark::oNLogN);
-
-BENCHMARK(BM_IntroSortPar)
-    ->RangeMultiplier(2)
-    ->Range(1 << 10, 1 << 25)
-    ->Complexity(benchmark::oNLogN);
-
 BENCHMARK(BM_QuickSort_twoCalls)
     ->RangeMultiplier(2)
     ->Range(1 << 5, 1 << 25)
     ->Complexity(benchmark::oNLogN);
-BENCHMARK(BM_QuickSort_iterative)
+
+BENCHMARK(BM_HeapSort)
     ->RangeMultiplier(2)
     ->Range(1 << 5, 1 << 25)
     ->Complexity(benchmark::oNLogN);
 
-BENCHMARK(BM_QuickSort_oneCall)
+BENCHMARK(BM_MergeSort)
     ->RangeMultiplier(2)
     ->Range(1 << 5, 1 << 25)
     ->Complexity(benchmark::oNLogN);
 
-BENCHMARK(BM_QuickSortPar)
-    ->RangeMultiplier(2)
-    ->Range(1 << 5, 1 << 25)
-    ->Complexity(benchmark::oNLogN);
+// Compare with std::sort with quicksort and introsort:
+// BENCHMARK(BM_StdSort)
+//     ->RangeMultiplier(2)
+//     ->Range(1 << 10, 1 << 25)
+//     ->Complexity(benchmark::oNLogN);
+
+// BENCHMARK(BM_IntroSort)
+//     ->RangeMultiplier(2)
+//     ->Range(1 << 10, 1 << 25)
+//     ->Complexity(benchmark::oNLogN);
+
+// BENCHMARK(BM_IntroSortPar)
+//     ->RangeMultiplier(2)
+//     ->Range(1 << 10, 1 << 25)
+//     ->Complexity(benchmark::oNLogN);
+
+// BENCHMARK(BM_QuickSort_twoCalls)
+//     ->RangeMultiplier(2)
+//     ->Range(1 << 5, 1 << 25)
+//     ->Complexity(benchmark::oNLogN);
+// BENCHMARK(BM_QuickSort_iterative)
+//     ->RangeMultiplier(2)
+//     ->Range(1 << 5, 1 << 25)
+//     ->Complexity(benchmark::oNLogN);
+
+// BENCHMARK(BM_QuickSort_oneCall)
+//     ->RangeMultiplier(2)
+//     ->Range(1 << 5, 1 << 25)
+//     ->Complexity(benchmark::oNLogN);
+
+// BENCHMARK(BM_QuickSortPar)
+//     ->RangeMultiplier(2)
+//     ->Range(1 << 5, 1 << 25)
+//     ->Complexity(benchmark::oNLogN);
 
 BENCHMARK_MAIN();

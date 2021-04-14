@@ -6,6 +6,7 @@ Features:
 
 - [x] Building C++ files using Bazel in Visual Studio Code
 - [x] [Google Test](https://github.com/google/googletest) for unit tests
+- [x] [Google GMock](https://google.github.io/googletest) for writing mock classes
 - [x] [Google Benchmark](https://github.com/google/benchmark) for benchmarking
 - [x] Google's [glog](https://github.com/google/glog) logger for logging
 - [x] Google's [Abseil library](https://github.com/abseil/abseil-cpp)

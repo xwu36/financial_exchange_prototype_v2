@@ -30,7 +30,6 @@ new_local_repository(
     path = "/usr/local",
 )
 
-
 git_repository(
     name = "com_github_gflags_gflags",
     remote = "https://github.com/gflags/gflags.git",

@@ -17,6 +17,10 @@ int CPPLib::fib(int N) {
 }
 
 int CPPLib::FindMax(const std::vector<int> &inputs) {
+  if (inputs.size() == 0) {
+    return -1;
+  }
+
   int result = std::numeric_limits<int>::min();
   for (auto n : inputs) {
     if (n > result) {

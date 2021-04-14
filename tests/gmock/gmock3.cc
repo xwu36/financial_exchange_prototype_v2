@@ -87,6 +87,8 @@ TEST(PainterTest, CanDrawCircleGeneralRuleOnTheTop) {
 
   EXPECT_TRUE(painter.DrawCircle(0, 0, 10));
 }
+
+// This test will fail becaue the more generic matcher is on the bottom
 TEST(PainterTest, CanDrawCircleGeneralRuleOnTheBottom) {
   NiceMock<Turtle> turtle;
 

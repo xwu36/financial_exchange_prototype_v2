@@ -40,10 +40,17 @@ cc_test(
     ],
 )
 
-
 cc_test(
     name = "gmock6",
     srcs = ["gmock6.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "matchers",
+    srcs = ["matchers.cc"],
     deps = [
         "@com_google_googletest//:gtest_main",
     ],

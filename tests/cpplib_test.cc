@@ -38,7 +38,8 @@
 TEST(CPPLibTest, FindMaxHandlesSizeOne) {
   CPPLib cpplib;
   std::vector<int> inputs = {2};
-  EXPECT_EQ(cpplib.FindMax(inputs), 3);
+  EXPECT_EQ(cpplib.FindMax(inputs), 2);
+  // other stuff
 }
 
 TEST(CPPLibTest, FindMaxHandlesConsecutiveNumbers) {

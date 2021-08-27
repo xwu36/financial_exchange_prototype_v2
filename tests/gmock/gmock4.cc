@@ -89,7 +89,7 @@ TEST(PainterTest, CanDrawCircle) {
 
   EXPECT_CALL(turtle, GoTo(0, -10)).Times(1);
 
-  ON_CALL(turtle, SomeRandomFunction(_, _, _)).WillByDefault(Return(10));
+  ON_CALL(turtle, SomeRandomFunction(_, _, _)).WillByDefault(Return(1000));
 
   Painter painter(&turtle);
 

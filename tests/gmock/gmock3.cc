@@ -93,7 +93,7 @@ TEST(PainterTest, CanDrawCircleGeneralRuleOnTheBottom) {
   NiceMock<Turtle> turtle;
 
   EXPECT_CALL(turtle, GoTo(0, -10)).Times(1);
-  EXPECT_CALL(turtle, GoTo(_, _)).Times(1);
+  EXPECT_CALL(turtle, GoTo(_, _)).Times(1); // (0, 10) -> (0, -10)
 
   Painter painter(&turtle);
 

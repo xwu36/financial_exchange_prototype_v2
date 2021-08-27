@@ -15,6 +15,12 @@ void TestSort(T sort_func) {
   std::vector<int> in;
   std::vector<int> expected;
 
+  in = {1, 11, 2, 5, 12, 9, 4, 10};
+  sort_func(in);
+  expected = {1, 2, 4, 5, 9, 10, 11, 12};
+  EXPECT_EQ(expected, in);
+  EXPECT_EQ(expected.size(), in.size());
+
   // Check empty
   in = {};
   sort_func(in);
@@ -122,19 +128,19 @@ void TestSort(T sort_func) {
   }
 }
 
-TEST(SortTest, QuickSort_iterative) { TestSort(Sort::QuickSort_iterative); }
-TEST(SortTest, QuickSort_oneCall) { TestSort(Sort::QuickSort_oneCall); }
+// TEST(SortTest, QuickSort_iterative) { TestSort(Sort::QuickSort_iterative); }
+// TEST(SortTest, QuickSort_oneCall) { TestSort(Sort::QuickSort_oneCall); }
 TEST(SortTest, QuickSort_twoCalls) { TestSort(Sort::QuickSort_twoCalls); }
 
-TEST(SortTest, SelectionSort) { TestSort(Sort::SelectionSort); }
-TEST(SortTest, MergeSort) { TestSort(Sort::MergeSort); }
-TEST(SortTest, MergeSortPar) { TestSort(Sort::MergeSortPar); }
-TEST(SortTest, HeapSort) { TestSort(Sort::HeapSort); }
+// TEST(SortTest, SelectionSort) { TestSort(Sort::SelectionSort); }
+// TEST(SortTest, MergeSort) { TestSort(Sort::MergeSort); }
+// TEST(SortTest, MergeSortPar) { TestSort(Sort::MergeSortPar); }
+// TEST(SortTest, HeapSort) { TestSort(Sort::HeapSort); }
 
-TEST(SortTest, BubbleSort) { TestSort(Sort::BubbleSort); }
-TEST(SortTest, BubbleSortImproved) { TestSort(Sort::BubbleSortImproved); }
-TEST(SortTest, QuickSortPar) { TestSort(Sort::QuickSortPar); }
-TEST(SortTest, InsertionSort) { TestSort(Sort::InsertionSort); }
+// TEST(SortTest, BubbleSort) { TestSort(Sort::BubbleSort); }
+// TEST(SortTest, BubbleSortImproved) { TestSort(Sort::BubbleSortImproved); }
+// TEST(SortTest, QuickSortPar) { TestSort(Sort::QuickSortPar); }
+// TEST(SortTest, InsertionSort) { TestSort(Sort::InsertionSort); }
 
-TEST(SortTest, IntroSort) { TestSort(Sort::Introsort); }
-TEST(SortTest, IntrosortPar) { TestSort(Sort::IntrosortPar); }
+// TEST(SortTest, IntroSort) { TestSort(Sort::Introsort); }
+// TEST(SortTest, IntrosortPar) { TestSort(Sort::IntrosortPar); }

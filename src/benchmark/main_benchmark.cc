@@ -1,6 +1,9 @@
 /**
  * Demo for using Benchmarking using Google's benchmark platform:
- * https://github.com/google/benchmark
+ * Run:
+         bazel run src/benchmark/main_benchmark -c opt -- --benchmark_format=csv | \
+         tee src/benchmark/outputs/main_benchmark.csv
+         python3 src/benchmark/plot.py src/benchmark/outputs/main_benchmark.csv
  */
 #include "benchmark/benchmark.h"
 

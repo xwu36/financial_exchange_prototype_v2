@@ -9,10 +9,11 @@
 // with mock.
 class Turtle {
  public:
-  MOCK_METHOD0(PenUp, void());
+  // Either MOCK_METHOD or MOCK_METHODX format can be used.
+  MOCK_METHOD(void, PenUp, (), (const));
   MOCK_METHOD0(PenDown, void());
   MOCK_METHOD1(Forward, void(int distance));
-  MOCK_METHOD1(Turn, void(int degrees));
+  MOCK_METHOD(void, Turn, (int));
   MOCK_METHOD2(GoTo, void(int x, int y));
   MOCK_CONST_METHOD0(GetX, int());
   MOCK_CONST_METHOD0(GetY, int());
@@ -86,5 +87,5 @@ TEST(PainterTest, CanDrawCircle) {
 
   Painter painter(&turtle);  // #4
 
-  EXPECT_TRUE(painter.DrawCircle(0, 0, 10));  // #5
+  EXPECT_TRUE(painter.DrawCircle(1, 0, 10));  // #5
 }

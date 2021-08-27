@@ -50,3 +50,19 @@ cc_test(
         "@com_google_googletest//:gtest_main",
     ],
 )
+cc_test(
+name = "simple_tests",
+srcs = ["simple_tests.cc"],
+deps = [
+"@com_google_googletest//:gtest_main",
+],
+)
+
+
+cc_test(
+name = "hello_world_test",
+srcs = ["hello_world_test.cc"],
+deps = [
+"@com_google_googletest//:gtest_main",
+],
+)

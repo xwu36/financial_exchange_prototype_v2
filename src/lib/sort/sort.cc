@@ -224,37 +224,68 @@ int Partition_r(std::vector<int> &input, int low, int high) {
 }
 
 int Sort::Partition(std::vector<int> &input, int low, int high) {
-  int median_index = MedianOfThree(input, low, (low + high) / 2, high - 1);
-  int pivot = input[median_index];
+  // Pick the rightmost element as a pivot from the array
+  int pivot = input[high];
 
-  // Swap(input[low], input[median_index]);
-  // int pivot = input[low];
-  // int pivot = input[low + (high - low) / 2];
+  // elements less than the pivot will be pushed to the left of `pIndex`
+  // elements more than the pivot will be pushed to the right of `pIndex`
+  // equal elements can go either way
+  int pIndex = low - 1;
 
-  // auto GenRandomValue = std::bind(std::uniform_int_distribution<>(low, high),
-  //                                 std::default_random_engine());
+  // each time we find an element less than or equal to the pivot, `pIndex`
+  // is incremented, and that element would be placed before the pivot.
+  for (int i = low; i < high; i++) {
+    if (input[i] <= pivot) {
+      pIndex++;
 
-  // int pivot = input[GenRandomValue()];
-
-  int i = low;
-  int j = high;
-  while (true) {
-    while (input[i] < pivot) {
-      i++;
+      Swap(input[i], input[pIndex]);
     }
-
-    while (input[j] > pivot) {
-      j--;
-    }
-
-    if (i >= j) {
-      return j;
-    }
-    Swap(input[i], input[j]);
-    i++;
-    j--;
   }
+
+  // swap `pIndex` with pivot
+  Swap(input[pIndex + 1], input[high]);
+
+  // return `pIndex` (index of the pivot element)
+  return pIndex + 1;
 }
+
+// int Sort::Partition(std::vector<int> &input, int low, int high) {
+//   // int median_index = MedianOfThree(input, low, (low + high) / 2, high -1);
+
+//   int median_index = high ;
+//   int pivot = input[median_index];
+
+//   // Swap(input[low], input[median_index]);
+//   // int pivot = input[low];
+//   // int pivot = input[low + (high - low) / 2];
+
+//   // auto GenRandomValue = std::bind(std::uniform_int_distribution<>(low,
+//   // high),
+//   //                                 std::default_random_engine());
+
+//   // int pivot = input[GenRandomValue()];
+
+//   int i = low;
+//   int j = high;
+//   while (true) {
+//     while (input[i] < pivot) {
+//       i++;
+//     }
+
+//     while (input[j] > pivot) {
+//       j--;
+//     }
+
+//     if (i >= j) {
+//       return j;
+//     }
+//     Swap(input[i], input[j]);
+//     i++;
+//     j--;
+//   }
+// }
+
+//-----------------------------------------------------
 /* The main function that implements quickSortImp
 arr[] --> Array to be sorted,
 low --> Starting index,
@@ -267,7 +298,7 @@ void Sort::QuickSortImp_twoCalls(std::vector<int> &input, int low, int high) {
 
     // Separately sort elements before
     // partition and after partition
-    QuickSortImp_twoCalls(input, low, pi);
+    QuickSortImp_twoCalls(input, low, pi - 1);
     QuickSortImp_twoCalls(input, pi + 1, high);
   }
 }

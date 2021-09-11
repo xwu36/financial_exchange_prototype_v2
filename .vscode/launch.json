@@ -57,5 +57,26 @@
         "/private/var/tmp/_bazel_ari/aaceb17b1e209054b5f468a4964f34dd/execroot/__main__": "${workspaceFolder}/"
       },
     },
+    {
+      "name": "Linux: g++ build and debug active file",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/bazel-bin/src/main/${fileBasenameNoExtension}",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ],
+      "preLaunchTask": "Bazel Build (Debug)",
+      "miDebuggerPath": "/usr/bin/gdb"
+    }
   ]
 }

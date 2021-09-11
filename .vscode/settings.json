@@ -85,5 +85,5 @@
   },
   "lldb.displayFormat": "auto",
   "lldb.dereferencePointers": true,
-  "lldb.showDisassembly": "always"
+  // "lldb.showDisassembly": "always"
 }

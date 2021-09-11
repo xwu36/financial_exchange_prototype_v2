@@ -1,0 +1,11 @@
+name,iterations,real_time,cpu_time,time_unit,bytes_per_second,items_per_second,label,error_occurred,error_message
+"BM_BinarySearch/10000",434297,1591.54,1581.29,ns,,6.32396e+09,,,
+"BM_BinarySearchPar/10000/2/real_time",24157,29090.2,27282.4,ns,,3.43759e+08,,,
+"BM_BinarySearchPar/10000/3/real_time",12706,40636.5,39721.2,ns,,2.46084e+08,,,
+"BM_BinarySearchPar/10000/4/real_time",14389,48689.8,48484.5,ns,,2.05382e+08,,,
+"BM_BinarySearchPar/10000/5/real_time",11356,60793.7,60585.6,ns,,1.64491e+08,,,
+"BM_BinarySearchPar/10000/6/real_time",9685,71929.3,71779.8,ns,,1.39025e+08,,,
+"BM_BinarySearchPar/10000/7/real_time",8360,84983.4,84817.3,ns,,1.1767e+08,,,
+"BM_BinarySearchPar/10000/8/real_time",7698,95671.4,95479.7,ns,,1.04524e+08,,,
+"BM_BinarySearchPar/10000/9/real_time",6414,109634,109494,ns,,9.12127e+07,,,
+"BM_BinarySearchPar/10000/10/real_time",5763,121746,121680,ns,,8.21381e+07,,,

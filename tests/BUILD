@@ -1,4 +1,4 @@
-load("@rules_cc//cc:defs.bzl", "cc_test")
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_test")
 
 cc_test(
     name = "cpplib_test",
@@ -50,19 +50,43 @@ cc_test(
         "@com_google_googletest//:gtest_main",
     ],
 )
+
 cc_test(
-name = "simple_tests",
-srcs = ["simple_tests.cc"],
-deps = [
-"@com_google_googletest//:gtest_main",
-],
+    name = "findmax_test",
+    srcs = ["findmax_test.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
 )
 
+cc_test(
+    name = "hello_world_test",
+    srcs = ["hello_world_test.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_binary(
+    name = "hello_world_test_main",
+    srcs = ["hello_world_test_main.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)
 
 cc_test(
-name = "hello_world_test",
-srcs = ["hello_world_test.cc"],
-deps = [
-"@com_google_googletest//:gtest_main",
-],
+    name = "fib_test",
+    srcs = ["fib_test.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "sort_test_function",
+    srcs = ["sort_test_function.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
 )

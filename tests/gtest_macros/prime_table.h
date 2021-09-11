@@ -33,6 +33,9 @@
 // prime and determines a next prime number. This interface is used
 // in Google Test samples demonstrating use of parameterized tests.
 
+#ifndef D7AA3454_73B8_4AA8_B83D_D6A523928448
+#define D7AA3454_73B8_4AA8_B83D_D6A523928448
+
 #ifndef GOOGLETEST_SAMPLES_PRIME_TABLES_H_
 #define GOOGLETEST_SAMPLES_PRIME_TABLES_H_
 
@@ -124,3 +127,6 @@ class PreCalculatedPrimeTable : public PrimeTable {
 };
 
 #endif  // GOOGLETEST_SAMPLES_PRIME_TABLES_H_
+
+
+#endif /* D7AA3454_73B8_4AA8_B83D_D6A523928448 */

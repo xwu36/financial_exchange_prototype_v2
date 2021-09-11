@@ -22,7 +22,11 @@ TEST(DivideTest, SimpleDivision) {
   EXPECT_EQ(Divide(2, 2), 1);
 }
 
-TEST(DivideTest, CatchesDivideByZeroException) {
+TEST(DivideTest, ThrowsForDivideByZero) {
   EXPECT_THROW(Divide(6, 0), DivideByZero);
+  EXPECT_NO_THROW(Divide(6, 2));
+}
+
+TEST(DivideTest, DoesNotThrowForDivideByNonZero) {
   EXPECT_NO_THROW(Divide(6, 2));
 }

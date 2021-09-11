@@ -53,3 +53,4 @@ TEST(CPPLibTest, FindMaxHandlesEmptyVector) {
   std::vector<int> inputs = {};
   EXPECT_EQ(cpplib.FindMax(inputs), -1);
 }
+

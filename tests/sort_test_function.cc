@@ -1,4 +1,3 @@
-#include "src/lib/sort/sort.h"
 
 #include <functional>
 #include <thread>
@@ -6,9 +5,42 @@
 
 #include "gtest/gtest.h"
 
-int Sort::QUICKSORT_THREASHOLD = 100;
-int Sort::MERGESORT_THREASHOLD = 100;
-int Sort::INTROSORT_THREASHOLD = 100;
+template <class T>
+void Swap(T &i, T &j) {
+  T temp = i;
+  i = j;
+  j = temp;
+}
+
+int FindMinIndex(const std::vector<int> &input, int start_index) {
+  int min_index = start_index;
+  int cur_min = input[start_index];
+  for (size_t i = start_index; i < input.size(); i++) {
+    if (input[i] < cur_min) {
+      cur_min = input[i];
+      min_index = i;
+    }
+  }
+  return min_index;
+}
+void SelectionSort(std::vector<int> &input) {
+  for (int i = 0; i < int(input.size() - 1); i++) {
+    int min_index = FindMinIndex(input, i);
+    Swap(input[i], input[min_index]);
+  }
+}
+void BubbleSort(std::vector<int> &input) {
+  bool go;
+  do {
+    go = false;
+    for (int i = 0; i < int(input.size() - 1); i++) {
+      if (input[i] > input[i + 1]) {
+        Swap(input[i], input[i + 1]);
+        go = true;
+      }
+    }
+  } while (go);
+}
 
 template <class T>
 void TestSort(T sort_func) {
@@ -128,21 +160,5 @@ void TestSort(T sort_func) {
   }
 }
 
-TEST(SortTest, QuickSort_twoCalls) { TestSort(Sort::QuickSort_twoCalls); }
-TEST(SortTest, SelectionSort) { TestSort(Sort::SelectionSort); }
-TEST(SortTest, BubbleSort) { TestSort(Sort::BubbleSort); }
-
-// TEST(SortTest, QuickSort_iterative) { TestSort(Sort::QuickSort_iterative); }
-// TEST(SortTest, QuickSort_oneCall) { TestSort(Sort::QuickSort_oneCall); }
-
-// TEST(SortTest, MergeSort) { TestSort(Sort::MergeSort); }
-// TEST(SortTest, MergeSortPar) { TestSort(Sort::MergeSortPar); }
-// TEST(SortTest, HeapSort) { TestSort(Sort::HeapSort); }
-
-// TEST(SortTest, BubbleSort) { TestSort(Sort::BubbleSort); }
-// TEST(SortTest, BubbleSortImproved) { TestSort(Sort::BubbleSortImproved); }
-// TEST(SortTest, QuickSortPar) { TestSort(Sort::QuickSortPar); }
-// TEST(SortTest, InsertionSort) { TestSort(Sort::InsertionSort); }
-
-// TEST(SortTest, IntroSort) { TestSort(Sort::Introsort); }
-// TEST(SortTest, IntrosortPar) { TestSort(Sort::IntrosortPar); }
+TEST(SortTest, SelectionSort) { TestSort(SelectionSort); }
+TEST(SortTest, BubbleSort) { TestSort(BubbleSort); }

@@ -1,0 +1,12 @@
+name,iterations,real_time,cpu_time,time_unit,bytes_per_second,items_per_second,label,error_occurred,error_message
+"BM_SomeFunction/1024",2203871,313.955,305.085,ns,,,,,
+"BM_SomeFunction/2048",1819103,408.663,398.086,ns,,,,,
+"BM_SomeFunction/4096",1338330,493.215,485.445,ns,,,,,
+"BM_SomeFunction/8192",859909,749.966,740.163,ns,,,,,
+"BM_SomeFunction/16384",452199,1619.29,1585.01,ns,,,,,
+"BM_SomeFunction/32768",195528,3492.68,3448.08,ns,,,,,
+"BM_SomeFunction/65536",117398,5886.94,5817.71,ns,,,,,
+"BM_SomeFunction/131072",57640,12324.1,12127.1,ns,,,,,
+"BM_SomeFunction/262144",23705,27453.3,27062.2,ns,,,,,
+"BM_SomeFunction/524288",11341,60881.7,59755.8,ns,,,,,
+"BM_SomeFunction/1048576",5229,116519,114537,ns,,,,,

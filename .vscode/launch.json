@@ -53,6 +53,7 @@
       // *** You need to change this part for your own system to work ***
       // Set sourceMap from output of (readlink -n bazel-cpp-template) to ${workspaceFolder}
       "sourceMap": {
+        // Replace the left side with the output of (readlink -n bazel-cpp-template):
         "/private/var/tmp/_bazel_ari/aaceb17b1e209054b5f468a4964f34dd/execroot/__main__": "${workspaceFolder}/"
       },
     },

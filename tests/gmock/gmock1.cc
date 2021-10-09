@@ -47,11 +47,6 @@ class Painter {
     turtle->PenUp();
     next_y = turtle->GetY();
 
-    // auto balance = turtle->CheckBalance();
-    // // Mock this to be 1000?
-
-    // std::cout << "balance: " << balance << std::endl;
-
     return true;
   }
 };
@@ -78,7 +73,7 @@ TEST(PainterTest, CanDrawCircle) {
   // Wrap in NiceMock to suppress uninteresting warnings from GMock.
   // These warnings happen when an API is called, but there is no expectation
   // for it.
-  NiceMock<MockTurtle> turtle;    // #2
+  NiceMock<MockTurtle> turtle;  // #2
   // EXPECT_CALL(turtle, PenDown())  // #3
   //     .Times(AtLeast(2));
 
@@ -94,6 +89,7 @@ TEST(PainterTest, CanDrawCircle) {
   //     .WillOnce(Return(150));
 
   Painter painter(&turtle);  // #4
+  // Painter painter(new TurtleMac1800);  // #4
 
   EXPECT_TRUE(painter.DrawCircle(0, 0, 10));  // #5
   EXPECT_TRUE(painter.DrawCircle(0, 0, 10));  // #5

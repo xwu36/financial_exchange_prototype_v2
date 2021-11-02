@@ -7,6 +7,7 @@
 
 class DivideByZero : public virtual std::exception {
   // what is a virtual function which returns a description
+ public:
   const char* what() const noexcept override { return "Divide By Zero Error!"; }
 };
 
@@ -24,6 +25,22 @@ TEST(DivideTest, SimpleDivision) {
 
 TEST(DivideTest, ThrowsForDivideByZero) {
   EXPECT_THROW(Divide(6, 0), DivideByZero);
+
+  EXPECT_NO_THROW(Divide(6, 2));
+}
+
+TEST(DivideTest, ThrowsCorrectMessageForDivideByZero) {
+  EXPECT_THROW(
+      {
+        try {
+          Divide(6, 0);
+        } catch (const DivideByZero& e) {
+          EXPECT_STREQ("Divide By Zero Error!", e.what());
+          throw;
+        }
+      },
+      DivideByZero);
+
   EXPECT_NO_THROW(Divide(6, 2));
 }
 

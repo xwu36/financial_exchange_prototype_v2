@@ -90,3 +90,27 @@ cc_test(
         "@com_google_googletest//:gtest_main",
     ],
 )
+
+cc_test(
+    name = "test_fixture_shared_resources",
+    srcs = ["test_fixture_shared_resources.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "sort_test_function_test_param",
+    srcs = ["sort_test_function_test_param.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "sort_test_function_share_test_logic",
+    srcs = ["sort_test_function_share_test_logic.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)

@@ -48,18 +48,17 @@
       "name": "CodeLLDB",
       "type": "lldb",
       "request": "launch",
-      "program": "${workspaceFolder}/bazel-bin/src/main/${fileBasenameNoExtension}",
+      "program": "${workspaceFolder}/bazel-bin/${relativeFileDirname}/${fileBasenameNoExtension}",
       "args": [],
-      
       "sourceMap": {
-        ".": "${workspaceFolder}/"
+        ".": "${workspaceFolder}"
       },
     },
     {
       "name": "Linux: g++ build and debug active file",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/bazel-bin/src/main/${fileBasenameNoExtension}",
+      "program": "${workspaceFolder}/bazel-bin/${relativeFileDirname}/${fileBasenameNoExtension}",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",

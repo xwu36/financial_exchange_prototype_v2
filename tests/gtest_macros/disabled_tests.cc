@@ -15,3 +15,9 @@ TEST(BasicChecks, EnabledTest) {
   EXPECT_TRUE(a == 0);
   EXPECT_TRUE(b == 1);
 }
+
+TEST(BasicChecks, EnabledButSkippedTest) {
+  GTEST_SKIP() << "Skipping single test";
+  EXPECT_TRUE(a == 0);
+  EXPECT_TRUE(b == 1);
+}

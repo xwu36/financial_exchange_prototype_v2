@@ -73,19 +73,34 @@ cc_test(
     ],
 )
 
-
 cc_test(
-name = "filtered_tests",
-srcs = ["filtered_tests.cc"],
-deps = [
-"@com_google_googletest//:gtest_main",
-],
+    name = "filtered_tests",
+    srcs = ["filtered_tests.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
 )
 
 cc_test(
-name = "typed_tests_findmax",
-srcs = ["typed_tests_findmax.cc"],
-deps = [
-"@com_google_googletest//:gtest_main",
-],
+    name = "typed_tests_findmax",
+    srcs = ["typed_tests_findmax.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "death_test",
+    srcs = ["death_test.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "propagating_failiures",
+    srcs = ["propagating_failiures.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
 )

@@ -82,6 +82,12 @@ This will use [.bazelrc](.bazelrc) file that enables the usage of Google's addre
 
 See [src/main/main_address_sanitize.cc](src/main/main_address_sanitize.cc) for usage examples.
 
+<table><tr><td>
+
+<img border="5" alt="Google Sanitizer Demo" src="https://raw.githubusercontent.com/ourarash/cpp-template/master/sanitizer_demo.png" width="400">
+
+</td></tr></table>
+
 # Using Google Test with Bazel in Visual Studio Code:
 
 Here is a video that explains more about how to use Google Test with Bazel in Visual Studio Code:

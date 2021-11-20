@@ -1,9 +1,10 @@
 #include <map>
 #include <vector>
 
+#include "gmock/gmock.h"
 #include "gtest/gtest.h"
-
-// Calculates the Nth Fibonacci number.
+using ::testing::Lt;
+// Calculates the n'th Fibonacci number.
 // Returns a negative value if the input is negative.
 int Fib(int n) {
   if (n <= 1) {
@@ -23,4 +24,5 @@ TEST(FibTest, NonNegativeValues) {
 TEST(FibTest, NegativeValues) {
   EXPECT_LT(Fib(-1), 0);
   EXPECT_LT(Fib(-10), 0);
+  EXPECT_THAT(Fib(-10), Lt(0));
 }

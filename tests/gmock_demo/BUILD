@@ -91,17 +91,19 @@ cc_test(
 )
 
 cc_test(
-    name = "gmock6",
-    srcs = ["gmock6.cc"],
+    name = "expect_call_sticky_rules",
+    srcs = ["expect_call_sticky_rules.cc"],
     deps = [
+        "//tests/gmock_demo/bankserver:BankServerLib",
         "@com_google_googletest//:gtest_main",
     ],
 )
 
 cc_test(
-    name = "gmock7",
-    srcs = ["gmock7.cc"],
+    name = "mock_non_virtual_classes",
+    srcs = ["mock_non_virtual_classes.cc"],
     deps = [
+        "//tests/gmock_demo/bankserver:BankServerLib",
         "@com_google_googletest//:gtest_main",
     ],
 )

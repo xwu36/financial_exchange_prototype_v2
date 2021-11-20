@@ -38,7 +38,6 @@ TEST(AtmMachine, CanWithdrawWithMatchers1) {
 
   // Expectations
   EXPECT_CALL(mock_bankserver, Connect()).Times(1);
-
   EXPECT_CALL(mock_bankserver, GetBalance(_)).Times(1).WillOnce(Return(2000));
 
   EXPECT_CALL(mock_bankserver, Withdraw(_, _)).Times(1);

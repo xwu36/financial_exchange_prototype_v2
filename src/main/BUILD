@@ -34,27 +34,18 @@ cc_binary(
 )
 
 cc_binary(
-    name = "main_benchmark",
-    srcs = ["main_benchmark.cc"],
+    name = "main_address_sanitize",
+    srcs = ["main_address_sanitize.cc"],
+    # Set this variable to the right path for llvm-symbolizer on your machine.
+    env =
+        {
+            # "ASAN_SYMBOLIZER_PATH": "/usr/local/Cellar/llvm/13.0.0_1/bin/llvm-symbolizer"
+            "ASAN_OPTIONS": "detect_stack_use_after_return=1",
+        },
     deps = [
-        "@com_google_benchmark//:benchmark",
-    ],
-)
-
-cc_binary(
-    name = "main_benchmark_sort",
-    srcs = ["main_benchmark_sort.cc"],
-    deps = [
-        "//src/lib/sort:SortLib",
-        "@com_google_benchmark//:benchmark",
-    ],
-)
-
-cc_binary(
-    name = "main_benchmark_search",
-    srcs = ["main_benchmark_search.cc"],
-    deps = [
-        "//src/lib/search:SearchLib",
-        "@com_google_benchmark//:benchmark",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/flags:parse",
+        "@com_google_absl//absl/flags:usage",
+        "@glog",
     ],
 )

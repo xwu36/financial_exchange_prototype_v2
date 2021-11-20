@@ -25,8 +25,6 @@ TEST(DivideTest, SimpleDivision) {
 
 TEST(DivideTest, ThrowsForDivideByZero) {
   EXPECT_THROW(Divide(6, 0), DivideByZero);
-
-  EXPECT_NO_THROW(Divide(6, 2));
 }
 
 TEST(DivideTest, ThrowsCorrectMessageForDivideByZero) {
@@ -40,8 +38,6 @@ TEST(DivideTest, ThrowsCorrectMessageForDivideByZero) {
         }
       },
       DivideByZero);
-
-  EXPECT_NO_THROW(Divide(6, 2));
 }
 
 TEST(DivideTest, DoesNotThrowForDivideByNonZero) {

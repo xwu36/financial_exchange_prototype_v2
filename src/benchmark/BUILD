@@ -18,15 +18,6 @@ cc_binary(
 )
 
 cc_binary(
-    name = "main_benchmark_good_example",
-    srcs = ["main_benchmark_good_example.cc"],
-    deps = [
-        "//src/lib/search:SearchLib",
-        "@com_google_benchmark//:benchmark",
-    ],
-)
-
-cc_binary(
     name = "main_benchmark_sort",
     srcs = ["main_benchmark_sort.cc"],
     deps = [

@@ -64,7 +64,7 @@ class SortTest : public testing::TestWithParam<std::vector<int>> {
   // TestWithParam<T>.
 };
 
-TEST_P(SortTest, BothSortsWork) {
+TEST_P(SortTest, WorksForVariousInputs) {
   auto in = GetParam();
   auto expected = in;
   SelectionSort(in);

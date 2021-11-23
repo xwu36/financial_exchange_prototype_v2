@@ -2,13 +2,15 @@
 
 #include "gtest/gtest.h"
 
+// An abstract interface
 class MyLib {
  public:
   virtual ~MyLib() {}
   // Finds the max element in a vector
   virtual int FindMax(const std::vector<int>& inputs) const = 0;
 };
-
+//-----------------------------------------------------------------------------
+// Iterative implementation.
 class MyLibIterative : public MyLib {
  public:
   // Finds the max element in a vector
@@ -26,7 +28,8 @@ class MyLibIterative : public MyLib {
     return result;
   }
 };
-
+//-----------------------------------------------------------------------------
+// Recursive implementation.
 class MyLibRecursive : public MyLib {
  public:
   // Finds the max element in a vector
@@ -49,11 +52,19 @@ class MyLibRecursive : public MyLib {
                     FindMaxRecursiveAux(inputs, mid + 1, right));
   }
 };
-
+//-----------------------------------------------------------------------------
 // A test fixture class template.
 template <class T>
 class MyLibTest : public testing::Test {
  protected:
+  void SetUp() override {
+    std::cout << "====================Test begin===================="
+              << std::endl;
+  }
+  void TearDown() override {
+    std::cout << "====================Test end======================"
+              << std::endl;
+  }
   MyLibTest() : lib_(new T()) {}
 
   ~MyLibTest() override { delete lib_; }

@@ -10,7 +10,8 @@ Features:
 - [x] [Google Benchmark](https://github.com/google/benchmark) for benchmarking
 - [x] Google's [glog](https://github.com/google/glog) logger for logging
 - [x] Google's [Abseil library](https://github.com/abseil/abseil-cpp)
-- [x] Google's [Address Sanitizer](https://github.com/google/sanitizers/wiki/AddressSanitizer)
+- [x] [Address Sanitizer](https://github.com/google/sanitizers/wiki/AddressSanitizer)
+- [x] [Undefined behavior Sanitizer](https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html)
 - [x] Debugging with Visual Studio Code to provide breakpoints, watch, call stack, and pretty printing for STL containers such as `std::map` and `std::vector`
 
 You can use this template for most of your C++ projects with minimal changes.
@@ -69,7 +70,7 @@ You can run this using `bazel`:
 bazel run src/main:main_flags_absl
 ```
 
-### Google's Address Sanitizer demo:
+### Address Sanitizer demo:
 
 You can run this using `bazel`:
 
@@ -78,7 +79,7 @@ bazel run --config=asan //src/main:main_address_sanitize -- --choice=0
 ```
 
 Note that you should run bazel with `--config=asan`.
-This will use [.bazelrc](.bazelrc) file that enables the usage of Google's address sanitizer.
+This will use [.bazelrc](.bazelrc) file that enables the usage of address sanitizer.
 
 See [src/main/main_address_sanitize.cc](src/main/main_address_sanitize.cc) for usage examples.
 
@@ -86,7 +87,36 @@ Output:
 
 <table><tr><td>
 
-<img border="5" alt="Google Sanitizer Demo" src="https://raw.githubusercontent.com/ourarash/cpp-template/master/sanitizer_demo.png" width="700">
+<img border="5" alt="Google Sanitizer Demo" src="https://raw.githubusercontent.com/ourarash/cpp-template/master/asan_demo.png" width="800">
+
+</td></tr></table>
+
+### Undefined Behavior Sanitizer demo:
+
+You can run this using `bazel`:
+
+```bash
+bazel run --config=ubsan //src/main:main_undefined_behavior_sanitizer -- --choice=0
+```
+
+Note that you should run bazel with `--config=ubsan`.
+This will use [.bazelrc](.bazelrc) file that enables the usage of address sanitizer.
+
+See [src/main/main_undefined_behavior_sanitizer.cc](src/main/main_undefined_behavior_sanitizer.cc) for usage examples.
+
+Example:
+
+````cpp
+int k = 0x7fffffff;
+k += 100;  // undefined behavior
+std::cout << "k: " << k << std::endl;
+```
+
+Output:
+
+<table><tr><td>
+
+<img border="5" alt="Google Sanitizer Demo" src="https://raw.githubusercontent.com/ourarash/cpp-template/master/ubsan_demo.png" width="800">
 
 </td></tr></table>
 
@@ -109,7 +139,7 @@ You can run the test using [`bazel`](installing-bazel):
 
 ```bash
 bazel test tests:tests
-```
+````
 
 # More info on GLOG
 

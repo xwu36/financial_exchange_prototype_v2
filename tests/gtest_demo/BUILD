@@ -192,7 +192,7 @@ cc_binary(
     name = "hello_world_test_main",
     srcs = ["hello_world_test_main.cc"],
     deps = [
-        "@com_google_googletest//:gtest_main",
+        "@com_google_googletest//:gtest",
     ],
 )
 
@@ -231,6 +231,14 @@ cc_test(
 cc_test(
     name = "sort_test_function_test_param_share_logic",
     srcs = ["sort_test_function_test_param_share_logic.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "user_types",
+    srcs = ["user_types.cc"],
     deps = [
         "@com_google_googletest//:gtest_main",
     ],

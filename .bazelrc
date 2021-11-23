@@ -10,3 +10,13 @@ build:asan --copt -fno-omit-frame-pointer
 build:asan --linkopt -fsanitize=address
 build:asan --sandbox_debug 
 build:asan --spawn_strategy=standalone
+
+build:ubsan --strip=never
+build:ubsan --copt -fsanitize=undefined
+build:ubsan --copt -DADDRESS_SANITIZER
+build:ubsan --copt -O0
+build:ubsan --copt -g
+build:ubsan --copt -fno-omit-frame-pointer
+build:ubsan --linkopt -fsanitize=undefined
+build:ubsan --sandbox_debug 
+build:ubsan --spawn_strategy=standalone

@@ -83,6 +83,8 @@ int main(int argc, char **argv) {
       }
       *volatile_ptr = 5;
     }
+    default:
+      std::cout << "Error: Invalid choice value: " << choice << std::endl;
   }
 
   return 0;

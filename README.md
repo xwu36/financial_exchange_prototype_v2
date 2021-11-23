@@ -106,7 +106,7 @@ See [src/main/main_undefined_behavior_sanitizer.cc](src/main/main_undefined_beha
 
 Example:
 
-````cpp
+```cpp
 int k = 0x7fffffff;
 k += 100;  // undefined behavior
 std::cout << "k: " << k << std::endl;
@@ -139,7 +139,7 @@ You can run the test using [`bazel`](installing-bazel):
 
 ```bash
 bazel test tests:tests
-````
+```
 
 # More info on GLOG
 

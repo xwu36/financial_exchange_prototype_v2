@@ -62,6 +62,13 @@ You can run this using `bazel`:
 bazel run --cxxopt='-std=c++17' -c opt src/benchmark/main_benchmark
 ```
 
+<table><tr><td>
+
+<a href="https://youtu.be/9VKR8u9odrA">
+A video tutorial on Google Benchmark.
+</a>
+</td></tr></table>
+
 ### Google's Abseil's flags demo:
 
 You can run this using `bazel`:

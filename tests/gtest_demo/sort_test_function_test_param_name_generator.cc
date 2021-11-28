@@ -1,5 +1,6 @@
 
 #include <functional>
+#include <string>
 #include <thread>
 #include <vector>
 
@@ -44,13 +45,21 @@ void BubbleSort(std::vector<int> &input) {
 
 class SortTest
     : public testing::TestWithParam<std::function<void(std::vector<int> &)> > {
-  // You can implement all the usual fixture class members here.
-  // To access the test parameter, call GetParam() from class
-  // TestWithParam<T>.
 };
 
-INSTANTIATE_TEST_SUITE_P(SelectionSortBubbleSort, SortTest,
-                         testing::Values(SelectionSort, BubbleSort));
+INSTANTIATE_TEST_SUITE_P(
+    SelectionSortBubbleSort, SortTest,
+    testing::Values(SelectionSort, BubbleSort),
+
+    [](const testing::TestParamInfo<SortTest::ParamType> &info) {
+      void (*const *ptr)(std::vector<int> &) =
+          info.param.target<void (*)(std::vector<int> &)>();
+      if (ptr && *ptr == SelectionSort) {
+        return std::string("SelectionSort");
+      } else {
+        return std::string("BubbleSort");
+      }
+    });
 
 TEST_P(SortTest, SmallNumberOfItems) {
   std::vector<int> in = {1, 11, 2, 5, 12, 9, 4, 10};

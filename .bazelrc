@@ -1,5 +1,7 @@
 # Address sanitizer configuration.
 # ASAN_SYMBOLIZER_PATH=/usr/local/Cellar/llvm/13.0.0_1/bin/llvm-symbolizer
+
+# Address sanitizer config
 # Use with bazel run --config=asan or lsan
 build:asan --strip=never
 build:asan --copt -fsanitize=address
@@ -11,6 +13,7 @@ build:asan --linkopt -fsanitize=address
 build:asan --sandbox_debug 
 build:asan --spawn_strategy=standalone
 
+# undefined behavior sanitizer config
 build:ubsan --strip=never
 build:ubsan --copt -fsanitize=undefined
 build:ubsan --copt -DADDRESS_SANITIZER

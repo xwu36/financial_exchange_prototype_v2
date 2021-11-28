@@ -84,7 +84,16 @@
     "queue": "cpp",
     "__memory": "cpp",
     "any": "cpp",
-    "variant": "cpp"
+    "variant": "cpp",
+    "clocale": "cpp",
+    "compare": "cpp",
+    "*.tcc": "cpp",
+    "concepts": "cpp",
+    "memory_resource": "cpp",
+    "slist": "cpp",
+    "numbers": "cpp",
+    "semaphore": "cpp",
+    "stop_token": "cpp"
   },
   "lldb.displayFormat": "auto",
   "lldb.dereferencePointers": true,

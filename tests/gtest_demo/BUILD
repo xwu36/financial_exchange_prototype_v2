@@ -243,3 +243,40 @@ cc_test(
         "@com_google_googletest//:gtest_main",
     ],
 )
+
+cc_binary(
+    name = "fib_test_no_gtest",
+    srcs = ["fib_test_no_gtest.cc"],
+)
+
+cc_test(
+    name = "adding_traces",
+    srcs = ["adding_traces.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "disabled_tests_fixture",
+    srcs = ["disabled_tests_fixture.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "sort_test_function_test_param_share_logic_name_generator",
+    srcs = ["sort_test_function_test_param_share_logic_name_generator.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "sort_test_function_test_param_name_generator",
+    srcs = ["sort_test_function_test_param_name_generator.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)

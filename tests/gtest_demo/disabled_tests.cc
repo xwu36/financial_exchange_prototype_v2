@@ -3,21 +3,25 @@
 #include <string>
 
 #include "gtest/gtest.h"
-int a = 0;
-int b = 1;
+
 //-----------------------------------------------------------------------------
 TEST(BasicChecks, DISABLED_SomeBrokenTest) {
-  EXPECT_TRUE(a == 10);
-  EXPECT_TRUE(b == 20);
+  EXPECT_TRUE(false);
+  EXPECT_TRUE(false);
 }
 
 TEST(BasicChecks, EnabledTest) {
-  EXPECT_TRUE(a == 0);
-  EXPECT_TRUE(b == 1);
+  EXPECT_TRUE(true);
+  EXPECT_TRUE(true);
 }
 
 TEST(BasicChecks, EnabledButSkippedTest) {
   GTEST_SKIP() << "Skipping single test";
-  EXPECT_TRUE(a == 0);
-  EXPECT_TRUE(b == 1);
+  EXPECT_TRUE(false);
+  EXPECT_TRUE(false);
 }
+//-----------------------------------------------------------------------------
+class DISABLED_BasicChecks : public testing::Test {};
+TEST_F(DISABLED_BasicChecks, SomeTest1) { EXPECT_TRUE(false); }
+TEST_F(DISABLED_BasicChecks, SomeTest2) { EXPECT_TRUE(false); }
+//-----------------------------------------------------------------------------

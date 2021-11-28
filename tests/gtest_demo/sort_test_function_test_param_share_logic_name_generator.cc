@@ -51,21 +51,48 @@ class SortTest
     : public testing::TestWithParam<std::tuple<
           std::function<void(std::vector<int> &)>, std::vector<int>>> {};
 
-INSTANTIATE_TEST_SUITE_P(SelectionSortBubbleSort, SortTest,
-                         Combine(Values(SelectionSort, BubbleSort),
-                                 Values(std::vector<int>{}, std::vector<int>{1},
-                                        std::vector<int>{5, 3, 1, 77},
-                                        std::vector<int>{5, 4, 3, 2, 1},
-                                        std::vector<int>{-4, 122, -1000, -4,
-                                                         122, -1000})));
+std::map<std::vector<int>, std::string> inputMap = {
+    //
+    {{}, "Empty"},
+    {{1}, {"SingleElement"}},
+    {{5, 3, 1, 77}, {"SmallVector"}},
+    {{5, 4, 3, 2, 1}, {"ReverseSort"}},
+    {{-4, 122, -1000, -4, 122, -1000}, {"Duplicates"}}
+    //
+};
+
+INSTANTIATE_TEST_SUITE_P(
+    SelectionSortBubbleSortCustomNames, SortTest,
+    Combine(Values(SelectionSort, BubbleSort),
+            Values(std::vector<int>{}, std::vector<int>{1},
+                   std::vector<int>{5, 3, 1, 77},
+                   std::vector<int>{5, 4, 3, 2, 1},
+                   std::vector<int>{-4, 122, -1000, -4, 122, -1000})),
+    [](const testing::TestParamInfo<SortTest::ParamType> &info) {
+      void (*const *ptr)(std::vector<int> &) =
+          std::get<0>(info.param).target<void (*)(std::vector<int> &)>();
+
+      std::string name;
+      if (ptr && *ptr == SelectionSort) {
+        name = std::string("SelectionSort");
+      } else {
+        name = std::string("BubbleSort");
+      }
+
+      name += inputMap[std::get<1>(info.param)];
+
+      std::cout << "name: " << name << std::endl;
+      return name;
+    });
 
 TEST_P(SortTest, WorksForVariousInputs) {
   auto p = GetParam();
 
-  auto in = std::get<1>(p);
   auto SortFunction = std::get<0>(p);
+  auto in = std::get<1>(p);
+
   auto expected = in;
   SortFunction(in);
   std::sort(expected.begin(), expected.end());
-  EXPECT_EQ(expected, in);
+  EXPECT_EQ(in, expected);
 }

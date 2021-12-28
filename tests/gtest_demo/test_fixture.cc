@@ -12,6 +12,8 @@ class Queue {
 
  public:
   Queue() {}
+  ~Queue() {std::cout << "Queue destructor." << std::endl;}
+
   void Enqueue(const E& element) { _v.push_back(element); }
   // Throws if the queue is empty.
   E Dequeue() {

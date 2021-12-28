@@ -16,7 +16,7 @@ int Fib(int n) {
 }
 
 TEST(FibTest, NonNegativeValues) {
-  std::cout << "Fib(5): " << Fib(5) << std::endl;
+  std::cout << "Fib(5)= " << Fib(5) << std::endl;
   EXPECT_EQ(Fib(0), 0);
   EXPECT_EQ(Fib(1), 1);
   EXPECT_EQ(Fib(5), 5);

@@ -41,7 +41,9 @@ void BubbleSort(std::vector<int> &input) {
     }
   } while (go);
 }
-
+//-----------------------------------------------------------------------------
+// Method 1: Function Pointer.
+//-----------------------------------------------------------------------------
 template <class T>
 void TestSort(T sort_func) {
   std::vector<int> in;
@@ -162,3 +164,70 @@ void TestSort(T sort_func) {
 
 TEST(SortTest, SelectionSort) { TestSort(SelectionSort); }
 TEST(SortTest, BubbleSort) { TestSort(BubbleSort); }
+//-----------------------------------------------------------------------------
+// Method 2: Everything in one test.
+//-----------------------------------------------------------------------------
+TEST(SortTestAllAtOnce, WorksOnAllFunctionsWithAllInputs) {
+  std::vector<int> in;
+  std::vector<std::vector<int>> ins = {
+      {},                         // empty
+      {1},                        // single size
+      {5, 3, 1, 77},              // small size random values
+      {5, 4, 3, 2, 1},            // reversely sorted
+      {-4, 122, -1000, -4, 122},  // with duplicates
+      {-4, 122, -1000, 222, 45, 66, 97, 1, 23, 44, 23, 100, 244, 456, -1000,
+       22}};
+
+  // Random large vector, testing with multiple seeds
+  for (size_t i = 0; i < 50; i++) {
+    std::srand(i * 2);  // use a constant seed to make the test repeatable
+    in.resize(1000);
+    std::generate(in.begin(), in.end(), std::rand);
+    ins.push_back(in);
+  }
+
+  //  large vector sorted
+  for (size_t i = 0; i < 50; i++) {
+    std::srand(i * 2);  // use a constant seed to make the test repeatable
+    in.resize(1000);
+    std::generate(in.begin(), in.end(), std::rand);
+    ins.push_back(in);
+  }
+
+  //  large vector reverse sorted
+  for (size_t i = 0; i < 50; i++) {
+    std::srand(i * 2);  // use a constant seed to make the test repeatable
+    in.resize(1000);
+    std::generate(in.begin(), in.end(), std::rand);
+    ins.push_back(in);
+  }
+
+  // Random larger vector, testing with multiple seeds
+  for (size_t i = 0; i < 5; i++) {
+    std::srand(i);  // use a constant seed to make the test repeatable
+    in.resize(5000);
+    std::generate(in.begin(), in.end(), std::rand);
+    ins.push_back(in);
+  }
+
+  //  large vector reverse sorted
+  for (size_t i = 0; i < 5; i++) {
+    std::srand(i * 2);  // use a constant seed to make the test repeatable
+    in.resize(5000);
+    std::generate(in.begin(), in.end(), std::rand);
+    ins.push_back(in);
+  }
+
+  std::vector<std::function<void(std::vector<int> &)>> functions = {
+      SelectionSort, BubbleSort};
+
+  // Applying all inputs and all functions at once!
+  for (auto f : functions) {
+    for (auto &in : ins) {
+      auto expected = in;
+      f(in);
+      std::sort(expected.begin(), expected.end());
+      EXPECT_EQ(expected, in);
+    }
+  }
+}

@@ -7,8 +7,8 @@
 #include "gtest/gtest.h"
 
 void MyFunction(int n) {
+  // Checks if n is 2.
   EXPECT_EQ(n, 2);
-  std::cout << "--------------------------------------" << std::endl;
 }
 
 TEST(SubTest, WithoutScopeTraceSimple) {

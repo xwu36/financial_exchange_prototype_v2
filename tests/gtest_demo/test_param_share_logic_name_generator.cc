@@ -9,6 +9,7 @@
 
 using ::testing::Combine;
 using ::testing::Values;
+using ::testing::ValuesIn;
 
 template <class T>
 void Swap(T &i, T &j) {
@@ -46,50 +47,43 @@ void BubbleSort(std::vector<int> &input) {
     }
   } while (go);
 }
+//-----------------------------------------------------------------------------
 
-class SortTest
-    : public testing::TestWithParam<std::tuple<
-          std::function<void(std::vector<int> &)>, std::vector<int>>> {};
-
-std::map<std::vector<int>, std::string> inputMap = {
+std::map<std::string, std::vector<int>> input_map = {
     //
-    {{}, "Empty"},
-    {{1}, {"SingleElement"}},
-    {{5, 3, 1, 77}, {"SmallVector"}},
-    {{5, 4, 3, 2, 1}, {"ReverseSort"}},
-    {{-4, 122, -1000, -4, 122, -1000}, {"Duplicates"}}
+    {"Empty", {}},
+    {"SingleElement", {1}},
+    {"ReverseSort", {5, 4, 3, 2, 1}},
+    {"SmallVector", {5, 3, 1, 77}},
+    {"Duplicates", {-4, 122, -1000, -4, 122, -1000}}
     //
 };
 
+std::map<std::string, std::function<void(std::vector<int> &)>> function_map = {
+    //
+    {"BubbleSort", BubbleSort},
+    {"SelectionSort", SelectionSort}
+    //
+};
+
+class SortTest
+    : public testing::TestWithParam<std::tuple<
+          std::pair<const std::string, std::function<void(std::vector<int> &)>>,
+          std::pair<const std::string, std::vector<int>>>> {};
+
 INSTANTIATE_TEST_SUITE_P(
     SelectionSortBubbleSortCustomNames, SortTest,
-    Combine(Values(SelectionSort, BubbleSort),
-            Values(std::vector<int>{}, std::vector<int>{1},
-                   std::vector<int>{5, 3, 1, 77},
-                   std::vector<int>{5, 4, 3, 2, 1},
-                   std::vector<int>{-4, 122, -1000, -4, 122, -1000})),
+    Combine(ValuesIn(function_map), ValuesIn(input_map)),
     [](const testing::TestParamInfo<SortTest::ParamType> &info) {
-      void (*const *ptr)(std::vector<int> &) =
-          std::get<0>(info.param).target<void (*)(std::vector<int> &)>();
-
-      std::string name;
-      if (ptr && *ptr == SelectionSort) {
-        name = std::string("SelectionSort");
-      } else {
-        name = std::string("BubbleSort");
-      }
-
-      name += inputMap[std::get<1>(info.param)];
-
-      std::cout << "name: " << name << std::endl;
-      return name;
+      return std::get<0>(info.param).first + "_" +
+             std::get<1>(info.param).first;
     });
 
 TEST_P(SortTest, WorksForVariousInputs) {
   auto p = GetParam();
 
-  auto SortFunction = std::get<0>(p);
-  auto in = std::get<1>(p);
+  auto SortFunction = std::get<0>(p).second;
+  auto in = std::get<1>(p).second;
 
   auto expected = in;
   SortFunction(in);

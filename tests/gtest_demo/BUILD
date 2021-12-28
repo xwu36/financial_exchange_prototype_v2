@@ -157,22 +157,6 @@ cc_test(
 )
 
 cc_test(
-    name = "gmock",
-    srcs = ["gmock.cc"],
-    deps = [
-        "@com_google_googletest//:gtest_main",
-    ],
-)
-
-cc_test(
-    name = "gmock2",
-    srcs = ["gmock2.cc"],
-    deps = [
-        "@com_google_googletest//:gtest_main",
-    ],
-)
-
-cc_test(
     name = "findmax_test",
     srcs = ["findmax_test.cc"],
     deps = [
@@ -197,8 +181,8 @@ cc_binary(
 )
 
 cc_test(
-    name = "sort_test_function",
-    srcs = ["sort_test_function.cc"],
+    name = "test_function",
+    srcs = ["test_function.cc"],
     deps = [
         "@com_google_googletest//:gtest_main",
     ],
@@ -213,24 +197,24 @@ cc_test(
 )
 
 cc_test(
-    name = "sort_test_function_test_param",
-    srcs = ["sort_test_function_test_param.cc"],
+    name = "test_param",
+    srcs = ["test_param.cc"],
     deps = [
         "@com_google_googletest//:gtest_main",
     ],
 )
 
 cc_test(
-    name = "sort_test_function_share_test_logic",
-    srcs = ["sort_test_function_share_test_logic.cc"],
+    name = "test_share_logic",
+    srcs = ["test_share_logic.cc"],
     deps = [
         "@com_google_googletest//:gtest_main",
     ],
 )
 
 cc_test(
-    name = "sort_test_function_test_param_share_logic",
-    srcs = ["sort_test_function_test_param_share_logic.cc"],
+    name = "test_param_share_logic",
+    srcs = ["test_param_share_logic.cc"],
     deps = [
         "@com_google_googletest//:gtest_main",
     ],
@@ -266,16 +250,32 @@ cc_test(
 )
 
 cc_test(
-    name = "sort_test_function_test_param_share_logic_name_generator",
-    srcs = ["sort_test_function_test_param_share_logic_name_generator.cc"],
+    name = "test_param_share_logic_name_generator",
+    srcs = ["test_param_share_logic_name_generator.cc"],
     deps = [
         "@com_google_googletest//:gtest_main",
     ],
 )
 
 cc_test(
-    name = "sort_test_function_test_param_name_generator",
-    srcs = ["sort_test_function_test_param_name_generator.cc"],
+    name = "test_param_name_generator",
+    srcs = ["test_param_name_generator.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "listener",
+    srcs = ["listener.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "type_prameterized_tests_findmax",
+    srcs = ["type_prameterized_tests_findmax.cc"],
     deps = [
         "@com_google_googletest//:gtest_main",
     ],

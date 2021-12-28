@@ -54,5 +54,7 @@ TEST(PersonTest, CanDirectlyAssertEqualityAndPrint) {
   Person p_ari("Ari", 25);
   Person p_ted("Ted", 21);
 
-  EXPECT_EQ(p_ari, p_ted) << PrintToString(p_ari) << PrintToString(p_ted);
+  EXPECT_EQ(p_ari, p_ted) 
+    << PrintToString(p_ari) 
+    << p_ted.DebugString();
 }

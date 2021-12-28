@@ -62,38 +62,43 @@ class MyLibTest : public testing::Test {
 
 using testing::Types;
 
-// The list of types we want to test.
-typedef Types<MyLibIterative, MyLibRecursive> Implementations;
+TYPED_TEST_SUITE_P(MyLibTest);
 
-// Then use TYPED_TEST(TestCaseName, TestName) to define a typed test,
-TYPED_TEST_SUITE(MyLibTest, Implementations);
-
-// similar to TEST_F.
-// Since we are in the template world, C++ requires explicitly
-// writing 'this->' when referring to members of the fixture class.
-// This is something you have to learn to live with.
-
-TYPED_TEST(MyLibTest, FindMaxHandlesEmpty) {
+TYPED_TEST_P(MyLibTest, FindMaxHandlesEmpty) {
   std::vector<int> inputs = {};
   EXPECT_EQ(this->lib_.FindMax(inputs), -1);
 }
 
-TYPED_TEST(MyLibTest, FindMaxHandlesPositiveSizeOne) {
+TYPED_TEST_P(MyLibTest, FindMaxHandlesPositiveSizeOne) {
   std::vector<int> inputs = {2};
   EXPECT_EQ(this->lib_.FindMax(inputs), 2);
 }
 
-TYPED_TEST(MyLibTest, FindMaxHandlesConsecutiveNumbers) {
+TYPED_TEST_P(MyLibTest, FindMaxHandlesConsecutiveNumbers) {
   std::vector<int> inputs = {1, 2, 3, 4};
   EXPECT_EQ(this->lib_.FindMax(inputs), 4);
 }
 
-TYPED_TEST(MyLibTest, FindMaxHandlesNonConsecutiveNumbers) {
+TYPED_TEST_P(MyLibTest, FindMaxHandlesNonConsecutiveNumbers) {
   std::vector<int> inputs = {1, 12, 8, 22, 2, 18, 3, 1, 4};
   EXPECT_EQ(this->lib_.FindMax(inputs), 22);
 }
 
-TYPED_TEST(MyLibTest, FindMaxHandlesAllDuplicateNumbers) {
+TYPED_TEST_P(MyLibTest, FindMaxHandlesAllDuplicateNumbers) {
   std::vector<int> inputs = {1, 1, 1, 1, 1, 1};
   EXPECT_EQ(this->lib_.FindMax(inputs), 1);
 }
+
+REGISTER_TYPED_TEST_SUITE_P(MyLibTest, FindMaxHandlesEmpty,
+                            FindMaxHandlesPositiveSizeOne,
+                            FindMaxHandlesConsecutiveNumbers,
+                            FindMaxHandlesNonConsecutiveNumbers,
+                            FindMaxHandlesAllDuplicateNumbers);
+
+// The list of types we want to test.  Note that it doesn't have to be
+// defined at the time we write the TYPED_TEST_P()s.
+typedef Types<MyLibIterative, MyLibRecursive> Implementations;
+
+INSTANTIATE_TYPED_TEST_SUITE_P(IterativeAndRecursive,  // Instance name
+                               MyLibTest,              // Test case name
+                               Implementations);       // Type list

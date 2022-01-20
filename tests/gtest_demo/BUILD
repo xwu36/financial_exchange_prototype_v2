@@ -280,3 +280,28 @@ cc_test(
         "@com_google_googletest//:gtest_main",
     ],
 )
+
+cc_test(
+    name = "repeat_test",
+    srcs = ["repeat_test.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "hazf",
+    srcs = ["hazf.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+
+cc_test(
+    name = "hazf2",
+    srcs = ["hazf2.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)

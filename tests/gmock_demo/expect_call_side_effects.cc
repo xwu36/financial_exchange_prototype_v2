@@ -18,14 +18,12 @@ class MockBankServer : public BankServer {
 };
 
 using ::testing::_;  // Matches anything
-using ::testing::Gt;
-using ::testing::Lt;
-
 using ::testing::Assign;
 using ::testing::DoAll;
-using ::testing::SaveArg;
-
+using ::testing::Gt;
+using ::testing::Lt;
 using ::testing::Return;
+using ::testing::SaveArg;
 using ::testing::StrEq;
 using ::testing::ThrowsMessage;
 
@@ -45,6 +43,10 @@ TEST(AtmMachine, CanWithdrawSideEffect) {
   EXPECT_CALL(mock_bankserver, Withdraw(_, _))
       .Times(1)
       .WillOnce(DoAll(SaveArg<0>(&account_number), SaveArg<1>(&value)));
+
+  // EXPECT_CALL(mock_bankserver, Withdraw(_, _))
+  //     .Times(1)
+  //     .WillOnce((SaveArg<0>(&account_number)));
 
   EXPECT_CALL(mock_bankserver, Disconnect())
       .Times(1)

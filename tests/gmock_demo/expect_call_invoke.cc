@@ -49,7 +49,7 @@ TEST(AtmMachine, CanWithdrawWithMultipleInvoke) {
   const int withdraw_value = 1000;
   const int number_of_calls = 10;
 
-  MockBankServer mock_bankserver;
+  NiceMock<MockBankServer> mock_bankserver;
   Helper helper;
 
   // Expectations
@@ -66,8 +66,14 @@ TEST(AtmMachine, CanWithdrawWithMultipleInvoke) {
       .WillOnce([&helper](int n) {
         return helper.ComplexJobMultiParameter(10, 20, n);
       })
+
       .WillRepeatedly(
           [&helper](int n) { return helper.ComplexJobSingleParameter(n); });
+
+  EXPECT_CALL(mock_bankserver, Withdraw(account_number, withdraw_value))
+      .WillRepeatedly(Invoke([](int a, int w) {
+        std::cout << "a: " << a << ", w: " << w << std::endl;
+      }));
 
   // Act
   AtmMachine atm_machine(&mock_bankserver);
@@ -80,57 +86,3 @@ TEST(AtmMachine, CanWithdrawWithMultipleInvoke) {
   // Assert
   EXPECT_TRUE(withdraw_result);
 }
-
-// TEST(AtmMachine, CanWithdrawComposit) {
-//   // Arrange
-//   bool done = false;
-
-//   MockBankServer mock_bankserver;
-
-//   // Expectations
-//   EXPECT_CALL(mock_bankserver, Connect()).Times(1);
-
-//   EXPECT_CALL(mock_bankserver, GetBalance(_))
-//       .Times(1)
-//       .WillOnce(DoAll(Assign(&done, true), Invoke(Square)));
-
-//   EXPECT_CALL(mock_bankserver, Withdraw(_, _)).Times(1);
-
-//   EXPECT_CALL(mock_bankserver, Disconnect()).Times(1);
-
-//   // Act
-//   AtmMachine atm_machine(&mock_bankserver);
-//   bool withdraw_result = atm_machine.Withdraw(1234, 1000);
-
-//   std::cout << "done: " << done << std::endl;
-
-//   // Assert
-//   EXPECT_TRUE(withdraw_result);
-// }
-
-// TEST(AtmMachine, CanWithdrawComposit2) {
-//   // Arrange
-//   bool done = false;
-
-//   MockBankServer mock_bankserver;
-
-//   // Expectations
-//   EXPECT_CALL(mock_bankserver, Connect()).Times(1);
-
-//   EXPECT_CALL(mock_bankserver, GetBalance(_))
-//       .Times(1)
-//       .WillOnce(DoAll(Assign(&done, true), Return(2000)));
-
-//   EXPECT_CALL(mock_bankserver, Withdraw(_, _)).Times(1);
-
-//   EXPECT_CALL(mock_bankserver, Disconnect()).Times(1);
-
-//   // Act
-//   AtmMachine atm_machine(&mock_bankserver);
-//   bool withdraw_result = atm_machine.Withdraw(1234, 1000);
-
-//   std::cout << "done: " << done << std::endl;
-
-//   // Assert
-//   EXPECT_TRUE(withdraw_result);
-// }

@@ -13,7 +13,8 @@ class MockBankServer : public BankServer {
   MOCK_METHOD(void, Connect, (), (override));
   MOCK_METHOD(void, Disconnect, (), (override));
   MOCK_METHOD(void, Deposit, (int, int), (override));
-  MOCK_METHOD(void, Withdraw, (int, int), (override));
+  MOCK_METHOD(void, Debit, (int, int), (override));
+  MOCK_METHOD(bool, DoubleTransaction, (int, int, int), (override));
   MOCK_METHOD(int, GetBalance, (int), (const, override));
 };
 
@@ -25,7 +26,14 @@ using ::testing::Lt;
 using ::testing::Return;
 using ::testing::SaveArg;
 using ::testing::StrEq;
+using ::testing::Throw;
+using ::testing::Throws;
 using ::testing::ThrowsMessage;
+
+class InvalidValueException : public virtual std::exception {
+ public:
+  const char* what() const noexcept override { return "Invalid value"; }
+};
 
 TEST(AtmMachine, CanWithdrawSideEffect) {
   bool done = false;
@@ -40,13 +48,9 @@ TEST(AtmMachine, CanWithdrawSideEffect) {
 
   EXPECT_CALL(mock_bankserver, GetBalance(_)).Times(1).WillOnce(Return(2000));
 
-  EXPECT_CALL(mock_bankserver, Withdraw(_, _))
+  EXPECT_CALL(mock_bankserver, Debit(_, _))
       .Times(1)
       .WillOnce(DoAll(SaveArg<0>(&account_number), SaveArg<1>(&value)));
-
-  // EXPECT_CALL(mock_bankserver, Withdraw(_, _))
-  //     .Times(1)
-  //     .WillOnce((SaveArg<0>(&account_number)));
 
   EXPECT_CALL(mock_bankserver, Disconnect())
       .Times(1)
@@ -62,4 +66,27 @@ TEST(AtmMachine, CanWithdrawSideEffect) {
   EXPECT_TRUE(done);
   EXPECT_EQ(account_number, 1234);
   EXPECT_EQ(value, 1000);
+}
+
+TEST(AtmMachine, ThrowException) {
+  // Arrange
+  const int account_number = 1234;
+  const int withdraw_value = 1000;
+  MockBankServer mock_bankserver;
+
+  // Expectations
+  EXPECT_CALL(mock_bankserver, Connect())
+      .WillRepeatedly(Throw(InvalidValueException()));
+
+  // Act and Assert
+  AtmMachine atm_machine(&mock_bankserver);
+
+  EXPECT_THROW(atm_machine.Withdraw(account_number, withdraw_value),
+               InvalidValueException);
+
+  EXPECT_THAT([&]() { atm_machine.Withdraw(account_number, withdraw_value); },
+              Throws<InvalidValueException>());
+
+  EXPECT_THAT([&]() { atm_machine.Withdraw(account_number, withdraw_value); },
+              ThrowsMessage<InvalidValueException>(StrEq("Invalid value")));
 }

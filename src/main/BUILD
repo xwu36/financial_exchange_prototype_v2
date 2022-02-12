@@ -60,3 +60,12 @@ cc_binary(
         "@glog",
     ],
 )
+
+
+cc_binary(
+    name = "fib_main",
+    srcs = ["fib_main.cc"],
+    deps = [
+        
+    ],
+)

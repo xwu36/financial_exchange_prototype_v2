@@ -12,7 +12,7 @@ class BankServer {
   MOCK_METHOD(void, Connect, ());
   MOCK_METHOD(void, Disconnect, ());
   MOCK_METHOD(void, Deposit, (int, int));
-  MOCK_METHOD(void, Withdraw, (int, int));
+  MOCK_METHOD(void, Debit, (int, int));
   MOCK_METHOD(int, GetBalance, (int), (const));
 };
 
@@ -28,7 +28,7 @@ class AtmMachine {
     auto available_balance = bankServer_->GetBalance(account_number);
 
     if (available_balance >= value) {
-      bankServer_->Withdraw(account_number, value);
+      bankServer_->Debit(account_number, value);
       result = true;
     }
 
@@ -59,7 +59,7 @@ TEST(AtmMachine, CanWithdraw) {
       .Times(1)
       .WillOnce(Return(2000));
 
-  EXPECT_CALL(mock_bankserver, Withdraw(account_number, withdraw_value))
+  EXPECT_CALL(mock_bankserver, Debit(account_number, withdraw_value))
       .Times(1);
 
   EXPECT_CALL(mock_bankserver, Disconnect()).Times(1);

@@ -24,7 +24,7 @@ class BankServer {
   virtual void Connect() = 0;
   virtual void Disconnect() = 0;
   virtual void Deposit(int account_number, int value) = 0;
-  virtual void Withdraw(int account_number, int value) = 0;
+  virtual void Debit(int account_number, int value) = 0;
   virtual int GetBalance(int account_number) const = 0;
 };
 //-----------------------------------------------------------------------------
@@ -35,7 +35,7 @@ class BankOfAriServer : public BankServer {
   virtual void Connect();
   virtual void Disconnect();
   virtual void Deposit(int account_number, int value);
-  virtual void Withdraw(int account_number, int value);
+  virtual void Debit(int account_number, int value);
   virtual int GetBalance(int account_number) const;
 };
 
@@ -44,7 +44,7 @@ class MockBankServer : public BankServer {
   MOCK_METHOD(void, Connect, (), (override));
   MOCK_METHOD(void, Disconnect, (), (override));
   MOCK_METHOD(void, Deposit, (int, int), (override));
-  MOCK_METHOD(void, Withdraw, (int, int), (override));
+  MOCK_METHOD(void, Debit, (int, int), (override));
   MOCK_METHOD(int, GetBalance, (int), (const, override));
 };
 
@@ -60,7 +60,7 @@ class AtmMachine {
     auto available_balance = bankServer_->GetBalance(account_number);
 
     if (available_balance >= value) {
-      bankServer_->Withdraw(account_number, value);
+      bankServer_->Debit(account_number, value);
       result = true;
     }
 

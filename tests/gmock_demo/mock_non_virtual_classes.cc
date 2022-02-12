@@ -16,7 +16,7 @@ class MockBankServer {
   MOCK_METHOD(void, Connect, (), ());
   MOCK_METHOD(void, Disconnect, (), ());
   MOCK_METHOD(void, Deposit, (int, int), ());
-  MOCK_METHOD(void, Withdraw, (int, int), ());
+  MOCK_METHOD(void, Debit, (int, int), ());
   MOCK_METHOD(int, GetBalance, (int), (const));
 };
 

@@ -15,7 +15,8 @@ class MockBankServer : public BankServer {
   MOCK_METHOD(void, Connect, (), (override));
   MOCK_METHOD(void, Disconnect, (), (override));
   MOCK_METHOD(void, Deposit, (int, int), (override));
-  MOCK_METHOD(void, Withdraw, (int, int), (override));
+  MOCK_METHOD(void, Debit, (int, int), (override));
+  MOCK_METHOD(bool, DoubleTransaction, (int, int, int), (override));
   MOCK_METHOD(int, GetBalance, (int), (const, override));
 };
 
@@ -33,14 +34,17 @@ using ::testing::ThrowsMessage;
 using ::testing::Unused;
 using ::testing::WithArgs;
 
+void PrintHello() { std::cout << "Hello!" << std::endl; }
 double Square(double x) { return (x * x); }
 int Sum(int x, int y) { return x + y; }
 int Return10000() { return 10000; }
 
 class Helper {
  public:
-  int ComplexJobSingleParameter(int x) { return (x * x); }
-  int ComplexJobMultiParameter(int x, int y, int z) { return (x * y * z); }
+  static int ComplexJobSingleParameter(int x) { return (x * x); }
+  static int ComplexJobMultiParameter(int x, int y, int z) {
+    return (x * y * z);
+  }
 };
 
 TEST(AtmMachine, CanWithdrawWithMultipleInvoke) {
@@ -50,27 +54,20 @@ TEST(AtmMachine, CanWithdrawWithMultipleInvoke) {
   const int number_of_calls = 10;
 
   NiceMock<MockBankServer> mock_bankserver;
-  Helper helper;
 
   // Expectations
   EXPECT_CALL(mock_bankserver, GetBalance(account_number))
       .Times(number_of_calls)
+      .WillOnce(Invoke(Square))
       .WillOnce(Square)
+      .WillOnce(DoAll(InvokeWithoutArgs(PrintHello), Return(1000)))
       .WillOnce([](double n) { return Square(n); })
       .WillOnce([](double n) { return Sum(n, 1000); })
       .WillOnce([]() { return Return10000(); })
       .WillOnce(Return10000)
-      .WillOnce(Return(Return10000()))
-      .WillOnce(
-          [&helper](int n) { return helper.ComplexJobSingleParameter(n); })
-      .WillOnce([&helper](int n) {
-        return helper.ComplexJobMultiParameter(10, 20, n);
-      })
+      .WillRepeatedly(Return(Return10000()));
 
-      .WillRepeatedly(
-          [&helper](int n) { return helper.ComplexJobSingleParameter(n); });
-
-  EXPECT_CALL(mock_bankserver, Withdraw(account_number, withdraw_value))
+  EXPECT_CALL(mock_bankserver, Debit(account_number, withdraw_value))
       .WillRepeatedly(Invoke([](int a, int w) {
         std::cout << "a: " << a << ", w: " << w << std::endl;
       }));

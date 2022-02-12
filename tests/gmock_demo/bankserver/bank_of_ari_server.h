@@ -9,7 +9,7 @@ class BankOfAriServer : public BankServer {
   virtual void Connect();
   virtual void Disconnect();
   virtual void Deposit(int account_number, int value);
-  virtual void Withdraw(int account_number, int value);
+  virtual void Debit(int account_number, int value);
   virtual int GetBalance(int account_number) const;
 };
 

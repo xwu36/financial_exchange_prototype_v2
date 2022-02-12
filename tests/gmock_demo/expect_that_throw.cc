@@ -18,10 +18,9 @@ class BankServer {
   virtual void Connect() = 0;
   virtual void Disconnect() = 0;
   virtual void Deposit(int account_number, int value) = 0;
-  virtual void Withdraw(int account_number, int value) = 0;
+  virtual void Debit(int account_number, int value) = 0;
   virtual int GetBalance(int account_number) const = 0;
 };
-
 
 class MockBankServer : public BankServer {
  public:
@@ -31,7 +30,6 @@ class MockBankServer : public BankServer {
   MOCK_METHOD2(Withdraw, void(int account_number, int value));
   MOCK_CONST_METHOD1(GetBalance, int(int account_number));
 };
-
 
 class AtmMachine {
   BankServer* bankServer_;
@@ -48,14 +46,13 @@ class AtmMachine {
     }
     bankServer_->Connect();
     auto available_balance = bankServer_->GetBalance(account_number);
-
     if (available_balance >= value) {
       for (int i = 0; i < value / max_withdraw_per_transaction_; ++i) {
-        bankServer_->Withdraw(account_number, max_withdraw_per_transaction_);
+        bankServer_->Debit(account_number, max_withdraw_per_transaction_);
       }
       if (value % max_withdraw_per_transaction_ > 0) {
-        bankServer_->Withdraw(account_number,
-                              value % max_withdraw_per_transaction_);
+        bankServer_->Debit(account_number,
+                           value % max_withdraw_per_transaction_);
       }
       bankServer_->Disconnect();
       return true;

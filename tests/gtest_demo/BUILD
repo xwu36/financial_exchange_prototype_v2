@@ -297,10 +297,33 @@ cc_test(
     ],
 )
 
-
 cc_test(
     name = "hazf2",
     srcs = ["hazf2.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "hazf3",
+    srcs = ["hazf3.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "hazf_exception",
+    srcs = ["hazf_exception.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "hazf_exception_mock",
+    srcs = ["hazf_exception_mock.cc"],
     deps = [
         "@com_google_googletest//:gtest_main",
     ],

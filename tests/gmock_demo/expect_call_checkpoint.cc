@@ -17,7 +17,7 @@ class MockBankServer : public BankServer {
   MOCK_METHOD(void, Connect, (), (override));
   MOCK_METHOD(void, Disconnect, (), (override));
   MOCK_METHOD(void, Deposit, (int, int), (override));
-  MOCK_METHOD(void, Withdraw, (int, int), (override));
+  MOCK_METHOD(void, Debit, (int, int), (override));
   MOCK_METHOD(int, GetBalance, (int), (const, override));
 };
 
@@ -31,12 +31,12 @@ MockBankServer mock_bank_server;
 // If value is any product of 10000, it withdraws 10000 from account 1234.
 void Withdraw10kProducts(int value) {
   if (value % 10000 == 0) {
-    mock_bank_server.Withdraw(1234, 10000);
+    mock_bank_server.Debit(1234, 10000);
   }
 }
 //-----------------------------------------------------------------------------
 TEST(Withdraw10kProductsTest, WithdrawIsCalledTwice) {
-  EXPECT_CALL(mock_bank_server, Withdraw(1234, 10000)).Times(2);
+  EXPECT_CALL(mock_bank_server, Debit(1234, 10000)).Times(2);
 
   Withdraw10kProducts(20000);
   Withdraw10kProducts(2000);
@@ -54,10 +54,10 @@ TEST(Withdraw10kProductsTest, WithdrawIsCalledCorrectlyCheckpoint) {
   {
     InSequence s;
 
-    EXPECT_CALL(mock_bank_server, Withdraw(1234, 10000));
+    EXPECT_CALL(mock_bank_server, Debit(1234, 10000));
     EXPECT_CALL(checkpoint, Check("1"));
     EXPECT_CALL(checkpoint, Check("2"));
-    EXPECT_CALL(mock_bank_server, Withdraw(1234, 10000));
+    EXPECT_CALL(mock_bank_server, Debit(1234, 10000));
   }
 
   // Withdraw should be called once
@@ -87,10 +87,10 @@ TEST(Withdraw10kProductsTest, WithdrawIsCalledCorrectly) {
   {
     InSequence s;
 
-    EXPECT_CALL(mock_bank_server, Withdraw(1234, 10000));
+    EXPECT_CALL(mock_bank_server, Debit(1234, 10000));
     EXPECT_CALL(checkpoint, Call("1"));
     EXPECT_CALL(checkpoint, Call("2"));
-    EXPECT_CALL(mock_bank_server, Withdraw(1234, 10000));
+    EXPECT_CALL(mock_bank_server, Debit(1234, 10000));
   }
 
   // Withdraw should be called once

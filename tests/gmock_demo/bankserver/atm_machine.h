@@ -16,7 +16,7 @@ class AtmMachine {
     std::cout << "available_balance: " << available_balance << std::endl;
 
     if (available_balance >= value) {
-      bankServer_->Withdraw(account_number, value);
+      bankServer_->Debit(account_number, value);
       result = true;
     }
 

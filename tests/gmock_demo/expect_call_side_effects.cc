@@ -12,7 +12,7 @@ class MockBankServer : public BankServer {
  public:
   MOCK_METHOD(void, Connect, (), (override));
   MOCK_METHOD(void, Disconnect, (), (override));
-  MOCK_METHOD(void, Deposit, (int, int), (override));
+  MOCK_METHOD(void, Credit, (int, int), (override));
   MOCK_METHOD(void, Debit, (int, int), (override));
   MOCK_METHOD(bool, DoubleTransaction, (int, int, int), (override));
   MOCK_METHOD(int, GetBalance, (int), (const, override));
@@ -25,6 +25,7 @@ using ::testing::Gt;
 using ::testing::Lt;
 using ::testing::Return;
 using ::testing::SaveArg;
+using ::testing::SetErrnoAndReturn;
 using ::testing::StrEq;
 using ::testing::Throw;
 using ::testing::Throws;
@@ -44,10 +45,6 @@ TEST(AtmMachine, CanWithdrawSideEffect) {
   MockBankServer mock_bankserver;
 
   // Expectations
-  EXPECT_CALL(mock_bankserver, Connect()).Times(1);
-
-  EXPECT_CALL(mock_bankserver, GetBalance(_)).Times(1).WillOnce(Return(2000));
-
   EXPECT_CALL(mock_bankserver, Debit(_, _))
       .Times(1)
       .WillOnce(DoAll(SaveArg<0>(&account_number), SaveArg<1>(&value)));
@@ -55,6 +52,10 @@ TEST(AtmMachine, CanWithdrawSideEffect) {
   EXPECT_CALL(mock_bankserver, Disconnect())
       .Times(1)
       .WillOnce(Assign(&done, true));
+
+  EXPECT_CALL(mock_bankserver, GetBalance(1234))
+      .Times(1)
+      .WillOnce(Return(1000));
 
   // Act
   AtmMachine atm_machine(&mock_bankserver);
@@ -66,6 +67,25 @@ TEST(AtmMachine, CanWithdrawSideEffect) {
   EXPECT_TRUE(done);
   EXPECT_EQ(account_number, 1234);
   EXPECT_EQ(value, 1000);
+}
+
+TEST(AtmMachine, CanWithdrawSideEffectErrno) {
+  // Arrange
+  MockBankServer mock_bankserver;
+  errno = 0;  // Defined in errno.h
+
+  // Expectations
+  EXPECT_CALL(mock_bankserver, GetBalance(4567))
+      .Times(1)
+      .WillOnce(SetErrnoAndReturn(EINVAL, 0));
+
+  // Act
+  AtmMachine atm_machine(&mock_bankserver);
+  bool withdraw_result = atm_machine.Withdraw(4567, 1000);
+
+  // Assert
+  EXPECT_FALSE(withdraw_result);
+  EXPECT_EQ(errno, EINVAL);
 }
 
 TEST(AtmMachine, ThrowException) {

@@ -38,7 +38,7 @@ class BankServer {
   virtual ~BankServer() {}
   virtual void Connect() = 0;
   virtual void Disconnect() = 0;
-  virtual void Deposit(int account_number, int value) = 0;
+  virtual void Credit(int account_number, int value) = 0;
   virtual void Debit(int account_number, int value) = 0;
   virtual int GetBalance(int account_number) const = 0;
 };
@@ -49,7 +49,7 @@ class BankOfAriServer : public BankServer {
   virtual ~BankOfAriServer() {}
   virtual void Connect();
   virtual void Disconnect();
-  virtual void Deposit(int account_number, int value);
+  virtual void Credit(int account_number, int value);
   virtual void Debit(int account_number, int value);
   virtual int GetBalance(int account_number) const;
 };
@@ -58,7 +58,7 @@ class MockBankServer : public BankServer {
  public:
   MOCK_METHOD(void, Connect, (), (override));
   MOCK_METHOD(void, Disconnect, (), (override));
-  MOCK_METHOD(void, Deposit, (int, int), (override));
+  MOCK_METHOD(void, Credit, (int, int), (override));
   MOCK_METHOD(void, Debit, (int, int), (override));
   MOCK_METHOD(int, GetBalance, (int), (const, override));
 };

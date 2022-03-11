@@ -5,6 +5,8 @@
 #include "gtest/gtest.h"
 
 using ::testing::_;
+using ::testing::Invoke;
+using ::testing::Return;
 using ::testing::WithArg;
 
 class MyMock {
@@ -17,11 +19,11 @@ class MyMock {
 TEST(MyTest, CanDouble) {
   MyMock mock;
 
-  EXPECT_CALL(mock, method(5)).WillOnce(WithArg<0>([](int x) {
+  EXPECT_CALL(mock, method2(_, _, _, _)).WillOnce(WithArg<1>(Invoke([](int x) {
     return x * 2;
-  }));
+  })));
 
-  EXPECT_EQ(mock.method(5), 10);
+  EXPECT_EQ(mock.method2(1, 5, 1, 1), 10);
 }
 
 // Method 2: Use a custom actions by defining a functor:
@@ -42,9 +44,10 @@ struct SumOfAll {
 TEST(MyTest, CanDoubleWithFunctor) {
   MyMock mock;
 
-  EXPECT_CALL(mock, method(5)).WillOnce(Double{});
+  EXPECT_CALL(mock, method(_)).WillRepeatedly(Double{});
 
   EXPECT_EQ(mock.method(5), 10);
+  EXPECT_EQ(mock.method(7), 14);
 }
 
 TEST(MyTest, SumOfAllWithFunctor) {

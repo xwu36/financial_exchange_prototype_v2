@@ -17,7 +17,7 @@ class BankServer {
   virtual ~BankServer() {}
   virtual void Connect() = 0;
   virtual void Disconnect() = 0;
-  virtual void Deposit(int account_number, int value) = 0;
+  virtual void Credit(int account_number, int value) = 0;
   virtual void Debit(int account_number, int value) = 0;
   virtual int GetBalance(int account_number) const = 0;
 };
@@ -26,7 +26,7 @@ class MockBankServer : public BankServer {
  public:
   MOCK_METHOD0(Connect, void());
   MOCK_METHOD0(Disconnect, void());
-  MOCK_METHOD2(Deposit, void(int account_number, int value));
+  MOCK_METHOD2(Credit, void(int account_number, int value));
   MOCK_METHOD2(Withdraw, void(int account_number, int value));
   MOCK_CONST_METHOD1(GetBalance, int(int account_number));
 };

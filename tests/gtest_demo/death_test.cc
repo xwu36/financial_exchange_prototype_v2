@@ -1,6 +1,6 @@
-#include <signal.h>
 #include <sys/types.h>
 
+#include <csignal>
 #include <iostream>
 #include <string>
 
@@ -29,5 +29,6 @@ TEST(MyDeathTest, AbnormalExit) {
 }
 
 TEST(MyDeathTest, KillProcess) {
+  GTEST_FLAG_SET(death_test_style, "threadsafe");
   EXPECT_EXIT(Kill(SIGKILL), testing::KilledBySignal(SIGKILL), "");
 }

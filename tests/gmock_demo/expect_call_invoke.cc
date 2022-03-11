@@ -14,7 +14,7 @@ class MockBankServer : public BankServer {
  public:
   MOCK_METHOD(void, Connect, (), (override));
   MOCK_METHOD(void, Disconnect, (), (override));
-  MOCK_METHOD(void, Deposit, (int, int), (override));
+  MOCK_METHOD(void, Credit, (int, int), (override));
   MOCK_METHOD(void, Debit, (int, int), (override));
   MOCK_METHOD(bool, DoubleTransaction, (int, int, int), (override));
   MOCK_METHOD(int, GetBalance, (int), (const, override));
@@ -61,8 +61,8 @@ TEST(AtmMachine, CanWithdrawWithMultipleInvoke) {
       .WillOnce(Invoke(Square))
       .WillOnce(Square)
       .WillOnce(DoAll(InvokeWithoutArgs(PrintHello), Return(1000)))
-      .WillOnce([](double n) { return Square(n); })
-      .WillOnce([](double n) { return Sum(n, 1000); })
+      .WillOnce([](int n) { return Square(n); })
+      .WillOnce([](int n) { return Sum(n, 1000); })
       .WillOnce([]() { return Return10000(); })
       .WillOnce(Return10000)
       .WillRepeatedly(Return(Return10000()));

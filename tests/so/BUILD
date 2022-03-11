@@ -31,3 +31,12 @@ cc_test(
         "@com_google_googletest//:gtest_main",
     ],
 )
+
+
+cc_test(
+    name = "use_the_arg_in_return_value",
+    srcs = ["use_the_arg_in_return_value.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)

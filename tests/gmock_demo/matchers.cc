@@ -31,5 +31,5 @@ using ::testing::ContainsRegex;
 TEST(MatchersTest, ElementsAre) {
   auto str = std::string("This is a test. Thanks for watching.");
 
-  EXPECT_THAT(str, ContainsRegex(".*a test\."));
+  EXPECT_THAT(str, ContainsRegex(".*a test\\."));
 }

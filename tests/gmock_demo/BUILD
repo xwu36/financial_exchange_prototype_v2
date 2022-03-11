@@ -133,14 +133,6 @@ cc_test(
 )
 
 cc_test(
-    name = "use_the_arg_in_return_value",
-    srcs = ["use_the_arg_in_return_value.cc"],
-    deps = [
-        "@com_google_googletest//:gtest_main",
-    ],
-)
-
-cc_test(
     name = "unspecified",
     srcs = ["unspecified.cc"],
     deps = [
@@ -162,6 +154,24 @@ cc_test(
     name = "mocking_free_function_example",
     srcs = ["mocking_free_function_example.cc"],
     deps = [
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "expect_call_dodefault",
+    srcs = ["expect_call_dodefault.cc"],
+    deps = [
+        "//tests/gmock_demo/bankserver:BankServerLib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "first_example",
+    srcs = ["first_example.cc"],
+    deps = [
+        "//tests/gmock_demo/bankserver:BankServerLib",
         "@com_google_googletest//:gtest_main",
     ],
 )

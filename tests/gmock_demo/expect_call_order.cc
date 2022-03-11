@@ -13,8 +13,9 @@ class MockBankServer : public BankServer {
  public:
   MOCK_METHOD(void, Connect, (), (override));
   MOCK_METHOD(void, Disconnect, (), (override));
-  MOCK_METHOD(void, Deposit, (int, int), (override));
+  MOCK_METHOD(void, Credit, (int, int), (override));
   MOCK_METHOD(void, Debit, (int, int), (override));
+  MOCK_METHOD(bool, DoubleTransaction, (int, int, int), (override));
   MOCK_METHOD(int, GetBalance, (int), (const, override));
 };
 
@@ -133,12 +134,9 @@ TEST(AtmMachine, CanWithdrawExpectForcePartialOrderWithAfter) {
 
   // Expectations
   Expectation e_connect = EXPECT_CALL(mock_bankserver, Connect()).Times(1);
-  Expectation e_withdraw =
-      EXPECT_CALL(mock_bankserver, Debit(_, _)).Times(1);
+  Expectation e_debit = EXPECT_CALL(mock_bankserver, Debit(_, _)).Times(1);
 
-  EXPECT_CALL(mock_bankserver, Disconnect())
-      .Times(1)
-      .After(e_connect, e_withdraw);
+  EXPECT_CALL(mock_bankserver, Disconnect()).Times(1).After(e_connect, e_debit);
 
   EXPECT_CALL(mock_bankserver, GetBalance(_)).Times(1).WillOnce(Return(2000));
 

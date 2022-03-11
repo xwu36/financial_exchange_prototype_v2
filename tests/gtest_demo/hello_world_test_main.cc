@@ -19,7 +19,21 @@ TEST(GetHello, CanMakeHelloWithNonEmptyInput) {
   EXPECT_EQ(GetHello("Ari"), "Hello, Ari");
 }
 
+namespace testing {
+namespace internal {
+extern bool g_help_flag;
+}
+}  // namespace testing
+
 int main(int argc, char** argv) {
   testing::InitGoogleTest(&argc, argv);
+
+  std::cout << "::testing::GTEST_FLAG(list_tests): "
+            << ::testing::GTEST_FLAG(list_tests) << std::endl;
+
+             
+  std::cout << "g_help_flag: " << ::testing::internal::g_help_flag << std::endl;
+
+  std::cout << "::testing::GTEST_FLAG(repeat): " << ::testing::GTEST_FLAG(repeat) << std::endl;
   return RUN_ALL_TESTS();
 }

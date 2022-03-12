@@ -94,7 +94,8 @@
     "numbers": "cpp",
     "semaphore": "cpp",
     "stop_token": "cpp",
-    "cerrno": "cpp"
+    "cerrno": "cpp",
+    "csignal": "cpp"
   },
   "lldb.displayFormat": "auto",
   "lldb.dereferencePointers": true,

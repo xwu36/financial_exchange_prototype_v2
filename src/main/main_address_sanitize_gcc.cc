@@ -1,33 +1,31 @@
 // Demo of Address Sanitizer.
 // By Ari Saif
 // Run with this command:
-// bazel run --config=asan //src/main:main_address_sanitize -- --choice=[choice]
-// where choice is one of the values from 0 to 6. See the main function below.
+// g++ -O1 -g -fsanitize=address -fno-omit-frame-pointer
+// src/main/main_address_sanitize_gcc.cc a.out <choice> where choice is one of
+// the values from 0 to 6. See the main function below.
 
 #include <iostream>
 #include <string>
 #include <vector>
 
-#include "absl/flags/flag.h"
-#include "absl/flags/parse.h"
-#include "absl/flags/usage.h"
-
-ABSL_FLAG(uint32_t, choice, 0, "choice");
 //-----------------------------------------------------------------------------
-volatile char *global_ptr;
-
+volatile char *ptr;
 __attribute__((noinline)) void FunctionThatEscapesLocalObject() {
   char local[100];
-  global_ptr = &local[0];
+  ptr = &local[0];
 }
 
 char global_array[10];
-
 //-----------------------------------------------------------------------------
 int main(int argc, char **argv) {
-  absl::ParseCommandLine(argc, argv);
+  if (argc != 2) {
+    std::cout << "Usage: main_address_sanitize <choice>" << std::endl;
+    return -1;
+  }
 
-  int choice = absl::GetFlag(FLAGS_choice);
+  int choice = std::stoi(argv[1]);
+  std::cout << "choice: " << choice << std::endl;
 
   switch (choice) {
     case 0: {
@@ -78,7 +76,7 @@ int main(int argc, char **argv) {
       // Set this env variable before running:
       // export ASAN_OPTIONS=detect_stack_use_after_return=1
       FunctionThatEscapesLocalObject();
-      return global_ptr[0];
+      return ptr[0];
     }
 
     case 6: {
@@ -107,6 +105,5 @@ int main(int argc, char **argv) {
     default:
       std::cout << "Error: Invalid choice value: " << choice << std::endl;
   }
-
   return 0;
 }

@@ -58,5 +58,19 @@ namespace fep::lib
       EXPECT_EQ(price8.to_str(), "0.00");
     }
 
+    TEST(Price4Test, CompareOperators)
+    {
+      const Price4 price1(1);
+      const Price4 price2(2);
+      EXPECT_TRUE(price1 == price1);
+      EXPECT_TRUE(price1 != price2);
+      EXPECT_TRUE(price1 <= price1);
+      EXPECT_TRUE(price1 <= price2);
+      EXPECT_TRUE(price1 < price2);
+      EXPECT_TRUE(price2 > price1);
+      EXPECT_TRUE(price2 >= price1);
+      EXPECT_TRUE(price2 >= price2);
+    }
+
   } // namespace
 } // namespace fep::lib

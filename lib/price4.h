@@ -19,6 +19,31 @@ namespace fep::lib
     // convert to string
     std::string to_str() const;
 
+    bool operator==(const Price4 &that) const
+    {
+      return this->unscaled() == that.unscaled();
+    }
+    bool operator!=(const Price4 &that) const
+    {
+      return this->unscaled() != that.unscaled();
+    }
+    bool operator<(const Price4 &that) const
+    {
+      return this->unscaled() < that.unscaled();
+    }
+    bool operator<=(const Price4 &that) const
+    {
+      return this->unscaled() <= that.unscaled();
+    }
+    bool operator>(const Price4 &that) const
+    {
+      return this->unscaled() > that.unscaled();
+    }
+    bool operator>=(const Price4 &that) const
+    {
+      return this->unscaled() >= that.unscaled();
+    }
+
   private:
     long unscaled_;
   };

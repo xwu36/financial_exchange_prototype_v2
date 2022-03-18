@@ -95,7 +95,8 @@
     "semaphore": "cpp",
     "stop_token": "cpp",
     "cerrno": "cpp",
-    "csignal": "cpp"
+    "csignal": "cpp",
+    "shared_mutex": "cpp"
   },
   "lldb.displayFormat": "auto",
   "lldb.dereferencePointers": true,

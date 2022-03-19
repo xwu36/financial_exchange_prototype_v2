@@ -1,11 +1,15 @@
 #include "lib/price4.h"
 
+#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
 namespace fep::lib
 {
   namespace
   {
+
+    using ::testing::Field;
+    using ::testing::Matcher;
 
     TEST(Price4Test, FromString)
     {
@@ -70,6 +74,43 @@ namespace fep::lib
       EXPECT_TRUE(price2 > price1);
       EXPECT_TRUE(price2 >= price1);
       EXPECT_TRUE(price2 >= price2);
+    }
+
+    // An example of TEST_F.
+    class Price4TestFExampleTest : public testing::Test
+    {
+      void SetUp() override
+      {
+        price1_ = Price4(1);
+        price2_ = Price4(2);
+      }
+
+    protected:
+      Price4 price1_;
+      Price4 price2_;
+    };
+
+    TEST_F(Price4TestFExampleTest, CompareOperators)
+    {
+      EXPECT_TRUE(price1_ == price1_);
+      EXPECT_TRUE(price1_ <= price2_);
+    }
+
+    // An example of Matcher
+    Matcher<Price4> Price4Is(
+        const int a,
+        const std::string &b)
+    {
+      return AllOf(Field(&Price4::a_, a), Field(&Price4::b_, b));
+    }
+
+    TEST(Price4MatcherTest, CompareOperators)
+    {
+      Price4 price1(2);
+      price1.a_ = 2;
+      price1.b_ = "2";
+      const Price4 price2(2);
+      EXPECT_THAT(price1, Price4Is(2, "2"));
     }
 
   } // namespace

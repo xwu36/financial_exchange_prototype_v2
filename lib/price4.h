@@ -44,6 +44,10 @@ namespace fep::lib
       return this->unscaled() >= that.unscaled();
     }
 
+    // The following is for test purpose only.
+    int a_ = 0;
+    std::string b_;
+
   private:
     long unscaled_;
   };

@@ -1,6 +1,6 @@
 load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 
-package(default_visibility = ["//srcs:__subpackages__"])
+package(default_visibility = ["//src:__subpackages__"])
 
 cc_library(
     name = "price4",

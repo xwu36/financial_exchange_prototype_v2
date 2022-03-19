@@ -29,6 +29,7 @@ namespace fep::src::order
     order.timestamp_sec = GetValueForKey<int64_t>(j, kTime, /*default_value=*/0);
     order.order_id = GetValueForKey<int64_t>(j, kOrderId, /*default_value=*/0);
     order.quantity = GetValueForKey<int32_t>(j, kQuantity, /*default_value=*/0);
+    order.hidden_quantity = GetValueForKey<int32_t>(j, KHiddenQuantity, /*default_value=*/0);
     order.price = fep::lib::Price4(GetValueForKey<std::string>(j, kLimitPrice, /*default_value=*/"0"));
 
     const std::string type = GetValueForKey<std::string>(j, kType, /*default_value=*/"");

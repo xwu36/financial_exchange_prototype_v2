@@ -14,6 +14,7 @@ namespace fep::src::order
   constexpr char kTimestampSec[] = "timestamp_sec";
   constexpr char kOrderId[] = "order_id";
   constexpr char kQuantity[] = "quantity";
+  constexpr char kHiddenQuantity[] = "hidden_quantity";
   constexpr char kLimitPrice[] = "limit_price";
   constexpr char kSymbol[] = "symbol";
   constexpr char kType[] = "type";
@@ -72,6 +73,7 @@ namespace fep::src::order
     fep::src::stock::Symbol symbol = fep::src::stock::Symbol::UNKNOWN;
     OrderSide side = OrderSide::UNKNOWN;
     int32_t quantity = 0;
+    int32_t hidden_quantity = 0;
     fep::lib::Price4 price;
     OrderType order_type = OrderType::UNKNOWN;
     TimeInForce time_in_force = TimeInForce::UNKNOWN;

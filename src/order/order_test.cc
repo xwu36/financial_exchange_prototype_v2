@@ -23,6 +23,7 @@ namespace fep::src::order
         const Symbol symbol,
         const OrderSide side,
         const int32_t quantity,
+        const int32_t hidden_quantity,
         const fep::lib::Price4 &price,
         const OrderType order_type,
         const TimeInForce time_in_force)
@@ -34,6 +35,7 @@ namespace fep::src::order
           Field(&Order::symbol, symbol),
           Field(&Order::side, side),
           Field(&Order::quantity, quantity),
+          Field(&Order::hidden_quantity, hidden_quantity),
           Field(&Order::price, price),
           Field(&Order::order_type, order_type),
           Field(&Order::time_in_force, time_in_force));
@@ -49,6 +51,7 @@ namespace fep::src::order
                              Symbol::UNKNOWN,
                              OrderSide::UNKNOWN,
                              /*quantity*/ 0,
+                             /*hidden_quantity*/ 0,
                              fep::lib::Price4(0),
                              OrderType::UNKNOWN,
                              TimeInForce::UNKNOWN));
@@ -65,6 +68,10 @@ namespace fep::src::order
                              "quantity",
                              100,
                          },
+                         {
+                             "hidden_quantity",
+                             92,
+                         },
                          {"limit_price", "140.30"},
                          {"order_type", "MARKET"},
                          {"time_in_force", "IOC"}};
@@ -76,6 +83,7 @@ namespace fep::src::order
                              Symbol::AAPL,
                              OrderSide::BUY,
                              /*quantity*/ 100,
+                             /*hidden_quantity*/ 99,
                              fep::lib::Price4(1403000),
                              OrderType::MARKET,
                              TimeInForce::IOC));

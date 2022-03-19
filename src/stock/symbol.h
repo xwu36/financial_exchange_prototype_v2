@@ -3,7 +3,7 @@
 
 #include <unordered_map>
 
-namespace fep::srcs::stock
+namespace fep::src::stock
 {
 
   constexpr char kUnknown[] = "UNKNOWN";
@@ -31,6 +31,6 @@ namespace fep::srcs::stock
       {Symbol::GOOG, kGOOG},
       {Symbol::TSLA, kTSLA}};
 
-} // namespace fep::srcs::stock
+} // namespace fep::src::stock
 
 #endif

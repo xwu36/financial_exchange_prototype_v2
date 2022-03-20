@@ -5,6 +5,7 @@
 
 int main()
 {
+  // Print Hello World.
   std::cout << "Hello World!" << std::endl;
   ::fep::lib::Price4 p("12.34");
   std::cout

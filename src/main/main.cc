@@ -6,6 +6,7 @@
 int main()
 {
   // Print Hello World.
+  // Test new workspace.
   std::cout << "Hello World!" << std::endl;
   fep::lib::Price4 p("12.34");
   std::cout

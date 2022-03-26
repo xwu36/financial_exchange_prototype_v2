@@ -1,6 +1,7 @@
 #ifndef SRC_ORDER_ORDER_BOOK_H_
 #define SRC_ORDER_ORDER_BOOK_H_
 
+#include <deque>
 #include <iostream>
 #include <memory>
 #include <queue>
@@ -14,8 +15,8 @@ namespace fep::src::order
     struct PriceEntry
     {
         fep::lib::Price4 price;
-        std::priority_queue<std::shared_ptr<Order>> visible_queue;
-        std::priority_queue<std::shared_ptr<Order>> hidden_queue;
+        std::deque<std::shared_ptr<Order>> visible_queue;
+        std::deque<std::shared_ptr<Order>> hidden_queue;
     };
 
     struct BidComparator
@@ -47,8 +48,17 @@ namespace fep::src::order
             std::cout << "process..." << std::endl;
         }
 
-    private:
-        PriceEntry price_entry_;
+    protected:
+        std::shared_ptr<Order> Top() const
+        {
+            if (price_entries_.empty())
+            {
+                return nullptr;
+            }
+            return nullptr;
+        }
+
+        std::priority_queue<PriceEntry> price_entries_;
     };
 
     class BidOrderBook : public OrderBook<BidComparator>

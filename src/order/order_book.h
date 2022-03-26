@@ -9,6 +9,7 @@
 #include <unordered_set>
 
 #include "lib/price4.h"
+#include "src/feed_event/feed_event.h"
 #include "src/order/order.h"
 
 // TODO this file needs to be tested.
@@ -47,7 +48,7 @@ namespace fep::src::order
 
         // Process a new order or a cancel order.
         // The validity of the order should be done in the upstream.
-        void Process(std::shared_ptr<Order> new_order)
+        fep::src::feed_event::FeedEvents Process(std::shared_ptr<Order> new_order)
         {
             if (new_order->type == OrderStatus::NEW)
             {
@@ -55,8 +56,11 @@ namespace fep::src::order
             }
             else if (new_order->type == OrderStatus::CANCEL)
             {
-                HandleCancelOrder(new_order);
+                HandleCancelOrder(new_order->order_id);
             }
+
+            // TODO
+            return fep::src::feed_event::FeedEvents{};
         }
 
     protected:

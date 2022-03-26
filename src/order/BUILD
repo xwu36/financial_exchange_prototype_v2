@@ -42,6 +42,7 @@ cc_library(
     hdrs = ["order_book.h"],
     deps = [
         ":order",
+        "//src/feed_event:feed_event",
         "//lib:price4",
     ],
 )

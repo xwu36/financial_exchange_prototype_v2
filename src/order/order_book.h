@@ -69,14 +69,14 @@ namespace fep::src::order
                 std::shared_ptr<Order> first_order = visible_queue.front();
                 if (!MatchOrder(new_order, first_order))
                 {
-                    const auto &kv = price_to_entry_map_.find(new_order->price);
-                    if (kv == price_to_entry_map_.end())
+                    const auto &itr = price_to_entry_map_.insert({new_order->price, std::make_shared<PriceEntity>()});
+                    auto &price_entry = itr.first->second;
+                    // If it is a new price_entry, add it to the queue.
+                    if (itr.second)
                     {
-                        kv->second = std::make_shared<PriceEntity>();
-                        price_queue_.push(kv->second);
-                        deleted_order_ids_.insert(new_order->order_id);
+                        price_queue_.push(price_entry);
                     }
-                    kv->second->visible_queue.push_back(new_order);
+                    price_entry->visible_queue.push_back(new_order);
                     return;
                 }
 

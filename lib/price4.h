@@ -53,4 +53,16 @@ namespace fep::lib
   };
 }
 
+namespace std
+{
+  template <>
+  struct hash<fep::lib::Price4>
+  {
+    std::size_t operator()(const fep::lib::Price4 &k) const
+    {
+      return std::hash<long>()(k.unscaled());
+    }
+  };
+}
+
 #endif

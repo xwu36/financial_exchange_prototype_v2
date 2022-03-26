@@ -1,10 +1,12 @@
 #ifndef SRC_ORDER_ORDER_BOOK_H_
 #define SRC_ORDER_ORDER_BOOK_H_
 
-#include <set>
+#include <deque>
 #include <iostream>
 #include <memory>
 #include <queue>
+#include <unordered_map>
+#include <unordered_set>
 
 #include "lib/price4.h"
 #include "src/order/order.h"
@@ -13,35 +15,25 @@
 namespace fep::src::order
 {
 
+    struct PriceEntity
+    {
+        fep::lib::Price4 price;
+        mutable std::deque<std::shared_ptr<Order>> visible_queue;
+    };
+
     struct BidComparator
     {
-        bool operator()(const std::shared_ptr<Order> lhs, const std::shared_ptr<Order> rhs)
+        bool operator()(const std::shared_ptr<PriceEntity> &lhs, const std::shared_ptr<PriceEntity> &rhs)
         {
-            if (lhs->price != rhs->price)
-            {
-                return lhs->price > rhs->price;
-            }
-            if (lhs->timestamp_sec != rhs->timestamp_sec)
-            {
-                return lhs->timestamp_sec < rhs->timestamp_sec;
-            }
-            return lhs->order_id < rhs->order_id;
+            return lhs->price > rhs->price;
         }
     };
 
     struct AskComparator
     {
-        bool operator()(const std::shared_ptr<Order> lhs, const std::shared_ptr<Order> rhs)
+        bool operator()(const std::shared_ptr<PriceEntity> &lhs, const std::shared_ptr<PriceEntity> &rhs)
         {
-            if (lhs->price != rhs->price)
-            {
-                return lhs->price < rhs->price;
-            }
-            if (lhs->timestamp_sec != rhs->timestamp_sec)
-            {
-                return lhs->timestamp_sec < rhs->timestamp_sec;
-            }
-            return lhs->order_id < rhs->order_id;
+            return lhs->price < rhs->price;
         }
     };
 
@@ -72,10 +64,19 @@ namespace fep::src::order
         {
             while (new_order->quantity != 0)
             {
-                std::shared_ptr<Order> first_order = Top();
+                std::shared_ptr<PriceEntity> first_price_entry = TopPriceEntity();
+                auto &visible_queue = first_price_entry->visible_queue;
+                std::shared_ptr<Order> first_order = visible_queue.front();
                 if (!MatchOrder(new_order, first_order))
                 {
-                    visible_queue_.push(new_order);
+                    const auto &kv = price_to_entry_map_.find(new_order->price);
+                    if (kv == price_to_entry_map_.end())
+                    {
+                        kv->second = std::make_shared<PriceEntity>();
+                        price_queue_.push(kv->second);
+                        deleted_order_ids_.insert(new_order->order_id);
+                    }
+                    kv->second->visible_queue.push_back(new_order);
                     return;
                 }
 
@@ -92,13 +93,13 @@ namespace fep::src::order
                 // If replenish happens, pop out and push back the first order to keep the right order.
                 if (MaybeReplenish(first_order))
                 {
-                    visible_queue_.pop();
-                    visible_queue_.push(first_order);
+                    visible_queue.pop_front();
+                    visible_queue.push_back(first_order);
                 }
                 // pop out the first order if it is marked as deleted.
                 if (MaybeMarkAsDeleted(first_order))
                 {
-                    visible_queue_.pop();
+                    visible_queue.pop_front();
                 }
             }
         }
@@ -125,18 +126,26 @@ namespace fep::src::order
             return (input_order->side == OrderSide::SELL) ? target_order->price >= input_order->price : target_order->price <= input_order->price;
         }
 
-        // Return next un-deleted order in the order book.
-        // Remove delete orders if they are on the top.
-        std::shared_ptr<Order> Top()
+        // Return the top price entity in the order book.
+        // The top order of the entity is guarateed to be an un-deleted order.
+        // Remove deleted orders/empty entities if they are on the top until the first un-deleted order is met.
+        std::shared_ptr<PriceEntity> TopPriceEntity()
         {
-            while (!visible_queue_.empty())
+            while (!price_queue_.empty())
             {
-                if (visible_queue_.top()->deleted)
+                auto &visible_queue = price_queue_.top()->visible_queue;
+                while (!visible_queue.empty())
                 {
-                    visible_queue_.pop();
-                    continue;
+                    if (visible_queue.front()->deleted)
+                    {
+                        deleted_order_ids_.erase(visible_queue.front()->order_id);
+                        visible_queue.pop_front();
+                        continue;
+                    }
+                    return price_queue_.top();
                 }
-                return visible_queue_.top();
+                price_to_entry_map_.erase(price_queue_.top()->price);
+                price_queue_.pop();
             }
             return nullptr;
         }
@@ -179,8 +188,9 @@ namespace fep::src::order
             return false;
         }
 
-        std::priority_queue<std::shared_ptr<Order>> visible_queue_;
-        std::priority_queue<std::shared_ptr<Order>> hidden_queue_;
+        std::priority_queue<std::shared_ptr<PriceEntity>> price_queue_;
+        std::unordered_map<fep::lib::Price4, std::shared_ptr<PriceEntity>> price_to_entry_map_;
+        std::unordered_set<int64_t> deleted_order_ids_;
     };
 
     class BidOrderBook : public OrderBook<BidComparator>

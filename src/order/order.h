@@ -77,6 +77,7 @@ namespace fep::src::order
     fep::lib::Price4 price;
     OrderType order_type = OrderType::UNKNOWN;
     TimeInForce time_in_force = TimeInForce::UNKNOWN;
+    bool deleted = false;
   };
 
 } // namespace fep::src::order

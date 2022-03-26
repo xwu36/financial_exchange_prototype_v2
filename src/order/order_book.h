@@ -71,12 +71,12 @@ namespace fep::src::order
                 {
                     const auto &itr = price_to_entry_map_.insert({new_order->price, std::make_shared<PriceEntity>()});
                     auto &price_entry = itr.first->second;
+                    price_entry->visible_queue.push_back(new_order);
                     // If it is a new price_entry, add it to the queue.
                     if (itr.second)
                     {
                         price_queue_.push(price_entry);
                     }
-                    price_entry->visible_queue.push_back(new_order);
                     return;
                 }
 
@@ -90,23 +90,21 @@ namespace fep::src::order
                     first_order->quantity -= new_order->quantity;
                     new_order->quantity = 0;
                 }
+
                 // If replenish happens, pop out and push back the first order to keep the right order.
                 if (MaybeReplenish(first_order))
                 {
                     visible_queue.pop_front();
                     visible_queue.push_back(first_order);
                 }
-                // pop out the first order if it is marked as deleted.
-                if (MaybeMarkAsDeleted(first_order))
-                {
-                    visible_queue.pop_front();
-                }
+                MaybeMarkAsDeleted(first_order);
             }
         }
 
         // TODO
-        void HandleCancelOrder(std::shared_ptr<Order> order)
+        void HandleCancelOrder(const int64_t order_id)
         {
+            deleted_order_ids_.insert(order_id);
         }
 
         // Return true if the input order matches the target order.
@@ -136,9 +134,10 @@ namespace fep::src::order
                 auto &visible_queue = price_queue_.top()->visible_queue;
                 while (!visible_queue.empty())
                 {
-                    if (visible_queue.front()->deleted)
+                    const auto &first_order = visible_queue.front();
+                    if (first_order->deleted || deleted_order_ids_.count(first_order->order_id))
                     {
-                        deleted_order_ids_.erase(visible_queue.front()->order_id);
+                        deleted_order_ids_.erase(first_order->order_id);
                         visible_queue.pop_front();
                         continue;
                     }

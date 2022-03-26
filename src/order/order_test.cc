@@ -83,7 +83,7 @@ namespace fep::src::order
                              Symbol::AAPL,
                              OrderSide::BUY,
                              /*quantity*/ 100,
-                             /*hidden_quantity*/ 99,
+                             /*hidden_quantity*/ 92,
                              fep::lib::Price4(1403000),
                              OrderType::MARKET,
                              TimeInForce::IOC));

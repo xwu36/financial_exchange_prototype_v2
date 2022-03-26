@@ -36,3 +36,21 @@ cc_library(
         "@com_github_nlohmann_json//:json",
     ],
 )
+
+cc_library(
+    name = "order_book",
+    hdrs = ["order_book.h"],
+    deps = [
+        ":order",
+        "//lib:price4",
+    ],
+)
+
+cc_test(
+    name = "order_book_test",
+    srcs = ["order_book_test.cc"],
+    deps = [
+        ":order_book",
+        "@com_google_googletest//:gtest_main",
+    ],
+)

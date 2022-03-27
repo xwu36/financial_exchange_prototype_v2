@@ -1,6 +1,7 @@
 #ifndef SRC_ORDER_ORDER_BOOK_H_
 #define SRC_ORDER_ORDER_BOOK_H_
 
+#include <cmath>
 #include <deque>
 #include <iostream>
 #include <memory>
@@ -52,11 +53,11 @@ namespace fep::src::order
         {
             if (new_order->type == OrderStatus::NEW)
             {
-                HandleNewOrder(new_order);
+                return HandleNewOrder(new_order);
             }
             else if (new_order->type == OrderStatus::CANCEL)
             {
-                HandleCancelOrder(new_order->order_id);
+                return HandleCancelOrder(new_order->order_id);
             }
 
             // TODO
@@ -64,13 +65,18 @@ namespace fep::src::order
         }
 
     protected:
-        void HandleNewOrder(std::shared_ptr<Order> new_order)
+        fep::src::feed_event::FeedEvents HandleNewOrder(std::shared_ptr<Order> new_order)
         {
+            fep::src::feed_event::FeedEvents feed_events{};
+            std::unordered_map<fep::lib::Price4, int32_t> seen_price_to_pre_quantity;
+            seen_price_to_pre_quantity.insert({new_order->price, price_to_visible_quantity_map_[new_order->price]});
+
             while (new_order->quantity != 0)
             {
                 std::shared_ptr<PriceEntity> first_price_entry = TopPriceEntity();
                 auto &visible_queue = first_price_entry->visible_queue;
                 std::shared_ptr<Order> first_order = visible_queue.front();
+                seen_price_to_pre_quantity.insert({first_order->price, price_to_visible_quantity_map_[first_order->price]});
                 if (!MatchOrder(new_order, first_order))
                 {
                     const auto &itr = price_to_entry_map_.insert({new_order->price, std::make_shared<PriceEntity>()});
@@ -81,9 +87,11 @@ namespace fep::src::order
                     {
                         price_queue_.push(price_entry);
                     }
-                    return;
+                    price_to_visible_quantity_map_[new_order->price] += new_order->quantity;
+                    break;
                 }
 
+                const int32_t first_order_pre_quantity = first_order->quantity;
                 if (new_order->quantity >= first_order->quantity)
                 {
                     new_order->quantity -= first_order->quantity;
@@ -94,6 +102,8 @@ namespace fep::src::order
                     first_order->quantity -= new_order->quantity;
                     new_order->quantity = 0;
                 }
+                UpdateOrderTradeEvent(first_order->price, first_order_pre_quantity - first_order->quantity,
+                                      feed_events.order_trade_events);
 
                 // If replenish happens, pop out and push back the first order to keep the right order.
                 if (MaybeReplenish(first_order))
@@ -103,12 +113,18 @@ namespace fep::src::order
                 }
                 MaybeMarkAsDeleted(first_order);
             }
+
+            UpdateDepthUpdateEvents(new_order->side == OrderSide::BUY, seen_price_to_pre_quantity,
+                                    feed_events.depth_update_events);
+            return feed_events;
         }
 
         // TODO
-        void HandleCancelOrder(const int64_t order_id)
+        fep::src::feed_event::FeedEvents HandleCancelOrder(const int64_t order_id)
         {
             deleted_order_ids_.insert(order_id);
+            // TODO
+            return fep::src::feed_event::FeedEvents{};
         }
 
         // Return true if the input order matches the target order.
@@ -191,9 +207,55 @@ namespace fep::src::order
             return false;
         }
 
+        void UpdateOrderTradeEvent(const fep::lib::Price4 &price,
+                                   const int32_t quantity, std::vector<fep::src::feed_event::OrderTradeEvent> &order_trade_events)
+        {
+            order_trade_events.push_back(fep::src::feed_event::OrderTradeEvent{
+                .price = price,
+                .quantity = quantity});
+        }
+
+        void UpdateDepthUpdateEvents(const bool buy,
+                                     const std::unordered_map<fep::lib::Price4, int32_t> &seen_price_to_pre_quantity,
+                                     fep::src::feed_event::DepthUpdateEvents &depth_update_events)
+        {
+            for (const auto &[price, pre_quantity] : seen_price_to_pre_quantity)
+            {
+                const int32_t post_quantity = price_to_visible_quantity_map_[price];
+                if (pre_quantity == post_quantity)
+                {
+                    continue;
+                }
+
+                std::unique_ptr<fep::src::feed_event::PriceEntityUpdateEvent> update_event = nullptr;
+                if (post_quantity == 0)
+                {
+                    update_event = std::make_unique<fep::src::feed_event::PriceEntityDeleteEvent>();
+                }
+                else if (pre_quantity == 0)
+                {
+                    update_event = std::make_unique<fep::src::feed_event::PriceEntityAddEvent>();
+                }
+                else
+                {
+                    update_event = std::make_unique<fep::src::feed_event::PriceEntityModifyEvent>();
+                }
+
+                if ((buy && post_quantity > pre_quantity) || (!buy && post_quantity < pre_quantity))
+                {
+                    depth_update_events.bid_events.push_back(std::move(update_event));
+                }
+                else
+                {
+                    depth_update_events.ask_events.push_back(std::move(update_event));
+                }
+            }
+        }
+
         std::priority_queue<std::shared_ptr<PriceEntity>> price_queue_;
         std::unordered_map<fep::lib::Price4, std::shared_ptr<PriceEntity>> price_to_entry_map_;
         std::unordered_set<int64_t> deleted_order_ids_;
+        std::unordered_map<fep::lib::Price4, int32_t> price_to_visible_quantity_map_;
     };
 
     class BidOrderBook : public OrderBook<BidComparator>

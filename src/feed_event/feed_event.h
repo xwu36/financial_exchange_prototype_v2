@@ -12,13 +12,13 @@ namespace fep::src::feed_event
     {
         const std::string trade = "TRADE";
         fep::lib::Price4 price;
-        uint64_t quantity = 0;
+        int32_t quantity = 0;
     };
 
     struct PriceEntityUpdateEvent
     {
         fep::lib::Price4 price;
-        uint64_t quantity = 0;
+        int32_t quantity = 0;
         std::string action;
     };
     struct PriceEntityAddEvent : PriceEntityUpdateEvent

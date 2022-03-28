@@ -96,7 +96,11 @@
     "stop_token": "cpp",
     "cerrno": "cpp",
     "csignal": "cpp",
-    "shared_mutex": "cpp"
+    "shared_mutex": "cpp",
+    "cfenv": "cpp",
+    "scoped_allocator": "cpp",
+    "typeindex": "cpp",
+    "valarray": "cpp"
   },
   "lldb.displayFormat": "auto",
   "lldb.dereferencePointers": true,

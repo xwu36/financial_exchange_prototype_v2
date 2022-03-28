@@ -21,6 +21,7 @@ namespace fep::src::order
     {
         fep::lib::Price4 price;
         mutable std::deque<std::shared_ptr<Order>> visible_queue;
+        int32_t visible_quantity;
     };
 
     struct BidComparator
@@ -69,14 +70,20 @@ namespace fep::src::order
         {
             fep::src::feed_event::FeedEvents feed_events{};
             std::unordered_map<fep::lib::Price4, int32_t> seen_price_to_pre_quantity;
-            seen_price_to_pre_quantity.insert({new_order->price, price_to_visible_quantity_map_[new_order->price]});
+
+            seen_price_to_pre_quantity.insert({new_order->price, price_to_entry_map_[new_order->price]->visible_quantity});
 
             while (new_order->quantity != 0)
             {
+                // Get the top offer and its price entity.
                 std::shared_ptr<PriceEntity> first_price_entry = TopPriceEntity();
                 auto &visible_queue = first_price_entry->visible_queue;
                 std::shared_ptr<Order> first_order = visible_queue.front();
-                seen_price_to_pre_quantity.insert({first_order->price, price_to_visible_quantity_map_[first_order->price]});
+
+                // Add the price and its quantity of the new order into the price_map.
+                seen_price_to_pre_quantity.insert({first_order->price, price_to_entry_map_[first_order->price]->visible_quantity});
+
+                // If the new_order cannot be matched, add it into the orderbook.
                 if (!MatchOrder(new_order, first_order))
                 {
                     const auto &itr = price_to_entry_map_.insert({new_order->price, std::make_shared<PriceEntity>()});
@@ -87,10 +94,11 @@ namespace fep::src::order
                     {
                         price_queue_.push(price_entry);
                     }
-                    price_to_visible_quantity_map_[new_order->price] += new_order->quantity;
+                    price_entry->visible_quantity += new_order->quantity;
                     break;
                 }
 
+                // If the new order can be matched at the best limit price.
                 const int32_t first_order_pre_quantity = first_order->quantity;
                 if (new_order->quantity >= first_order->quantity)
                 {
@@ -221,7 +229,7 @@ namespace fep::src::order
         {
             for (const auto &[price, pre_quantity] : seen_price_to_pre_quantity)
             {
-                const int32_t post_quantity = price_to_visible_quantity_map_[price];
+                const int32_t post_quantity = price_to_entry_map_[price]->visible_quantity;
                 if (pre_quantity == post_quantity)
                 {
                     continue;
@@ -255,7 +263,6 @@ namespace fep::src::order
         std::priority_queue<std::shared_ptr<PriceEntity>> price_queue_;
         std::unordered_map<fep::lib::Price4, std::shared_ptr<PriceEntity>> price_to_entry_map_;
         std::unordered_set<int64_t> deleted_order_ids_;
-        std::unordered_map<fep::lib::Price4, int32_t> price_to_visible_quantity_map_;
     };
 
     class BidOrderBook : public OrderBook<BidComparator>

@@ -235,18 +235,18 @@ namespace fep::src::order
                     continue;
                 }
 
-                std::unique_ptr<fep::src::feed_event::PriceEntityUpdateEvent> update_event = nullptr;
+                std::shared_ptr<fep::src::feed_event::PriceEntityUpdateEvent> update_event = nullptr;
                 if (post_quantity == 0)
                 {
-                    update_event = std::make_unique<fep::src::feed_event::PriceEntityDeleteEvent>();
+                    update_event = std::make_shared<fep::src::feed_event::PriceEntityDeleteEvent>(price, post_quantity);
                 }
                 else if (pre_quantity == 0)
                 {
-                    update_event = std::make_unique<fep::src::feed_event::PriceEntityAddEvent>();
+                    update_event = std::make_shared<fep::src::feed_event::PriceEntityAddEvent>(price, post_quantity);
                 }
                 else
                 {
-                    update_event = std::make_unique<fep::src::feed_event::PriceEntityModifyEvent>();
+                    update_event = std::make_shared<fep::src::feed_event::PriceEntityModifyEvent>(price, post_quantity);
                 }
 
                 if ((buy && post_quantity > pre_quantity) || (!buy && post_quantity < pre_quantity))

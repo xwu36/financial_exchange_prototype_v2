@@ -12,9 +12,9 @@ namespace fep::src::feed_event
 {
     struct OrderTradeEvent
     {
-        const std::string type = "TRADE";
         fep::lib::Price4 price;
         int32_t quantity = 0;
+        const std::string type = "TRADE";
 
         std::string to_str() const;
     };

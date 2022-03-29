@@ -33,14 +33,12 @@ namespace fep::src::feed_event
         jtype["type"] = this->type;
 
         json jbid;
-        jbid["bid"] = {};
         for (const auto &bid : this->bid_events)
         {
             jbid["bid"].push_back(bid->to_str());
         }
 
         json jask;
-        jask["ask"] = {};
         for (const auto &ask : this->ask_events)
         {
             jask["ask"].push_back(ask->to_str());
@@ -53,6 +51,10 @@ namespace fep::src::feed_event
 
     std::string FeedEvents::to_str() const
     {
+        if (this->order_trade_events.empty())
+        {
+            return this->depth_update_events.to_str();
+        }
         std::vector<std::string> trade_results;
         for (const auto &result : this->order_trade_events)
         {

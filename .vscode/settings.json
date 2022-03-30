@@ -100,7 +100,8 @@
     "cfenv": "cpp",
     "scoped_allocator": "cpp",
     "typeindex": "cpp",
-    "valarray": "cpp"
+    "valarray": "cpp",
+    "*.inc": "cpp"
   },
   "lldb.displayFormat": "auto",
   "lldb.dereferencePointers": true,

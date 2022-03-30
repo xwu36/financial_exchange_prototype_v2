@@ -19,7 +19,9 @@ namespace fep::src::matching_engine
     fep::src::feed_event::FeedEvents Process(std::shared_ptr<fep::src::order::Order> order);
 
   protected:
-    fep::src::feed_event::FeedEvents Sell(std::shared_ptr<fep::src::order::Order> order);
+    template <class T>
+    fep::src::feed_event::FeedEvents Sell(std::shared_ptr<fep::src::order::Order> order,
+                                          fep::src::order::OrderBook<T> &order_book);
     fep::src::feed_event::FeedEvents Buy(std::shared_ptr<fep::src::order::Order> order);
     fep::src::feed_event::FeedEvents Cancel(std::shared_ptr<fep::src::order::Order> order);
 

@@ -26,7 +26,7 @@ namespace fep::src::order
 
     struct BidComparator
     {
-        bool operator()(const std::shared_ptr<PriceEntity> &lhs, const std::shared_ptr<PriceEntity> &rhs)
+        bool operator()(const std::shared_ptr<PriceEntity> &lhs, const std::shared_ptr<PriceEntity> &rhs) const
         {
             return lhs->price > rhs->price;
         }
@@ -34,7 +34,7 @@ namespace fep::src::order
 
     struct AskComparator
     {
-        bool operator()(const std::shared_ptr<PriceEntity> &lhs, const std::shared_ptr<PriceEntity> &rhs)
+        bool operator()(const std::shared_ptr<PriceEntity> &lhs, const std::shared_ptr<PriceEntity> &rhs) const
         {
             return lhs->price < rhs->price;
         }
@@ -57,21 +57,7 @@ namespace fep::src::order
         }
 
         // Return true if the input order matches the target order.
-        // Orders match when the input order is a maket order.
-        // Orders match when the input order is a sell order, and its price lower than the target order.
-        // Orders match when the input order is a buy order, and its price higher than the target order.
-        bool MatchOrder(std::shared_ptr<Order> input_order, std::shared_ptr<Order> target_order)
-        {
-            if (target_order == nullptr)
-            {
-                return false;
-            }
-            if (input_order->order_type == OrderType::MARKET)
-            {
-                return true;
-            }
-            return (input_order->side == OrderSide::SELL) ? target_order->price >= input_order->price : target_order->price <= input_order->price;
-        }
+        virtual bool MatchOrder(std::shared_ptr<Order> input_order, std::shared_ptr<Order> target_order) const = 0;
 
         // Return the top price entity in the order book.
         // The top order of the entity is guarateed to be an un-deleted order.
@@ -119,6 +105,7 @@ namespace fep::src::order
             price_queue_.push(price_entity);
         }
 
+    private:
         std::priority_queue<std::shared_ptr<PriceEntity>> price_queue_;
         std::unordered_map<fep::lib::Price4, std::shared_ptr<PriceEntity>> price_to_entry_map_;
         std::unordered_set<int64_t> deleted_order_ids_;
@@ -130,6 +117,19 @@ namespace fep::src::order
         BidOrderBook() = default;
         BidOrderBook(const BidOrderBook &) = delete;
         BidOrderBook(BidOrderBook &&) = delete;
+
+        bool MatchOrder(std::shared_ptr<Order> input_order, std::shared_ptr<Order> target_order) const override
+        {
+            if (target_order == nullptr)
+            {
+                return false;
+            }
+            if (input_order->order_type == OrderType::MARKET)
+            {
+                return true;
+            }
+            return target_order->price >= input_order->price;
+        }
     };
 
     class AskOrderBook : public OrderBook<AskOrderBook>
@@ -138,6 +138,19 @@ namespace fep::src::order
         AskOrderBook() = default;
         AskOrderBook(const AskOrderBook &) = delete;
         AskOrderBook(AskOrderBook &&) = delete;
+
+        bool MatchOrder(std::shared_ptr<Order> input_order, std::shared_ptr<Order> target_order) const override
+        {
+            if (target_order == nullptr)
+            {
+                return false;
+            }
+            if (input_order->order_type == OrderType::MARKET)
+            {
+                return true;
+            }
+            return target_order->price <= input_order->price;
+        }
     };
 
 } // fep::src::order

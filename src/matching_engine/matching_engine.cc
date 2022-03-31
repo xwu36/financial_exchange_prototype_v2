@@ -5,7 +5,16 @@ namespace fep::src::matching_engine
 
     namespace
     {
+        using ::fep::lib::Price4;
+        using ::fep::src::feed_event::DepthUpdateEvents;
+        using ::fep::src::feed_event::FeedEvents;
+        using ::fep::src::feed_event::OrderTradeEvent;
+        using ::fep::src::feed_event::PriceEntityAddEvent;
+        using ::fep::src::feed_event::PriceEntityDeleteEvent;
+        using ::fep::src::feed_event::PriceEntityModifyEvent;
+        using ::fep::src::feed_event::PriceEntityUpdateEvent;
         using ::fep::src::order::Order;
+        using ::fep::src::order::OrderBook;
         using ::fep::src::order::OrderSide;
         using ::fep::src::order::OrderStatus;
         using ::fep::src::order::PriceEntity;
@@ -48,58 +57,68 @@ namespace fep::src::matching_engine
             return false;
         }
 
-        void UpdateOrderTradeEvent(const fep::lib::Price4 &price,
-                                   const int32_t quantity, std::vector<fep::src::feed_event::OrderTradeEvent> &order_trade_events)
+        void UpdateOrderTradeEvent(const Price4 &price,
+                                   const int32_t quantity, std::vector<OrderTradeEvent> &order_trade_events)
         {
-            order_trade_events.push_back(fep::src::feed_event::OrderTradeEvent{
+            order_trade_events.push_back(OrderTradeEvent{
                 .price = price,
                 .quantity = quantity});
         }
 
+        std::shared_ptr<PriceEntityUpdateEvent> GetUpdateEvent(const Price4 &price, const int32_t pre_quantity,
+                                                               const int32_t post_quantity)
+        {
+            if (pre_quantity == post_quantity)
+            {
+                return nullptr;
+            }
+            if (post_quantity == 0)
+            {
+                return std::make_shared<PriceEntityDeleteEvent>(price, post_quantity);
+            }
+            if (pre_quantity == 0)
+            {
+                return std::make_shared<PriceEntityAddEvent>(price, post_quantity);
+            }
+            return std::make_shared<PriceEntityModifyEvent>(price, post_quantity);
+        }
+
         template <class T>
         void UpdateDepthUpdateEvents(const bool buy,
-                                     const std::unordered_map<fep::lib::Price4, int32_t> &seen_price_to_pre_quantity,
-                                     fep::src::feed_event::DepthUpdateEvents &depth_update_events,
-                                     fep::src::order::OrderBook<T> &order_book)
+                                     const Price4 &new_order_price,
+                                     const int32_t new_order_pre_quantity,
+                                     const int32_t new_order_post_quantity,
+                                     const std::unordered_map<Price4, int32_t> &seen_price_to_pre_quantity,
+                                     DepthUpdateEvents &depth_update_events,
+                                     OrderBook<T> &order_book)
         {
+            std::shared_ptr<PriceEntityUpdateEvent> new_order_update_event = GetUpdateEvent(new_order_price, new_order_pre_quantity,
+                                                                                            new_order_post_quantity);
+            if (new_order_update_event != nullptr)
+            {
+                if (buy)
+                    depth_update_events.bid_events.push_back(new_order_update_event);
+                else
+                    depth_update_events.ask_events.push_back(new_order_update_event);
+            }
+
             for (const auto &[price, pre_quantity] : seen_price_to_pre_quantity)
             {
-                const int32_t post_quantity = order_book.GetQuantityForPrice(price);
-                if (pre_quantity == post_quantity)
-                {
-                    continue;
-                }
-
-                std::shared_ptr<fep::src::feed_event::PriceEntityUpdateEvent> update_event = nullptr;
-                if (post_quantity == 0)
-                {
-                    update_event = std::make_shared<fep::src::feed_event::PriceEntityDeleteEvent>(price, post_quantity);
-                }
-                else if (pre_quantity == 0)
-                {
-                    update_event = std::make_shared<fep::src::feed_event::PriceEntityAddEvent>(price, post_quantity);
-                }
+                std::shared_ptr<PriceEntityUpdateEvent> update_event = GetUpdateEvent(price, pre_quantity,
+                                                                                      order_book.GetQuantityForPrice(price));
+                if (buy)
+                    depth_update_events.ask_events.push_back(update_event);
                 else
-                {
-                    update_event = std::make_shared<fep::src::feed_event::PriceEntityModifyEvent>(price, post_quantity);
-                }
-
-                if ((buy && post_quantity > pre_quantity) || (!buy && post_quantity < pre_quantity))
-                {
-                    depth_update_events.bid_events.push_back(std::move(update_event));
-                }
-                else
-                {
-                    depth_update_events.ask_events.push_back(std::move(update_event));
-                }
+                    depth_update_events.bid_events.push_back(update_event);
             }
         }
+
     }
 
-    fep::src::feed_event::FeedEvents MatchingEngine::Process(std::shared_ptr<fep::src::order::Order> order)
+    FeedEvents MatchingEngine::Process(std::shared_ptr<Order> order)
     {
         // TODO: check if an offer is valid.
-        fep::src::feed_event::FeedEvents events;
+        FeedEvents events;
         if (order->type == OrderStatus::UNKNOWN)
         {
             return events;
@@ -110,63 +129,54 @@ namespace fep::src::matching_engine
         }
         if (order->side == OrderSide::BUY)
         {
-            return Buy(order);
+            return Process(order, ask_order_books_[order->symbol], bid_order_books_[order->symbol]);
         }
         if (order->side == OrderSide::SELL)
         {
-            auto &bid_order_book = bid_order_books_[order->symbol];
-            return Sell(order, bid_order_book);
+            return Process(order, bid_order_books_[order->symbol], ask_order_books_[order->symbol]);
         }
         return events;
     }
 
-    template <class T>
-    fep::src::feed_event::FeedEvents MatchingEngine::Sell(std::shared_ptr<fep::src::order::Order> new_order,
-                                                          fep::src::order::OrderBook<T> &order_book)
+    template <class T, class U>
+    FeedEvents MatchingEngine::Process(std::shared_ptr<Order> new_order, OrderBook<T> &order_book_to_match,
+                                       OrderBook<U> &order_book_to_insert)
     {
-        fep::src::feed_event::FeedEvents feed_events{};
-        std::unordered_map<fep::lib::Price4, int32_t> seen_price_to_pre_quantity;
-        seen_price_to_pre_quantity.insert({new_order->price, order_book.GetQuantityForPrice(new_order->price)});
+        FeedEvents feed_events{};
+        std::unordered_map<Price4, int32_t> seen_price_to_pre_quantity;
+        const int32_t new_order_pre_quantity = order_book_to_insert.GetQuantityForPrice(new_order->price);
 
         while (new_order->quantity != 0)
         {
             // Get the top offer and its price entity.
-            std::shared_ptr<PriceEntity> first_price_entry = order_book.TopPriceEntity();
+            std::shared_ptr<PriceEntity> first_price_entry = order_book_to_match.TopPriceEntity();
             auto &visible_queue = first_price_entry->visible_queue;
             std::shared_ptr<Order> first_order = visible_queue.front();
 
             // Add the price and its quantity of the new order into the price_map.
-            seen_price_to_pre_quantity.insert({first_order->price, order_book.GetQuantityForPrice(first_order->price)});
+            seen_price_to_pre_quantity.insert({first_order->price, order_book_to_match.GetQuantityForPrice(first_order->price)});
 
             // If the new_order cannot be matched, add it into the orderbook.
-            if (!order_book.MatchOrder(new_order, first_order))
+            if (!order_book_to_match.MatchOrder(new_order, first_order))
             {
-                const bool inserted = order_book.InsertPrice(new_order->price);
-                auto price_entry = order_book.GetPriceEntity(new_order->price);
+                const bool inserted = order_book_to_insert.InsertPrice(new_order->price);
+                std::shared_ptr<PriceEntity> price_entry = order_book_to_insert.GetPriceEntity(new_order->price);
                 price_entry->visible_queue.push_back(new_order);
                 // If it is a new price_entry, add it to the queue.
                 if (inserted)
                 {
-                    order_book.PushPriceEntityToQueue(price_entry);
+                    order_book_to_insert.PushPriceEntityToQueue(price_entry);
                 }
                 price_entry->visible_quantity += new_order->quantity;
                 break;
             }
 
             // If the new order can be matched at the best limit price.
-            const int32_t first_order_pre_quantity = first_order->quantity;
-            if (new_order->quantity >= first_order->quantity)
-            {
-                new_order->quantity -= first_order->quantity;
-                first_order->quantity = 0;
-            }
-            else
-            {
-                first_order->quantity -= new_order->quantity;
-                new_order->quantity = 0;
-            }
-            UpdateOrderTradeEvent(first_order->price, first_order_pre_quantity - first_order->quantity,
-                                  feed_events.order_trade_events);
+            const int32_t min_quantity = std::min(new_order->quantity, first_order->quantity);
+            new_order->quantity -= min_quantity;
+            first_order->quantity -= min_quantity;
+
+            UpdateOrderTradeEvent(first_order->price, min_quantity, feed_events.order_trade_events);
 
             // If replenish happens, pop out and push back the first order to keep the right order.
             if (MaybeReplenish(first_order))
@@ -177,21 +187,19 @@ namespace fep::src::matching_engine
             MaybeMarkAsDeleted(first_order);
         }
 
-        UpdateDepthUpdateEvents(new_order->side == OrderSide::BUY, seen_price_to_pre_quantity,
-                                feed_events.depth_update_events, order_book);
+        UpdateDepthUpdateEvents(new_order->side == OrderSide::BUY,
+                                new_order->price,
+                                new_order_pre_quantity,
+                                new_order->quantity,
+                                seen_price_to_pre_quantity,
+                                feed_events.depth_update_events, order_book_to_match);
 
         return feed_events;
     }
 
-    fep::src::feed_event::FeedEvents MatchingEngine::Buy(std::shared_ptr<fep::src::order::Order> order)
+    FeedEvents MatchingEngine::Cancel(std::shared_ptr<Order> order)
     {
-        fep::src::feed_event::FeedEvents events;
-        return events;
-    }
-
-    fep::src::feed_event::FeedEvents MatchingEngine::Cancel(std::shared_ptr<fep::src::order::Order> order)
-    {
-        fep::src::feed_event::FeedEvents events;
+        FeedEvents events;
         return events;
     }
 

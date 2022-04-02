@@ -179,14 +179,14 @@ namespace fep::src::matching_engine
         }
     }
 
-    FeedEvents MatchingEngine::Process(std::shared_ptr<Order> order)
+    absl::StatusOr<FeedEvents> MatchingEngine::Process(std::shared_ptr<Order> order)
     {
         // TODO: check if an offer is valid.
         FeedEvents events;
 
         if (order->type == OrderStatus::UNKNOWN)
         {
-            return events;
+            return absl::InvalidArgumentError("not a NEW or CANCEL order");
         }
         if (order->type == OrderStatus::CANCEL)
         {
@@ -200,16 +200,16 @@ namespace fep::src::matching_engine
         {
             return ProcessInternal(order, order_to_content_map_, bid_order_books_[order->symbol], ask_order_books_[order->symbol]);
         }
-        return events;
+        return absl::InvalidArgumentError("this order cannot be processed");
     }
 
-    FeedEvents MatchingEngine::Cancel(std::shared_ptr<Order> order)
+    absl::StatusOr<FeedEvents> MatchingEngine::Cancel(std::shared_ptr<Order> order)
     {
         FeedEvents events;
         const auto kv = order_to_content_map_.find(order->order_id);
         if (kv == order_to_content_map_.end())
         {
-            return events;
+            return absl::NotFoundError(absl::StrCat("Failed to cancel order ", order->order_id));
         }
         const auto order_details = kv->second;
         auto &ask_order_book = ask_order_books_[order_details->symbol];

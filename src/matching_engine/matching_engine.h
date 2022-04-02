@@ -3,6 +3,7 @@
 
 #include <unordered_map>
 
+#include "external/com_google_absl/absl/status/statusor.h"
 #include "src/feed_event/feed_event.h"
 #include "src/order/order.h"
 #include "src/order/order_book.h"
@@ -16,10 +17,10 @@ namespace fep::src::matching_engine
   public:
     MatchingEngine() {}
     ~MatchingEngine() = default;
-    fep::src::feed_event::FeedEvents Process(std::shared_ptr<fep::src::order::Order> order);
+    absl::StatusOr<fep::src::feed_event::FeedEvents> Process(std::shared_ptr<fep::src::order::Order> order);
 
   protected:
-    fep::src::feed_event::FeedEvents Cancel(std::shared_ptr<fep::src::order::Order> order);
+    absl::StatusOr<fep::src::feed_event::FeedEvents> Cancel(std::shared_ptr<fep::src::order::Order> order);
 
     std::unordered_map<fep::src::stock::Symbol, fep::src::order::BidOrderBook> bid_order_books_;
     std::unordered_map<fep::src::stock::Symbol, fep::src::order::AskOrderBook> ask_order_books_;

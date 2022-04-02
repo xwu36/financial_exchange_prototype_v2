@@ -12,6 +12,7 @@ cc_library(
         "//src/feed_event:feed_event",
         "//src/order:order",
         "//src/order:order_book",
+        "@com_google_absl//absl/status:statusor",
     ],
 )
 

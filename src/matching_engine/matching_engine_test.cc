@@ -28,8 +28,8 @@ namespace fep::src::matching_engine
                                 {"limit_price", "9.90"},
                                 {"order_type", "LIMIT"}};
             std::shared_ptr<Order> order8 = std::make_shared<Order>(data8);
-            const FeedEvents events1 = engine.Process(order8);
-            EXPECT_EQ(events1.to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"9.90\\\",\\\"quantity\\\":500}\"]},{\"ask\":null}]");
+            const auto &events1 = engine.Process(order8);
+            EXPECT_EQ(events1->to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"9.90\\\",\\\"quantity\\\":500}\"]},{\"ask\":null}]");
 
             const json data9 = {{"time", 10},
                                 {"type", "NEW"},
@@ -42,8 +42,8 @@ namespace fep::src::matching_engine
                                 },
                                 {"limit_price", "9.99"},
                                 {"order_type", "LIMIT"}};
-            const FeedEvents events2 = engine.Process(std::make_shared<Order>(data9.get<Order>()));
-            EXPECT_EQ(events2.to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"9.99\\\",\\\"quantity\\\":500}\"]},{\"ask\":null}]");
+            const auto &events2 = engine.Process(std::make_shared<Order>(data9.get<Order>()));
+            EXPECT_EQ(events2->to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"9.99\\\",\\\"quantity\\\":500}\"]},{\"ask\":null}]");
 
             const json data5 = {{"time", 10},
                                 {"type", "NEW"},
@@ -56,8 +56,8 @@ namespace fep::src::matching_engine
                                 },
                                 {"limit_price", "10.00"},
                                 {"order_type", "LIMIT"}};
-            const FeedEvents events3 = engine.Process(std::make_shared<Order>(data5.get<Order>()));
-            EXPECT_EQ(events3.to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"10.00\\\",\\\"quantity\\\":500}\"]},{\"ask\":null}]");
+            const auto &events3 = engine.Process(std::make_shared<Order>(data5.get<Order>()));
+            EXPECT_EQ(events3->to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"10.00\\\",\\\"quantity\\\":500}\"]},{\"ask\":null}]");
 
             const json data10 = {{"time", 10},
                                  {"type", "NEW"},
@@ -70,8 +70,8 @@ namespace fep::src::matching_engine
                                  },
                                  {"limit_price", "10.01"},
                                  {"order_type", "LIMIT"}};
-            const FeedEvents events4 = engine.Process(std::make_shared<Order>(data10.get<Order>()));
-            EXPECT_EQ(events4.to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"10.01\\\",\\\"quantity\\\":200}\"]},{\"ask\":null}]");
+            const auto &events4 = engine.Process(std::make_shared<Order>(data10.get<Order>()));
+            EXPECT_EQ(events4->to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"10.01\\\",\\\"quantity\\\":200}\"]},{\"ask\":null}]");
 
             const json data1 = {{"time", 9},
                                 {"type", "NEW"},
@@ -84,8 +84,8 @@ namespace fep::src::matching_engine
                                 },
                                 {"limit_price", "10.01"},
                                 {"order_type", "LIMIT"}};
-            const FeedEvents events5 = engine.Process(std::make_shared<Order>(data1.get<Order>()));
-            EXPECT_EQ(events5.to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"MODIFY\\\",\\\"price\\\":\\\"10.01\\\",\\\"quantity\\\":300}\"]},{\"ask\":null}]");
+            const auto &events5 = engine.Process(std::make_shared<Order>(data1.get<Order>()));
+            EXPECT_EQ(events5->to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"MODIFY\\\",\\\"price\\\":\\\"10.01\\\",\\\"quantity\\\":300}\"]},{\"ask\":null}]");
 
             const json data12 = {{"time", 10},
                                  {"type", "NEW"},
@@ -98,8 +98,8 @@ namespace fep::src::matching_engine
                                  },
                                  {"limit_price", "10.02"},
                                  {"order_type", "LIMIT"}};
-            const FeedEvents events6 = engine.Process(std::make_shared<Order>(data12.get<Order>()));
-            EXPECT_EQ(events6.to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"10.02\\\",\\\"quantity\\\":100}\"]}]");
+            const auto &events6 = engine.Process(std::make_shared<Order>(data12.get<Order>()));
+            EXPECT_EQ(events6->to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"10.02\\\",\\\"quantity\\\":100}\"]}]");
 
             const json data2 = {{"time", 9},
                                 {"type", "NEW"},
@@ -112,8 +112,8 @@ namespace fep::src::matching_engine
                                 },
                                 {"limit_price", "10.03"},
                                 {"order_type", "LIMIT"}};
-            const FeedEvents events7 = engine.Process(std::make_shared<Order>(data2.get<Order>()));
-            EXPECT_EQ(events7.to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"10.03\\\",\\\"quantity\\\":500}\"]}]");
+            const auto &events7 = engine.Process(std::make_shared<Order>(data2.get<Order>()));
+            EXPECT_EQ(events7->to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"10.03\\\",\\\"quantity\\\":500}\"]}]");
 
             const json data3 = {{"time", 10},
                                 {"type", "NEW"},
@@ -126,8 +126,8 @@ namespace fep::src::matching_engine
                                 },
                                 {"limit_price", "10.03"},
                                 {"order_type", "LIMIT"}};
-            const FeedEvents events8 = engine.Process(std::make_shared<Order>(data3.get<Order>()));
-            EXPECT_EQ(events8.to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":[\"{\\\"action\\\":\\\"MODIFY\\\",\\\"price\\\":\\\"10.03\\\",\\\"quantity\\\":700}\"]}]");
+            const auto &events8 = engine.Process(std::make_shared<Order>(data3.get<Order>()));
+            EXPECT_EQ(events8->to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":[\"{\\\"action\\\":\\\"MODIFY\\\",\\\"price\\\":\\\"10.03\\\",\\\"quantity\\\":700}\"]}]");
 
             const json data14 = {{"time", 9},
                                  {"type", "NEW"},
@@ -140,8 +140,8 @@ namespace fep::src::matching_engine
                                  },
                                  {"limit_price", "10.04"},
                                  {"order_type", "LIMIT"}};
-            const FeedEvents events9 = engine.Process(std::make_shared<Order>(data14.get<Order>()));
-            EXPECT_EQ(events9.to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"10.04\\\",\\\"quantity\\\":1000}\"]}]");
+            const auto &events9 = engine.Process(std::make_shared<Order>(data14.get<Order>()));
+            EXPECT_EQ(events9->to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"10.04\\\",\\\"quantity\\\":1000}\"]}]");
 
             // Case 1 with Order15.
             const json data15 = {{"time", 20},
@@ -155,8 +155,8 @@ namespace fep::src::matching_engine
                                  },
                                  {"limit_price", "10.03"},
                                  {"order_type", "LIMIT"}};
-            const FeedEvents events10 = engine.Process(std::make_shared<Order>(data15.get<Order>()));
-            EXPECT_EQ(events10.to_str(), "{\"price\":\"10.02\",\"quantity\":100,\"type\":\"TRADE\"}/n{\"price\":\"10.03\",\"quantity\":100,\"type\":\"TRADE\"}/n[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":[\"{\\\"action\\\":\\\"MODIFY\\\",\\\"price\\\":\\\"10.03\\\",\\\"quantity\\\":600}\",\"{\\\"action\\\":\\\"DELETE\\\",\\\"price\\\":\\\"10.02\\\",\\\"quantity\\\":0}\"]}]");
+            const auto &events10 = engine.Process(std::make_shared<Order>(data15.get<Order>()));
+            EXPECT_EQ(events10->to_str(), "{\"price\":\"10.02\",\"quantity\":100,\"type\":\"TRADE\"}/n{\"price\":\"10.03\",\"quantity\":100,\"type\":\"TRADE\"}/n[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":[\"{\\\"action\\\":\\\"MODIFY\\\",\\\"price\\\":\\\"10.03\\\",\\\"quantity\\\":600}\",\"{\\\"action\\\":\\\"DELETE\\\",\\\"price\\\":\\\"10.02\\\",\\\"quantity\\\":0}\"]}]");
 
             // Case 2 with Order16.
             const json data16 = {{"time", 21},
@@ -170,8 +170,8 @@ namespace fep::src::matching_engine
                                  },
                                  {"limit_price", "10.02"},
                                  {"order_type", "LIMIT"}};
-            const FeedEvents events11 = engine.Process(std::make_shared<Order>(data16.get<Order>()));
-            EXPECT_EQ(events11.to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"10.02\\\",\\\"quantity\\\":600}\"]}]");
+            const auto &events11 = engine.Process(std::make_shared<Order>(data16.get<Order>()));
+            EXPECT_EQ(events11->to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"10.02\\\",\\\"quantity\\\":600}\"]}]");
 
             // Case 3 with Order17.
             const json data17 = {{"time", 22},
@@ -185,15 +185,15 @@ namespace fep::src::matching_engine
                                  },
                                  {"limit_price", "10.00"},
                                  {"order_type", "LIMIT"}};
-            const FeedEvents events12 = engine.Process(std::make_shared<Order>(data17.get<Order>()));
-            EXPECT_EQ(events12.to_str(), "{\"price\":\"10.01\",\"quantity\":200,\"type\":\"TRADE\"}/n{\"price\":\"10.01\",\"quantity\":100,\"type\":\"TRADE\"}/n{\"price\":\"10.00\",\"quantity\":500,\"type\":\"TRADE\"}/n[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"DELETE\\\",\\\"price\\\":\\\"10.00\\\",\\\"quantity\\\":0}\",\"{\\\"action\\\":\\\"DELETE\\\",\\\"price\\\":\\\"10.01\\\",\\\"quantity\\\":0}\"]},{\"ask\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"10.00\\\",\\\"quantity\\\":200}\"]}]");
+            const auto &events12 = engine.Process(std::make_shared<Order>(data17.get<Order>()));
+            EXPECT_EQ(events12->to_str(), "{\"price\":\"10.01\",\"quantity\":200,\"type\":\"TRADE\"}/n{\"price\":\"10.01\",\"quantity\":100,\"type\":\"TRADE\"}/n{\"price\":\"10.00\",\"quantity\":500,\"type\":\"TRADE\"}/n[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"DELETE\\\",\\\"price\\\":\\\"10.00\\\",\\\"quantity\\\":0}\",\"{\\\"action\\\":\\\"DELETE\\\",\\\"price\\\":\\\"10.01\\\",\\\"quantity\\\":0}\"]},{\"ask\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"10.00\\\",\\\"quantity\\\":200}\"]}]");
 
             // Case 4 with Order18.
             const json data18 = {{"time", 23},
                                  {"type", "CANCEL"},
                                  {"order_id", 2}};
-            const FeedEvents events13 = engine.Process(std::make_shared<Order>(data18.get<Order>()));
-            EXPECT_EQ(events13.to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":[\"{\\\"action\\\":\\\"MODIFY\\\",\\\"price\\\":\\\"10.03\\\",\\\"quantity\\\":200}\"]}]");
+            const auto &events13 = engine.Process(std::make_shared<Order>(data18.get<Order>()));
+            EXPECT_EQ(events13->to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":[\"{\\\"action\\\":\\\"MODIFY\\\",\\\"price\\\":\\\"10.03\\\",\\\"quantity\\\":200}\"]}]");
         }
 
         TEST(MatchingEngineImplTest, ProcessMarketOrders)
@@ -209,8 +209,8 @@ namespace fep::src::matching_engine
                                     500,
                                 },
                                 {"order_type", "MARKET"}};
-            const FeedEvents events1 = engine.Process(std::make_shared<Order>(data8.get<Order>()));
-            EXPECT_EQ(events1.to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":null}]");
+            const auto &events1 = engine.Process(std::make_shared<Order>(data8.get<Order>()));
+            EXPECT_EQ(events1->to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":null}]");
 
             const json data9 = {{"time", 10},
                                 {"type", "NEW"},
@@ -223,8 +223,8 @@ namespace fep::src::matching_engine
                                 },
                                 {"limit_price", "9.99"},
                                 {"order_type", "LIMIT"}};
-            const FeedEvents events2 = engine.Process(std::make_shared<Order>(data9.get<Order>()));
-            EXPECT_EQ(events2.to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"9.99\\\",\\\"quantity\\\":500}\"]},{\"ask\":null}]");
+            const auto &events2 = engine.Process(std::make_shared<Order>(data9.get<Order>()));
+            EXPECT_EQ(events2->to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"9.99\\\",\\\"quantity\\\":500}\"]},{\"ask\":null}]");
 
             const json data5 = {{"time", 10},
                                 {"type", "NEW"},
@@ -236,8 +236,8 @@ namespace fep::src::matching_engine
                                     200,
                                 },
                                 {"order_type", "MARKET"}};
-            const FeedEvents events3 = engine.Process(std::make_shared<Order>(data5.get<Order>()));
-            EXPECT_EQ(events3.to_str(), "{\"price\":\"9.99\",\"quantity\":200,\"type\":\"TRADE\"}/n[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"MODIFY\\\",\\\"price\\\":\\\"9.99\\\",\\\"quantity\\\":300}\"]},{\"ask\":null}]");
+            const auto &events3 = engine.Process(std::make_shared<Order>(data5.get<Order>()));
+            EXPECT_EQ(events3->to_str(), "{\"price\":\"9.99\",\"quantity\":200,\"type\":\"TRADE\"}/n[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"MODIFY\\\",\\\"price\\\":\\\"9.99\\\",\\\"quantity\\\":300}\"]},{\"ask\":null}]");
 
             const json data10 = {{"time", 10},
                                  {"type", "NEW"},
@@ -249,8 +249,8 @@ namespace fep::src::matching_engine
                                      1000,
                                  },
                                  {"order_type", "MARKET"}};
-            const FeedEvents events4 = engine.Process(std::make_shared<Order>(data10.get<Order>()));
-            EXPECT_EQ(events4.to_str(), "{\"price\":\"9.99\",\"quantity\":300,\"type\":\"TRADE\"}/n[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"DELETE\\\",\\\"price\\\":\\\"9.99\\\",\\\"quantity\\\":0}\"]},{\"ask\":null}]");
+            const auto &events4 = engine.Process(std::make_shared<Order>(data10.get<Order>()));
+            EXPECT_EQ(events4->to_str(), "{\"price\":\"9.99\",\"quantity\":300,\"type\":\"TRADE\"}/n[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"DELETE\\\",\\\"price\\\":\\\"9.99\\\",\\\"quantity\\\":0}\"]},{\"ask\":null}]");
 
             const json data1 = {{"time", 9},
                                 {"type", "NEW"},
@@ -262,8 +262,8 @@ namespace fep::src::matching_engine
                                     100,
                                 },
                                 {"order_type", "MARKET"}};
-            const FeedEvents events5 = engine.Process(std::make_shared<Order>(data1.get<Order>()));
-            EXPECT_EQ(events5.to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":null}]");
+            const auto &events5 = engine.Process(std::make_shared<Order>(data1.get<Order>()));
+            EXPECT_EQ(events5->to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":null}]");
         }
     }
 } // fep::src::matching_engine

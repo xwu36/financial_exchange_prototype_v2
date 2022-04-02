@@ -86,23 +86,18 @@ namespace fep::src::order
 
         int32_t GetQuantityForPrice(const fep::lib::Price4 &price)
         {
-            return price_to_entry_map_[price]->visible_quantity;
+            const auto kv = price_to_entry_map_.find(price);
+            return (kv == price_to_entry_map_.end()) ? 0 : kv->second->visible_quantity;
         }
 
         std::shared_ptr<PriceEntity> GetPriceEntity(const fep::lib::Price4 &price)
         {
-            return price_to_entry_map_[price];
-        }
-
-        bool InsertPrice(const fep::lib::Price4 &price)
-        {
             const auto &itr = price_to_entry_map_.insert({price, std::make_shared<PriceEntity>()});
-            return itr.second;
-        }
-
-        void PushPriceEntityToQueue(const std::shared_ptr<PriceEntity> price_entity)
-        {
-            price_queue_.push(price_entity);
+            if (!itr.second)
+            {
+                price_queue_.push(itr.first->second);
+            }
+            return itr.first->second;
         }
 
     private:

@@ -14,3 +14,15 @@ cc_library(
         "//src/order:order_book",
     ],
 )
+
+cc_test(
+    name = "matching_engine_test",
+    srcs = ["matching_engine_test.cc"],
+    deps = [
+        ":matching_engine",
+        "//src/order:order",
+        "//src/order:order_parser",
+        "@com_google_googletest//:gtest_main",
+        "@com_github_nlohmann_json//:json",
+    ],
+)

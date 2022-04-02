@@ -45,7 +45,7 @@ namespace fep::src::feed_event
             std::shared_ptr<PriceEntityUpdateEvent> update_event2 = std::make_shared<PriceEntityModifyEvent>(Price4("14.32"), 400);
             events.depth_update_events.bid_events.push_back(update_event1);
             events.depth_update_events.bid_events.push_back(update_event2);
-            EXPECT_EQ(events.to_str(), std::string("{\"price\":\"12.32\",\"quantity\":200,\"type\":\"TRADE\"}/n{\"price\":\"11.32\",\"quantity\":100,\"type\":\"TRADE\"}/n[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"11.32\\\",\\\"quantity\\\":100}\",\"{\\\"action\\\":\\\"MODIFY\\\",\\\"price\\\":\\\"14.32\\\",\\\"quantity\\\":400}\"]},null]"));
+            EXPECT_EQ(events.to_str(), std::string("{\"price\":\"12.32\",\"quantity\":200,\"type\":\"TRADE\"}/n{\"price\":\"11.32\",\"quantity\":100,\"type\":\"TRADE\"}/n[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"11.32\\\",\\\"quantity\\\":100}\",\"{\\\"action\\\":\\\"MODIFY\\\",\\\"price\\\":\\\"14.32\\\",\\\"quantity\\\":400}\"]},{\"ask\":null}]));
         }
 
     } // namespace

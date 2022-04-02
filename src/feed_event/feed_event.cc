@@ -33,12 +33,14 @@ namespace fep::src::feed_event
         jtype["type"] = this->type;
 
         json jbid;
+        jbid["bid"] = {};
         for (const auto &bid : this->bid_events)
         {
             jbid["bid"].push_back(bid->to_str());
         }
 
         json jask;
+        jask["ask"] = {};
         for (const auto &ask : this->ask_events)
         {
             jask["ask"].push_back(ask->to_str());

@@ -1,5 +1,7 @@
 #include "src/matching_engine/matching_engine.h"
 
+#include <iostream>
+
 namespace fep::src::matching_engine
 {
 
@@ -150,26 +152,22 @@ namespace fep::src::matching_engine
         {
             // Get the top offer and its price entity.
             std::shared_ptr<PriceEntity> first_price_entry = order_book_to_match.TopPriceEntity();
-            auto &visible_queue = first_price_entry->visible_queue;
-            std::shared_ptr<Order> first_order = visible_queue.front();
-
-            // Add the price and its quantity of the new order into the price_map.
-            seen_price_to_pre_quantity.insert({first_order->price, order_book_to_match.GetQuantityForPrice(first_order->price)});
+            std::shared_ptr<Order> first_order = (first_price_entry == nullptr) ? nullptr : first_price_entry->visible_queue.front();
 
             // If the new_order cannot be matched, add it into the orderbook.
-            if (!order_book_to_match.MatchOrder(new_order, first_order))
+            if (first_order == nullptr || !order_book_to_match.MatchOrder(new_order, first_order))
             {
-                const bool inserted = order_book_to_insert.InsertPrice(new_order->price);
                 std::shared_ptr<PriceEntity> price_entry = order_book_to_insert.GetPriceEntity(new_order->price);
                 price_entry->visible_queue.push_back(new_order);
-                // If it is a new price_entry, add it to the queue.
-                if (inserted)
-                {
-                    order_book_to_insert.PushPriceEntityToQueue(price_entry);
-                }
                 price_entry->visible_quantity += new_order->quantity;
                 break;
             }
+
+            // Check if first_price_entry is a nullptr, which shouldn't happen.
+
+            auto &visible_queue = first_price_entry->visible_queue;
+            // Add the price and its quantity of the new order into the price_map.
+            seen_price_to_pre_quantity.insert({first_order->price, order_book_to_match.GetQuantityForPrice(first_order->price)});
 
             // If the new order can be matched at the best limit price.
             const int32_t min_quantity = std::min(new_order->quantity, first_order->quantity);

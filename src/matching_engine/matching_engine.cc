@@ -133,9 +133,8 @@ namespace fep::src::matching_engine
                 // If the new_order cannot be matched, add it into the orderbook.
                 if (first_order == nullptr || !order_book_to_match.MatchOrder(new_order, first_order))
                 {
+                    order_book_to_insert.InsertOrder(new_order);
                     std::shared_ptr<PriceEntity> price_entry = order_book_to_insert.GetPriceEntity(new_order->price);
-                    price_entry->visible_queue.push_back(new_order);
-                    price_entry->visible_quantity += new_order->quantity;
                     new_order_price_post_quantity = price_entry->visible_quantity;
                     break;
                 }
@@ -200,6 +199,8 @@ namespace fep::src::matching_engine
 
     FeedEvents MatchingEngine::Cancel(std::shared_ptr<Order> order)
     {
+        // const auto ask_kv = ask_order_books_.find(order->symbol);
+        // if (ask)
         FeedEvents events;
         return events;
     }

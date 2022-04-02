@@ -14,6 +14,8 @@ namespace fep::lib
     // convert from string
     explicit Price4(const std::string &str);
 
+    Price4(const Price4& price) : Price4(price.unscaled_) {}
+
     long unscaled() const { return unscaled_; }
 
     // convert to string

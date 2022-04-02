@@ -19,16 +19,17 @@ namespace fep::src::order
 
     struct PriceEntity
     {
+        PriceEntity(const fep::lib::Price4 &in_price) : price(in_price) {}
         fep::lib::Price4 price;
         mutable std::deque<std::shared_ptr<Order>> visible_queue;
-        int32_t visible_quantity;
+        int32_t visible_quantity = 0;
     };
 
     struct BidComparator
     {
         bool operator()(const std::shared_ptr<PriceEntity> &lhs, const std::shared_ptr<PriceEntity> &rhs) const
         {
-            return lhs->price > rhs->price;
+            return lhs->price < rhs->price;
         }
     };
 
@@ -36,7 +37,7 @@ namespace fep::src::order
     {
         bool operator()(const std::shared_ptr<PriceEntity> &lhs, const std::shared_ptr<PriceEntity> &rhs) const
         {
-            return lhs->price < rhs->price;
+            return lhs->price > rhs->price;
         }
     };
 
@@ -84,7 +85,7 @@ namespace fep::src::order
             return nullptr;
         }
 
-        int32_t GetQuantityForPrice(const fep::lib::Price4 &price)
+        int32_t GetQuantityForPrice(const fep::lib::Price4 &price) const
         {
             const auto kv = price_to_entry_map_.find(price);
             return (kv == price_to_entry_map_.end()) ? 0 : kv->second->visible_quantity;
@@ -92,8 +93,8 @@ namespace fep::src::order
 
         std::shared_ptr<PriceEntity> GetPriceEntity(const fep::lib::Price4 &price)
         {
-            const auto &itr = price_to_entry_map_.insert({price, std::make_shared<PriceEntity>()});
-            if (!itr.second)
+            const auto &itr = price_to_entry_map_.insert({price, std::make_shared<PriceEntity>(price)});
+            if (itr.second)
             {
                 price_queue_.push(itr.first->second);
             }
@@ -101,7 +102,7 @@ namespace fep::src::order
         }
 
     private:
-        std::priority_queue<std::shared_ptr<PriceEntity>> price_queue_;
+        std::priority_queue<std::shared_ptr<PriceEntity>, std::vector<std::shared_ptr<PriceEntity>>, T> price_queue_;
         std::unordered_map<fep::lib::Price4, std::shared_ptr<PriceEntity>> price_to_entry_map_;
         std::unordered_set<int64_t> deleted_order_ids_;
     };
@@ -127,7 +128,7 @@ namespace fep::src::order
         }
     };
 
-    class AskOrderBook : public OrderBook<AskOrderBook>
+    class AskOrderBook : public OrderBook<AskComparator>
     {
     public:
         AskOrderBook() = default;

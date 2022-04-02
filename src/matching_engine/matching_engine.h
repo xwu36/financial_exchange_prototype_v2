@@ -19,10 +19,6 @@ namespace fep::src::matching_engine
     fep::src::feed_event::FeedEvents Process(std::shared_ptr<fep::src::order::Order> order);
 
   protected:
-    template <class T, class U>
-    fep::src::feed_event::FeedEvents Process(std::shared_ptr<fep::src::order::Order> new_order,
-                                             fep::src::order::OrderBook<T> &order_book_to_match,
-                                             fep::src::order::OrderBook<U> &order_book_to_insert);
     fep::src::feed_event::FeedEvents Cancel(std::shared_ptr<fep::src::order::Order> order);
 
     std::unordered_map<fep::src::stock::Symbol, fep::src::order::BidOrderBook> bid_order_books_;

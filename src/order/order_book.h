@@ -140,13 +140,13 @@ namespace fep::src::order
 
         bool MatchOrder(std::shared_ptr<Order> input_order, std::shared_ptr<Order> target_order) const override
         {
+            if (input_order->order_type == OrderType::MARKET)
+            {
+                return target_order != nullptr;
+            }
             if (target_order == nullptr)
             {
                 return false;
-            }
-            if (input_order->order_type == OrderType::MARKET)
-            {
-                return true;
             }
             return target_order->price >= input_order->price;
         }
@@ -161,13 +161,13 @@ namespace fep::src::order
 
         bool MatchOrder(std::shared_ptr<Order> input_order, std::shared_ptr<Order> target_order) const override
         {
+            if (input_order->order_type == OrderType::MARKET)
+            {
+                return target_order != nullptr;
+            }
             if (target_order == nullptr)
             {
                 return false;
-            }
-            if (input_order->order_type == OrderType::MARKET)
-            {
-                return true;
             }
             return target_order->price <= input_order->price;
         }

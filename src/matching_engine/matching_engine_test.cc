@@ -194,85 +194,76 @@ namespace fep::src::matching_engine
                                  {"order_id", 2}};
             const FeedEvents events13 = engine.Process(std::make_shared<Order>(data18.get<Order>()));
             EXPECT_EQ(events13.to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":[\"{\\\"action\\\":\\\"MODIFY\\\",\\\"price\\\":\\\"10.03\\\",\\\"quantity\\\":200}\"]}]");
+        }
 
-            // TEST_F(MatchingEngineImplTest, ProcessMarketOrders)
-            // {
-            //     MatchingEngineImpl engine(rule_, /*lot_size=*/10);
-            //     const json data8 = {{"time", 10},
-            //                         {"type", "NEW"},
-            //                         {"order_id", 8},
-            //                         {"symbol", "AAPL"},
-            //                         {"side", "BUY"},
-            //                         {
-            //                             "quantity",
-            //                             500,
-            //                         },
-            //                         {"order_type", "MARKET"}};
-            //     std::unique_ptr<Order> order8 = std::make_unique<Order>(data8);
-            //     const auto &status1 = engine.Process(std::move(order8));
-            //     ASSERT_TRUE(status1.ok());
-            //     EXPECT_EQ(status1->to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":null}]");
+        TEST(MatchingEngineImplTest, ProcessMarketOrders)
+        {
+            MatchingEngine engine;
+            const json data8 = {{"time", 10},
+                                {"type", "NEW"},
+                                {"order_id", 8},
+                                {"symbol", "AAPL"},
+                                {"side", "BUY"},
+                                {
+                                    "quantity",
+                                    500,
+                                },
+                                {"order_type", "MARKET"}};
+            const FeedEvents events1 = engine.Process(std::make_shared<Order>(data8.get<Order>()));
+            EXPECT_EQ(events1.to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":null}]");
 
-            //     const json data9 = {{"time", 10},
-            //                         {"type", "NEW"},
-            //                         {"order_id", 9},
-            //                         {"symbol", "AAPL"},
-            //                         {"side", "BUY"},
-            //                         {
-            //                             "quantity",
-            //                             500,
-            //                         },
-            //                         {"limit_price", "9.99"},
-            //                         {"order_type", "LIMIT"}};
-            //     std::unique_ptr<Order> order9 = std::make_unique<Order>(data9);
-            //     const auto &status2 = engine.Process(std::move(order9));
-            //     ASSERT_TRUE(status2.ok());
-            //     EXPECT_EQ(status2->to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"9.99\\\",\\\"quantity\\\":500}\"]},{\"ask\":null}]");
+            const json data9 = {{"time", 10},
+                                {"type", "NEW"},
+                                {"order_id", 9},
+                                {"symbol", "AAPL"},
+                                {"side", "BUY"},
+                                {
+                                    "quantity",
+                                    500,
+                                },
+                                {"limit_price", "9.99"},
+                                {"order_type", "LIMIT"}};
+            const FeedEvents events2 = engine.Process(std::make_shared<Order>(data9.get<Order>()));
+            EXPECT_EQ(events2.to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"9.99\\\",\\\"quantity\\\":500}\"]},{\"ask\":null}]");
 
-            //     const json data5 = {{"time", 10},
-            //                         {"type", "NEW"},
-            //                         {"order_id", 5},
-            //                         {"symbol", "AAPL"},
-            //                         {"side", "SELL"},
-            //                         {
-            //                             "quantity",
-            //                             200,
-            //                         },
-            //                         {"order_type", "MARKET"}};
-            //     std::unique_ptr<Order> order5 = std::make_unique<Order>(data5);
-            //     const auto &status3 = engine.Process(std::move(order5));
-            //     ASSERT_TRUE(status3.ok());
-            //     EXPECT_EQ(status3->to_str(), "{\"price\":\"9.99\",\"quantity\":200,\"type\":\"TRADE\"}/n[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"MODIFY\\\",\\\"price\\\":\\\"9.99\\\",\\\"quantity\\\":300}\"]},{\"ask\":null}]");
+            const json data5 = {{"time", 10},
+                                {"type", "NEW"},
+                                {"order_id", 5},
+                                {"symbol", "AAPL"},
+                                {"side", "SELL"},
+                                {
+                                    "quantity",
+                                    200,
+                                },
+                                {"order_type", "MARKET"}};
+            const FeedEvents events3 = engine.Process(std::make_shared<Order>(data5.get<Order>()));
+            EXPECT_EQ(events3.to_str(), "{\"price\":\"9.99\",\"quantity\":200,\"type\":\"TRADE\"}/n[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"MODIFY\\\",\\\"price\\\":\\\"9.99\\\",\\\"quantity\\\":300}\"]},{\"ask\":null}]");
 
-            //     const json data10 = {{"time", 10},
-            //                          {"type", "NEW"},
-            //                          {"order_id", 10},
-            //                          {"symbol", "AAPL"},
-            //                          {"side", "SELL"},
-            //                          {
-            //                              "quantity",
-            //                              1000,
-            //                          },
-            //                          {"order_type", "MARKET"}};
-            //     std::unique_ptr<Order> order10 = std::make_unique<Order>(data10);
-            //     const auto &status4 = engine.Process(std::move(order10));
-            //     ASSERT_TRUE(status4.ok());
-            //     EXPECT_EQ(status4->to_str(), "{\"price\":\"9.99\",\"quantity\":300,\"type\":\"TRADE\"}/n[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"DELETE\\\",\\\"price\\\":\\\"9.99\\\",\\\"quantity\\\":0}\"]},{\"ask\":null}]");
+            const json data10 = {{"time", 10},
+                                 {"type", "NEW"},
+                                 {"order_id", 10},
+                                 {"symbol", "AAPL"},
+                                 {"side", "SELL"},
+                                 {
+                                     "quantity",
+                                     1000,
+                                 },
+                                 {"order_type", "MARKET"}};
+            const FeedEvents events4 = engine.Process(std::make_shared<Order>(data10.get<Order>()));
+            EXPECT_EQ(events4.to_str(), "{\"price\":\"9.99\",\"quantity\":300,\"type\":\"TRADE\"}/n[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"DELETE\\\",\\\"price\\\":\\\"9.99\\\",\\\"quantity\\\":0}\"]},{\"ask\":null}]");
 
-            //     const json data1 = {{"time", 9},
-            //                         {"type", "NEW"},
-            //                         {"order_id", 1},
-            //                         {"symbol", "AAPL"},
-            //                         {"side", "BUY"},
-            //                         {
-            //                             "quantity",
-            //                             100,
-            //                         },
-            //                         {"order_type", "MARKET"}};
-            //     std::unique_ptr<Order> order1 = std::make_unique<Order>(data1);
-            //     const auto &status5 = engine.Process(std::move(order1));
-            //     ASSERT_TRUE(status5.ok());
-            //     EXPECT_EQ(status5->to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":null}]");
+            const json data1 = {{"time", 9},
+                                {"type", "NEW"},
+                                {"order_id", 1},
+                                {"symbol", "AAPL"},
+                                {"side", "BUY"},
+                                {
+                                    "quantity",
+                                    100,
+                                },
+                                {"order_type", "MARKET"}};
+            const FeedEvents events5 = engine.Process(std::make_shared<Order>(data1.get<Order>()));
+            EXPECT_EQ(events5.to_str(), "[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":null}]");
         }
     }
 } // fep::src::matching_engine

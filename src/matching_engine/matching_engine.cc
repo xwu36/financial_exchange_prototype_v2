@@ -19,6 +19,7 @@ namespace fep::src::matching_engine
         using ::fep::src::order::OrderBook;
         using ::fep::src::order::OrderSide;
         using ::fep::src::order::OrderStatus;
+        using ::fep::src::order::OrderType;
         using ::fep::src::order::PriceEntity;
 
         // Return true if replenish of the order triggers.
@@ -131,8 +132,12 @@ namespace fep::src::matching_engine
                 std::shared_ptr<Order> first_order = (first_price_entry == nullptr) ? nullptr : first_price_entry->visible_queue.front();
 
                 // If the new_order cannot be matched, add it into the orderbook.
-                if (first_order == nullptr || !order_book_to_match.MatchOrder(new_order, first_order))
+                if (!order_book_to_match.MatchOrder(new_order, first_order))
                 {
+                    if (new_order->order_type == OrderType::MARKET && first_order == nullptr)
+                    {
+                        break;
+                    }
                     order_book_to_insert.InsertOrder(new_order);
                     std::shared_ptr<PriceEntity> price_entry = order_book_to_insert.GetPriceEntity(new_order->price);
                     new_order_price_post_quantity = price_entry->visible_quantity;
@@ -140,7 +145,7 @@ namespace fep::src::matching_engine
                     break;
                 }
 
-                // Check if first_price_entry is a nullptr, which shouldn't happen.
+                // TODO: Check if first_price_entry is a nullptr, which shouldn't happen.
 
                 auto &visible_queue = first_price_entry->visible_queue;
                 // Add the price and its quantity of the new order into the price_map.

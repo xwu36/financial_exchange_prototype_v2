@@ -110,13 +110,14 @@ namespace fep::src::order
             return itr.first->second;
         }
 
-        // Insert order on the order_book.
-        void InsertOrder(const std::shared_ptr<src::order::Order> order)
+        // Insert order on the order_book and return the corresponding price entry.
+        std::shared_ptr<PriceEntity> InsertOrder(const std::shared_ptr<src::order::Order> order)
         {
             std::shared_ptr<PriceEntity> price_entry = this->GetPriceEntity(order->price);
             price_entry->visible_queue.push_back(order);
             price_entry->visible_quantity += order->quantity;
             all_order_ids_.insert(order->order_id);
+            return price_entry;
         }
 
         bool Contains(const int64_t order_id) const

@@ -16,15 +16,17 @@ namespace fep::src::matching_engine
   {
   public:
     MatchingEngine() {}
+    MatchingEngine(const MatchingEngine &) = delete;
+    MatchingEngine(MatchingEngine &&) = delete;
     ~MatchingEngine() = default;
+
     absl::StatusOr<fep::src::feed_event::FeedEvents> Process(std::shared_ptr<fep::src::order::Order> order);
 
-  protected:
+  private:
     absl::StatusOr<fep::src::feed_event::FeedEvents> Cancel(std::shared_ptr<fep::src::order::Order> order);
 
     std::unordered_map<fep::src::stock::Symbol, fep::src::order::BidOrderBook> bid_order_books_;
     std::unordered_map<fep::src::stock::Symbol, fep::src::order::AskOrderBook> ask_order_books_;
-
     std::unordered_map<int64_t /*order_id*/, std::shared_ptr<fep::src::order::Order>> order_to_content_map_;
   };
 

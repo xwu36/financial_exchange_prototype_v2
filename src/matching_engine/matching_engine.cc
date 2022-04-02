@@ -207,25 +207,24 @@ namespace fep::src::matching_engine
     absl::StatusOr<FeedEvents> MatchingEngine::Cancel(std::shared_ptr<Order> order)
     {
         const auto kv = order_to_content_map_.find(order->order_id);
-        if (kv == order_to_content_map_.end())
+        if (kv == order_to_content_map_.end() || kv->second->deleted)
         {
             return absl::NotFoundError(absl::StrCat("Failed to cancel order ", order->order_id));
         }
 
         const auto detailed_order = kv->second;
-        auto &ask_order_book = ask_order_books_[detailed_order->symbol];
-        auto &bid_order_book = bid_order_books_[detailed_order->symbol];
         int32_t price_pre_quantity = 0;
         int32_t price_post_quantity = 0;
-        if (ask_order_book.Contains(detailed_order->order_id))
+        if (detailed_order->side == OrderSide::SELL)
         {
-
+            auto &ask_order_book = ask_order_books_[detailed_order->symbol];
             price_pre_quantity = ask_order_book.GetQuantityForPrice(detailed_order->price);
             ask_order_book.MaybeCancelOrder(detailed_order);
             price_post_quantity = ask_order_book.GetQuantityForPrice(detailed_order->price);
         }
         else
         {
+            auto &bid_order_book = bid_order_books_[detailed_order->symbol];
             price_pre_quantity = bid_order_book.GetQuantityForPrice(detailed_order->price);
             bid_order_book.MaybeCancelOrder(detailed_order);
             price_post_quantity = bid_order_book.GetQuantityForPrice(detailed_order->price);

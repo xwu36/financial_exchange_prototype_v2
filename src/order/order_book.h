@@ -21,7 +21,7 @@ namespace fep::src::order
         PriceEntity(const fep::lib::Price4 &in_price) : price(in_price) {}
 
         fep::lib::Price4 price;
-        mutable std::deque<std::shared_ptr<Order>> visible_queue;
+        std::deque<std::shared_ptr<Order>> visible_queue;
         int32_t visible_quantity = 0;
     };
 
@@ -52,12 +52,12 @@ namespace fep::src::order
         // Return false if it is a new orer, otherwise mark the order deleted and return true.
         bool MaybeCancelOrder(std::shared_ptr<Order> order)
         {
-            if (!all_order_ids_.count(order->order_id))
+            if (order->deleted)
             {
                 return false;
             }
-            deleted_order_ids_.insert(order->order_id);
             std::shared_ptr<PriceEntity> price_entity = this->GetPriceEntity(order->price);
+            order->deleted = true;
             price_entity->visible_quantity -= order->quantity;
             return true;
         }
@@ -76,9 +76,8 @@ namespace fep::src::order
                 while (!visible_queue.empty())
                 {
                     const auto &first_order = visible_queue.front();
-                    if (first_order->deleted || deleted_order_ids_.count(first_order->order_id))
+                    if (first_order->deleted)
                     {
-                        deleted_order_ids_.erase(first_order->order_id);
                         visible_queue.pop_front();
                         continue;
                     }
@@ -116,20 +115,12 @@ namespace fep::src::order
             std::shared_ptr<PriceEntity> price_entry = this->GetPriceEntity(order->price);
             price_entry->visible_queue.push_back(order);
             price_entry->visible_quantity += order->quantity;
-            all_order_ids_.insert(order->order_id);
             return price_entry;
-        }
-
-        bool Contains(const int64_t order_id) const
-        {
-            return all_order_ids_.count(order_id);
         }
 
     private:
         std::priority_queue<std::shared_ptr<PriceEntity>, std::vector<std::shared_ptr<PriceEntity>>, T> price_queue_;
         std::unordered_map<fep::lib::Price4, std::shared_ptr<PriceEntity>> price_to_entry_map_;
-        std::unordered_set<int64_t> deleted_order_ids_;
-        std::unordered_set<int64_t> all_order_ids_;
     };
 
     class BidOrderBook : public OrderBook<BidComparator>

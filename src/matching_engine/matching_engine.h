@@ -23,6 +23,8 @@ namespace fep::src::matching_engine
 
     std::unordered_map<fep::src::stock::Symbol, fep::src::order::BidOrderBook> bid_order_books_;
     std::unordered_map<fep::src::stock::Symbol, fep::src::order::AskOrderBook> ask_order_books_;
+
+    std::unordered_map<int64_t /*order_id*/, std::shared_ptr<fep::src::order::Order>> order_to_content_map_;
   };
 
 } // namespace fep::src::matching_engine

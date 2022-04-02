@@ -52,12 +52,12 @@ namespace fep::src::order
         // Return false if it is a new orer, otherwise mark the order deleted and return true.
         bool MaybeCancelOrder(std::shared_ptr<Order> order)
         {
-            if (all_order_ids_.count(order->order_id))
+            if (!all_order_ids_.count(order->order_id))
             {
                 return false;
             }
             deleted_order_ids_.insert(order->order_id);
-            std::shared_ptr<PriceEntity> price_entity = this->GetPriceEntity(order);
+            std::shared_ptr<PriceEntity> price_entity = this->GetPriceEntity(order->price);
             price_entity->visible_quantity -= order->quantity;
             return true;
         }
@@ -117,6 +117,11 @@ namespace fep::src::order
             price_entry->visible_queue.push_back(order);
             price_entry->visible_quantity += order->quantity;
             all_order_ids_.insert(order->order_id);
+        }
+
+        bool Contains(const int64_t order_id) const
+        {
+            return all_order_ids_.count(order_id);
         }
 
     private:

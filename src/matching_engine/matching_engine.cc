@@ -116,8 +116,8 @@ namespace fep::src::matching_engine
         }
 
         template <class T, class U>
-        FeedEvents ProcessInternal(std::shared_ptr<Order> new_order, OrderBook<T> &order_book_to_match,
-                                   OrderBook<U> &order_book_to_insert)
+        FeedEvents ProcessInternal(std::shared_ptr<Order> new_order, std::unordered_map<int64_t, std::shared_ptr<Order>> &order_to_content_map,
+                                   OrderBook<T> &order_book_to_match, OrderBook<U> &order_book_to_insert)
         {
             FeedEvents feed_events{};
             std::unordered_map<Price4, int32_t> seen_price_to_pre_quantity;
@@ -136,6 +136,7 @@ namespace fep::src::matching_engine
                     order_book_to_insert.InsertOrder(new_order);
                     std::shared_ptr<PriceEntity> price_entry = order_book_to_insert.GetPriceEntity(new_order->price);
                     new_order_price_post_quantity = price_entry->visible_quantity;
+                    order_to_content_map.insert({new_order->order_id, new_order});
                     break;
                 }
 
@@ -188,20 +189,51 @@ namespace fep::src::matching_engine
         }
         if (order->side == OrderSide::BUY)
         {
-            return ProcessInternal(order, ask_order_books_[order->symbol], bid_order_books_[order->symbol]);
+            return ProcessInternal(order, order_to_content_map_, ask_order_books_[order->symbol], bid_order_books_[order->symbol]);
         }
         if (order->side == OrderSide::SELL)
         {
-            return ProcessInternal(order, bid_order_books_[order->symbol], ask_order_books_[order->symbol]);
+            return ProcessInternal(order, order_to_content_map_, bid_order_books_[order->symbol], ask_order_books_[order->symbol]);
         }
         return events;
     }
 
     FeedEvents MatchingEngine::Cancel(std::shared_ptr<Order> order)
     {
-        // const auto ask_kv = ask_order_books_.find(order->symbol);
-        // if (ask)
         FeedEvents events;
+        const auto kv = order_to_content_map_.find(order->order_id);
+        if (kv == order_to_content_map_.end())
+        {
+            return events;
+        }
+        const auto order_details = kv->second;
+        auto &ask_order_book = ask_order_books_[order_details->symbol];
+        auto &bid_order_book = bid_order_books_[order_details->symbol];
+        int32_t price_pre_quantity = 0;
+        int32_t price_post_quantity = 0;
+        if (ask_order_book.Contains(order_details->order_id))
+        {
+
+            price_pre_quantity = ask_order_book.GetQuantityForPrice(order_details->price);
+            ask_order_book.MaybeCancelOrder(order_details);
+            price_post_quantity = ask_order_book.GetQuantityForPrice(order_details->price);
+        }
+        else
+        {
+            price_pre_quantity = bid_order_book.GetQuantityForPrice(order_details->price);
+            bid_order_book.MaybeCancelOrder(order_details);
+            price_post_quantity = bid_order_book.GetQuantityForPrice(order_details->price);
+        }
+
+        std::shared_ptr<PriceEntityUpdateEvent> update_event = GetUpdateEvent(order_details->price, price_pre_quantity, price_post_quantity);
+        if (order_details->side == OrderSide::SELL)
+        {
+            events.depth_update_events.ask_events.push_back(update_event);
+        }
+        else
+        {
+            events.depth_update_events.bid_events.push_back(update_event);
+        }
         return events;
     }
 

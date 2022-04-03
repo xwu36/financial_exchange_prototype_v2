@@ -111,7 +111,8 @@ namespace fep::src::matching_engine
         }
 
         template <class T, class U>
-        FeedEvents ProcessInternal(std::shared_ptr<Order> new_order, OrderBook<T> &order_book_to_match, OrderBook<U> &order_book_to_insert)
+        FeedEvents ProcessInternal(std::shared_ptr<Order> new_order, std::unordered_map<int64_t, std::shared_ptr<Order>> &order_to_content_map,
+                                   OrderBook<T> &order_book_to_match, OrderBook<U> &order_book_to_insert)
         {
             FeedEvents feed_events{};
             std::unordered_map<Price4, int32_t> seen_price_to_pre_quantity;
@@ -131,6 +132,7 @@ namespace fep::src::matching_engine
                     {
                         break;
                     }
+                    order_to_content_map.insert({new_order->order_id, new_order});
                     std::shared_ptr<PriceEntity> price_entry = order_book_to_insert.InsertOrder(new_order);
                     new_order_price_post_quantity = price_entry->visible_quantity;
                     break;
@@ -155,7 +157,10 @@ namespace fep::src::matching_engine
                     visible_queue.pop_front();
                     visible_queue.push_back(first_order);
                 }
-                MaybeMarkAsDeleted(first_order);
+                if (MaybeMarkAsDeleted(first_order))
+                {
+                    order_to_content_map.erase(first_order->order_id);
+                }
             }
 
             UpdateDepthUpdateEvents(new_order,
@@ -188,13 +193,11 @@ namespace fep::src::matching_engine
         }
         if (order->side == OrderSide::BUY)
         {
-            order_to_content_map_.insert({order->order_id, order});
-            return ProcessInternal(order, ask_order_books_[order->symbol], bid_order_books_[order->symbol]);
+            return ProcessInternal(order, order_to_content_map_, ask_order_books_[order->symbol], bid_order_books_[order->symbol]);
         }
         if (order->side == OrderSide::SELL)
         {
-            order_to_content_map_.insert({order->order_id, order});
-            return ProcessInternal(order, bid_order_books_[order->symbol], ask_order_books_[order->symbol]);
+            return ProcessInternal(order, order_to_content_map_, bid_order_books_[order->symbol], ask_order_books_[order->symbol]);
         }
         return absl::InvalidArgumentError("this order cannot be processed");
     }
@@ -206,6 +209,8 @@ namespace fep::src::matching_engine
         {
             return absl::NotFoundError(absl::StrCat("Failed to cancel order ", order->order_id));
         }
+        order->deleted = true;
+        order_to_content_map_.erase(order->order_id);
 
         const auto detailed_order = kv->second;
         int32_t price_pre_quantity = 0;

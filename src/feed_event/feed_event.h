@@ -7,6 +7,7 @@
 
 #include "lib/price4.h"
 #include "nlohmann/json.hpp"
+#include "src/order/order.h"
 
 namespace fep::src::feed_event
 {
@@ -23,7 +24,9 @@ namespace fep::src::feed_event
     {
         PriceEntityUpdateEvent(const fep::lib::Price4 &in_price,
                                int32_t in_quantity,
-                               const std::string &in_action) : price(in_price), quantity(in_quantity), action(in_action) {}
+                               const std::string &in_action,
+                               src::order::OrderSide in_side) : price(in_price), quantity(in_quantity),
+                                                                action(in_action), side(in_side) {}
 
         const std::string &get_action() const { return action; }
         std::string to_str() const;
@@ -31,28 +34,28 @@ namespace fep::src::feed_event
         fep::lib::Price4 price;
         int32_t quantity = 0;
         std::string action;
+        src::order::OrderSide side = src::order::OrderSide::UNKNOWN;
     };
     struct PriceEntityAddEvent : public PriceEntityUpdateEvent
     {
-        PriceEntityAddEvent(const fep::lib::Price4 &price,
-                            int32_t quantity) : PriceEntityUpdateEvent(price, quantity, "ADD") {}
+        PriceEntityAddEvent(const fep::lib::Price4 &price, int32_t quantity,
+                            src::order::OrderSide side) : PriceEntityUpdateEvent(price, quantity, "ADD", side) {}
     };
     struct PriceEntityDeleteEvent : public PriceEntityUpdateEvent
     {
-        PriceEntityDeleteEvent(const fep::lib::Price4 &price,
-                               int32_t quantity) : PriceEntityUpdateEvent(price, quantity, "DELETE") {}
+        PriceEntityDeleteEvent(const fep::lib::Price4 &price, int32_t quantity,
+                               src::order::OrderSide side) : PriceEntityUpdateEvent(price, quantity, "DELETE", side) {}
     };
     struct PriceEntityModifyEvent : public PriceEntityUpdateEvent
     {
-        PriceEntityModifyEvent(const fep::lib::Price4 &price,
-                               int32_t quantity) : PriceEntityUpdateEvent(price, quantity, "MODIFY") {}
+        PriceEntityModifyEvent(const fep::lib::Price4 &price, int32_t quantity,
+                               src::order::OrderSide side) : PriceEntityUpdateEvent(price, quantity, "MODIFY", side) {}
     };
 
     struct DepthUpdateEvents
     {
         const std::string type = "DEPTH_UPDATE";
-        std::vector<std::shared_ptr<PriceEntityUpdateEvent>> bid_events;
-        std::vector<std::shared_ptr<PriceEntityUpdateEvent>> ask_events;
+        std::vector<std::shared_ptr<PriceEntityUpdateEvent>> events;
 
         std::string to_str() const;
     };

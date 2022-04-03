@@ -9,6 +9,7 @@ cc_library(
     srcs = ["feed_event.cc"],
     deps = [
         "//lib:price4",
+        "//src/order:order",
         "@com_google_absl//absl/strings",
         "@com_github_nlohmann_json//:json",
     ],

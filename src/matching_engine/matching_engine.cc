@@ -69,8 +69,8 @@ namespace fep::src::matching_engine
                 .quantity = quantity});
         }
 
-        std::shared_ptr<PriceEntityUpdateEvent> GetUpdateEvent(const Price4 &price, const int32_t pre_quantity,
-                                                               const int32_t post_quantity)
+        std::shared_ptr<PriceEntityUpdateEvent> GetUpdateEvent(const Price4 &price, const OrderSide &side,
+                                                               const int32_t pre_quantity, const int32_t post_quantity)
         {
             if (pre_quantity == post_quantity)
             {
@@ -78,13 +78,13 @@ namespace fep::src::matching_engine
             }
             if (post_quantity == 0)
             {
-                return std::make_shared<PriceEntityDeleteEvent>(price, post_quantity);
+                return std::make_shared<PriceEntityDeleteEvent>(price, post_quantity, side);
             }
             if (pre_quantity == 0)
             {
-                return std::make_shared<PriceEntityAddEvent>(price, post_quantity);
+                return std::make_shared<PriceEntityAddEvent>(price, post_quantity, side);
             }
-            return std::make_shared<PriceEntityModifyEvent>(price, post_quantity);
+            return std::make_shared<PriceEntityModifyEvent>(price, post_quantity, side);
         }
 
         template <class T>
@@ -95,32 +95,18 @@ namespace fep::src::matching_engine
                                      OrderBook<T> &order_book,
                                      DepthUpdateEvents &depth_update_events)
         {
-            std::shared_ptr<PriceEntityUpdateEvent> new_order_update_event = GetUpdateEvent(new_order->price, new_order_price_pre_quantity,
-                                                                                            new_order_price_post_quantity);
+            std::shared_ptr<PriceEntityUpdateEvent> new_order_update_event = GetUpdateEvent(new_order->price, new_order->side,
+                                                                                            new_order_price_pre_quantity, new_order_price_post_quantity);
             if (new_order_update_event != nullptr)
             {
-                if (new_order->side == OrderSide::BUY)
-                {
-                    depth_update_events.bid_events.push_back(new_order_update_event);
-                }
-                else
-                {
-                    depth_update_events.ask_events.push_back(new_order_update_event);
-                }
+                depth_update_events.events.push_back(new_order_update_event);
             }
 
             for (const auto &[price, pre_quantity] : seen_price_to_pre_quantity)
             {
-                std::shared_ptr<PriceEntityUpdateEvent> update_event = GetUpdateEvent(price, pre_quantity,
-                                                                                      order_book.GetQuantityForPrice(price));
-                if (new_order->side == OrderSide::BUY)
-                {
-                    depth_update_events.ask_events.push_back(update_event);
-                }
-                else
-                {
-                    depth_update_events.bid_events.push_back(update_event);
-                }
+                std::shared_ptr<PriceEntityUpdateEvent> update_event = GetUpdateEvent(price, (new_order->side == OrderSide::BUY ? OrderSide::SELL : OrderSide::BUY),
+                                                                                      pre_quantity, order_book.GetQuantityForPrice(price));
+                depth_update_events.events.push_back(update_event);
             }
         }
 
@@ -233,16 +219,9 @@ namespace fep::src::matching_engine
             UpdateQuantitiesAfterOrderCancelling(detailed_order, bid_order_books_[detailed_order->symbol], price_pre_quantity, price_post_quantity);
         }
 
-        std::shared_ptr<PriceEntityUpdateEvent> update_event = GetUpdateEvent(detailed_order->price, price_pre_quantity, price_post_quantity);
+        std::shared_ptr<PriceEntityUpdateEvent> update_event = GetUpdateEvent(detailed_order->price, detailed_order->side, price_pre_quantity, price_post_quantity);
         FeedEvents events;
-        if (detailed_order->side == OrderSide::SELL)
-        {
-            events.depth_update_events.ask_events.push_back(update_event);
-        }
-        else
-        {
-            events.depth_update_events.bid_events.push_back(update_event);
-        }
+        events.depth_update_events.events.push_back(update_event);
         return events;
     }
 

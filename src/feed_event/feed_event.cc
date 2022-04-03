@@ -34,21 +34,18 @@ namespace fep::src::feed_event
 
         json jbid;
         jbid["bid"] = {};
-        for (const auto bid : this->bid_events)
-        {
-            if (bid == nullptr)
-                continue;
-            jbid["bid"].push_back(bid->to_str());
-        }
-
         json jask;
         jask["ask"] = {};
-        for (const auto ask : this->ask_events)
+        for (const auto event : this->events)
         {
-            if (ask == nullptr)
+            if (event == nullptr)
                 continue;
-            jask["ask"].push_back(ask->to_str());
+            if (event->side == src::order::OrderSide::BUY)
+                jbid["bid"].push_back(event->to_str());
+            else if (event->side == src::order::OrderSide::SELL)
+                jask["ask"].push_back(event->to_str());
         }
+
         j.push_back(jtype);
         j.push_back(jbid);
         j.push_back(jask);

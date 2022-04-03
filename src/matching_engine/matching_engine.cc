@@ -209,7 +209,7 @@ namespace fep::src::matching_engine
         {
             return absl::NotFoundError(absl::StrCat("Failed to cancel order ", order->order_id));
         }
-        order->deleted = true;
+        kv->second->deleted = true;
         order_to_content_map_.erase(order->order_id);
 
         const auto detailed_order = kv->second;

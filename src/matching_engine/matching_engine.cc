@@ -181,6 +181,15 @@ namespace fep::src::matching_engine
 
             return feed_events;
         }
+
+        template <class T>
+        void UpdateQuantitiesAfterOrderCancelling(const std::shared_ptr<Order> order, OrderBook<T> &order_book,
+                                                  int32_t &price_pre_quantity, int32_t &price_post_quantity)
+        {
+            price_pre_quantity = order_book.GetQuantityForPrice(order->price);
+            order_book.MaybeCancelOrder(order);
+            price_post_quantity = order_book.GetQuantityForPrice(order->price);
+        }
     }
 
     absl::StatusOr<FeedEvents> MatchingEngine::Process(std::shared_ptr<Order> order)
@@ -217,17 +226,11 @@ namespace fep::src::matching_engine
         int32_t price_post_quantity = 0;
         if (detailed_order->side == OrderSide::SELL)
         {
-            auto &ask_order_book = ask_order_books_[detailed_order->symbol];
-            price_pre_quantity = ask_order_book.GetQuantityForPrice(detailed_order->price);
-            ask_order_book.MaybeCancelOrder(detailed_order);
-            price_post_quantity = ask_order_book.GetQuantityForPrice(detailed_order->price);
+            UpdateQuantitiesAfterOrderCancelling(detailed_order, ask_order_books_[detailed_order->symbol], price_pre_quantity, price_post_quantity);
         }
         else
         {
-            auto &bid_order_book = bid_order_books_[detailed_order->symbol];
-            price_pre_quantity = bid_order_book.GetQuantityForPrice(detailed_order->price);
-            bid_order_book.MaybeCancelOrder(detailed_order);
-            price_post_quantity = bid_order_book.GetQuantityForPrice(detailed_order->price);
+            UpdateQuantitiesAfterOrderCancelling(detailed_order, bid_order_books_[detailed_order->symbol], price_pre_quantity, price_post_quantity);
         }
 
         std::shared_ptr<PriceEntityUpdateEvent> update_event = GetUpdateEvent(detailed_order->price, price_pre_quantity, price_post_quantity);

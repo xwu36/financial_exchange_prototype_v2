@@ -29,6 +29,7 @@ int main()
     absl::StatusOr<FeedEvents> message = matching_engine.Process(std::make_shared<Order>(order));
     if (message.ok())
     {
+      // TOOD: handle by multiple threads
       events_publisher.Publish(message.value());
     }
   }

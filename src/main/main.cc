@@ -1,15 +1,34 @@
 #include <iostream>
-#include <string>
+#include <memory>
+#include <iostream>
+#include <vector>
 
-#include "lib/price4.h"
+#include "external/com_google_absl/absl/status/statusor.h"
+#include "nlohmann/json.hpp"
+#include "src/order/order.h"
+#include "src/util/orders_reader.h"
+#include "src/feed_event/feed_event.h"
+#include "src/matching_engine/matching_engine.h"
+
+using ::fep::src::matching_engine::MatchingEngine;
+using ::fep::src::feed_event::FeedEvents;
+using ::fep::src::order::Order;
+using ::nlohmann::json;
 
 int main()
 {
-  // Print Hello World.
-  // Test new workspace.
-  std::cout << "Hello World!" << std::endl;
-  fep::lib::Price4 p("12.34");
-  std::cout
-      << "unscaled price of " << p.to_str() << " is " << p.unscaled() << std::endl;
+  MatchingEngine matching_engine;
+  // Process today's orders.
+  std::vector<Order> orders = fep::src::util::ReadOrdersFromPath("src/main/data/orders.jsonl");
+  // Loop through all the offers and process each of them.  
+  for (const Order &order : orders)
+  {
+    absl::StatusOr<FeedEvents> message = matching_engine.Process(std::make_shared<Order>(order));
+    if (message.ok())
+    {
+      std::cout << message.value().to_str();
+    }
+  }
+
   return 0;
 }

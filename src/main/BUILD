@@ -11,6 +11,7 @@ cc_binary(
         "//src/util:orders_reader",
         "//src/feed_event:feed_event",
         "//src/matching_engine:matching_engine",
+        "//src/publisher:events_publisher",
         "@com_google_absl//absl/status:statusor",
         "@com_github_nlohmann_json//:json",
     ],

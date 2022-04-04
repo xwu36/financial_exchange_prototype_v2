@@ -7,5 +7,6 @@ cc_binary(
     srcs = ["main.cc"],
     deps = [
         "//lib:price4",
-    ]
+    ],
+    data = ["data/orders.jsonl"]
 )

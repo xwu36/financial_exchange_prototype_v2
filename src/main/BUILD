@@ -7,6 +7,7 @@ cc_binary(
     srcs = ["main.cc"],
     deps = [
         "//lib:price4",
+        "//lib:timestamp",
         "//src/order:order",
         "//src/util:orders_reader",
         "//src/feed_event:feed_event",

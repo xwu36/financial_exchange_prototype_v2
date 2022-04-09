@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "external/com_google_absl/absl/status/statusor.h"
+#include "lib/timestamp.h"
 #include "nlohmann/json.hpp"
 #include "src/order/order.h"
 #include "src/util/orders_reader.h"
@@ -34,6 +35,7 @@ void RunMatchingEngine()
   // Loop through all the offers and process each of them.
   for (const Order &order : orders)
   {
+    std::cout << "Receive new order at " << fep::lib::now_in_secs() << std::endl;
     std::unique_lock<std::mutex> locker(mu);
     cond.wait(locker, []
               { return events_published; });

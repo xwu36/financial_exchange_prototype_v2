@@ -8,6 +8,11 @@ cc_library(
     hdrs = ["price4.h"],
 )
 
+cc_library(
+    name = "timestamp",
+    hdrs = ["timestamp.h"],
+)
+
 cc_test(
     name = "price4_test",
     srcs = ["price4_test.cc"],

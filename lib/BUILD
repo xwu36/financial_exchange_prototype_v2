@@ -21,3 +21,12 @@ cc_test(
         "price4",
     ],
 )
+
+cc_test(
+    name = "timestamp_test",
+    srcs = ["timestamp_test.cc"],
+    deps = [
+        "@com_google_googletest//:gtest_main",
+        "timestamp",
+    ],
+)

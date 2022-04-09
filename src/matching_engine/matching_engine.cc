@@ -209,8 +209,6 @@ namespace fep::src::matching_engine
         {
             return absl::NotFoundError(absl::StrCat("Failed to cancel order ", order->order_id));
         }
-        kv->second->deleted = true;
-        order_to_content_map_.erase(order->order_id);
 
         const auto detailed_order = kv->second;
         int32_t price_pre_quantity = 0;
@@ -227,6 +225,9 @@ namespace fep::src::matching_engine
         std::shared_ptr<PriceEntityUpdateEvent> update_event = GetUpdateEvent(detailed_order->price, detailed_order->side, price_pre_quantity, price_post_quantity);
         FeedEvents events;
         events.depth_update_events.events.push_back(update_event);
+
+        kv->second->deleted = true;
+        order_to_content_map_.erase(order->order_id);
         return events;
     }
 

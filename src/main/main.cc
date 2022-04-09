@@ -38,16 +38,20 @@ void RunMatchingEngine()
     cond.wait(locker, []
               { return events_published; });
 
-    absl::StatusOr<FeedEvents> feed_events = matching_engine.Process(std::make_shared<Order>(order));
-    if (feed_events.ok())
-    {
-      g_events = feed_events.value();
-    }
-    // TODO if feed_evnets not okay
+    matching_engine.Run(std::make_shared<Order>(order),
+                        [&](absl::StatusOr<FeedEvents> feed_events)
+                        {
+                          if (feed_events.ok())
+                          {
+                            g_events = feed_events.value();
+                          }
+                          // TODO if feed_evnets not okay
 
-    events_published = false;
-    locker.unlock();
-    cond.notify_one();
+                          events_published = false;
+                          locker.unlock();
+                          cond.notify_one();
+                        });
+
     std::this_thread::sleep_for(std::chrono::seconds(5));
   }
   market_off = true;

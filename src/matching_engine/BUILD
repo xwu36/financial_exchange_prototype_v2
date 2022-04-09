@@ -8,6 +8,7 @@ cc_library(
     hdrs = ["matching_engine.h"],
     srcs = ["matching_engine.cc"],
     deps = [
+        "//lib:timestamp",
         "//src/stock:symbol",
         "//src/feed_event:feed_event",
         "//src/order:order",

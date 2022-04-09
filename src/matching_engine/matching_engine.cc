@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "lib/timestamp.h"
+
 namespace fep::src::matching_engine
 {
 
@@ -45,8 +47,8 @@ namespace fep::src::matching_engine
                 order->quantity = (order->quantity + order->hidden_quantity) / 2;
                 order->hidden_quantity = order->hidden_quantity - order->quantity;
             }
-            // TODO: update the timestamp.
-            order->timestamp_sec = 1111111;
+
+            order->timestamp_sec = fep::lib::now_in_secs();
             return true;
         }
 

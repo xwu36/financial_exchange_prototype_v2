@@ -15,7 +15,7 @@ namespace fep::src::feed_event
     {
         fep::lib::Price4 price;
         int32_t quantity = 0;
-        const std::string type = "TRADE";
+        std::string type = "TRADE";
 
         std::string to_str() const;
     };
@@ -54,7 +54,7 @@ namespace fep::src::feed_event
 
     struct DepthUpdateEvents
     {
-        const std::string type = "DEPTH_UPDATE";
+        std::string type = "DEPTH_UPDATE";
         std::vector<std::shared_ptr<PriceEntityUpdateEvent>> events;
 
         std::string to_str() const;

@@ -1,6 +1,10 @@
+#include <chrono>
+#include <condition_variable>
 #include <iostream>
 #include <memory>
+#include <mutex>
 #include <iostream>
+#include <thread>
 #include <vector>
 
 #include "external/com_google_absl/absl/status/statusor.h"
@@ -17,22 +21,67 @@ using ::fep::src::order::Order;
 using ::fep::src::publisher::EventsPublisher;
 using ::nlohmann::json;
 
-int main()
+std::mutex mu;
+std::condition_variable cond;
+bool events_published = true;
+bool market_off = false;
+FeedEvents g_events;
+
+void RunMatchingEngine()
 {
   MatchingEngine matching_engine;
-  EventsPublisher events_publisher;
-  // Process today's orders.
   std::vector<Order> orders = fep::src::util::ReadOrdersFromPath("src/main/data/orders.jsonl");
   // Loop through all the offers and process each of them.
   for (const Order &order : orders)
   {
-    absl::StatusOr<FeedEvents> message = matching_engine.Process(std::make_shared<Order>(order));
-    if (message.ok())
-    {
-      // TOOD: handle by multiple threads
-      events_publisher.Publish(message.value());
-    }
-  }
+    std::unique_lock<std::mutex> locker(mu);
+    cond.wait(locker, []
+              { return events_published; });
 
+    absl::StatusOr<FeedEvents> feed_events = matching_engine.Process(std::make_shared<Order>(order));
+    if (feed_events.ok())
+    {
+      g_events = feed_events.value();
+    }
+    // TODO if feed_evnets not okay
+
+    events_published = false;
+    locker.unlock();
+    cond.notify_one();
+    std::this_thread::sleep_for(std::chrono::seconds(5));
+  }
+  market_off = true;
+}
+
+void RunPublisher()
+{
+  EventsPublisher events_publisher;
+  while (!market_off)
+  {
+    std::unique_lock<std::mutex> locker(mu);
+    cond.wait(locker, []()
+              { return !events_published; });
+
+    events_publisher.Publish(g_events);
+    events_published = true;
+
+    locker.unlock();
+    cond.notify_one();
+    std::this_thread::sleep_for(std::chrono::seconds(5));
+  }
+}
+
+void Run()
+{
+  std::thread t1(RunMatchingEngine);
+  std::thread t2(RunPublisher);
+
+  t1.join();
+  t2.join();
+}
+
+int main()
+{
+  Run();
   return 0;
 }

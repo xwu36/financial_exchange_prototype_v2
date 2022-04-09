@@ -45,7 +45,11 @@ void RunMatchingEngine()
                           {
                             g_events = feed_events.value();
                           }
-                          // TODO if feed_evnets not okay
+                          else
+                          {
+                            // TODO if feed_evnets not okay
+                            g_events = FeedEvents{};
+                          }
 
                           events_published = false;
                           locker.unlock();

@@ -54,7 +54,7 @@ namespace fep::src::feed_event
 
     struct DepthUpdateEvents
     {
-        std::string type = "DEPTH_UPDATE";
+         std::string type = "DEPTH_UPDATE";
         std::vector<std::shared_ptr<PriceEntityUpdateEvent>> events;
 
         std::string to_str() const;

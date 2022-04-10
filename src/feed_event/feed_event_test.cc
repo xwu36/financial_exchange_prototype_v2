@@ -9,7 +9,8 @@ namespace fep::src::feed_event
     namespace
     {
         using fep::lib::Price4;
-        using src::order::OrderSide;
+        using fep::src::order::OrderSide;
+        using fep::src::stock::Symbol;
 
         TEST(TradeMessageTest, TradeResultToString)
         {
@@ -47,6 +48,18 @@ namespace fep::src::feed_event
             events.depth_update_events.events.push_back(update_event1);
             events.depth_update_events.events.push_back(update_event2);
             EXPECT_EQ(events.to_str(), std::string("{\"price\":\"12.32\",\"quantity\":200,\"type\":\"TRADE\"}\n{\"price\":\"11.32\",\"quantity\":100,\"type\":\"TRADE\"}\n[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"11.32\\\",\\\"quantity\\\":100}\",\"{\\\"action\\\":\\\"MODIFY\\\",\\\"price\\\":\\\"14.32\\\",\\\"quantity\\\":400}\"]},{\"ask\":null}]"));
+        }
+
+        TEST(FeedEventTest, TradeMessageWithSymbol)
+        {
+            FeedEvents events;
+            events.symbol = Symbol::AAPL;
+            events.order_trade_events.push_back(OrderTradeEvent{
+                .price = Price4("12.32"),
+                .quantity = 200});
+            std::shared_ptr<PriceEntityUpdateEvent> update_event1 = std::make_shared<PriceEntityAddEvent>(Price4("11.32"), 100, OrderSide::BUY);
+            events.depth_update_events.events.push_back(update_event1);
+            EXPECT_EQ(events.to_str(), std::string("{\"symbol\":\"AAPL\",\"timestamp\":0}\n{\"price\":\"12.32\",\"quantity\":200,\"type\":\"TRADE\"}\n[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"11.32\\\",\\\"quantity\\\":100}\"]},{\"ask\":null}]"));
         }
 
     } // namespace

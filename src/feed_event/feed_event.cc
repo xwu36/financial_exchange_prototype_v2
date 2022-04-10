@@ -6,7 +6,9 @@
 namespace fep::src::feed_event
 {
 
-    using ::nlohmann::json;
+    using fep::src::stock::Symbol;
+    using fep::src::stock::SymbolToString;
+    using nlohmann::json;
 
     std::string OrderTradeEvent::to_str() const
     {
@@ -54,9 +56,19 @@ namespace fep::src::feed_event
 
     std::string FeedEvents::to_str() const
     {
+        json j;
+        std::string context;
+        const auto kv = SymbolToString.find(this->symbol);
+        if (this->symbol != Symbol::UNKNOWN &&
+            kv != SymbolToString.end())
+        {
+            j["symbol"] = kv->second;
+            j["timestamp"] = this->timestamp;
+            context = absl::StrCat(j.dump(), "\n");
+        }
         if (this->order_trade_events.empty())
         {
-            return this->depth_update_events.to_str();
+            return absl::StrCat(context, this->depth_update_events.to_str());
         }
         std::vector<std::string> trade_results;
         for (const auto &result : this->order_trade_events)
@@ -64,7 +76,7 @@ namespace fep::src::feed_event
             trade_results.push_back(result.to_str());
         }
         std::string results = absl::StrJoin(trade_results.begin(), trade_results.end(), "\n");
-        return absl::StrCat(results, "\n", this->depth_update_events.to_str());
+        return absl::StrCat(context, results, "\n", this->depth_update_events.to_str());
     }
 
 } // namespace fep::src::feed_event

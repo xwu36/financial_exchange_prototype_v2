@@ -5,7 +5,7 @@
 
 namespace fep::lib
 {
-  int32_t now_in_secs()
+  int64_t now_in_secs()
   {
     const auto now = std::chrono::system_clock::now();
     return std::chrono::duration_cast<std::chrono::seconds>(

@@ -8,6 +8,7 @@
 #include "lib/price4.h"
 #include "nlohmann/json.hpp"
 #include "src/order/order.h"
+#include "src/stock/symbol.h"
 
 namespace fep::src::feed_event
 {
@@ -54,7 +55,7 @@ namespace fep::src::feed_event
 
     struct DepthUpdateEvents
     {
-         std::string type = "DEPTH_UPDATE";
+        std::string type = "DEPTH_UPDATE";
         std::vector<std::shared_ptr<PriceEntityUpdateEvent>> events;
 
         std::string to_str() const;
@@ -62,10 +63,12 @@ namespace fep::src::feed_event
 
     struct FeedEvents
     {
+        std::string to_str() const;
+
         std::vector<OrderTradeEvent> order_trade_events;
         DepthUpdateEvents depth_update_events;
-
-        std::string to_str() const;
+        int64_t timestamp = 0;
+        fep::src::stock::Symbol symbol = fep::src::stock::Symbol::UNKNOWN;
     };
 
 } // namespace fep::src::feed_event

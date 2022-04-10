@@ -156,7 +156,7 @@ namespace fep::src::matching_engine
                                  {"limit_price", "10.03"},
                                  {"order_type", "LIMIT"}};
             const auto &events10 = engine.Process(std::make_shared<Order>(data15.get<Order>()));
-            EXPECT_EQ(events10->to_str(), "{\"price\":\"10.02\",\"quantity\":100,\"type\":\"TRADE\"}/n{\"price\":\"10.03\",\"quantity\":100,\"type\":\"TRADE\"}/n[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":[\"{\\\"action\\\":\\\"MODIFY\\\",\\\"price\\\":\\\"10.03\\\",\\\"quantity\\\":600}\",\"{\\\"action\\\":\\\"DELETE\\\",\\\"price\\\":\\\"10.02\\\",\\\"quantity\\\":0}\"]}]");
+            EXPECT_EQ(events10->to_str(), "{\"price\":\"10.02\",\"quantity\":100,\"type\":\"TRADE\"}\n{\"price\":\"10.03\",\"quantity\":100,\"type\":\"TRADE\"}\n[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":null},{\"ask\":[\"{\\\"action\\\":\\\"MODIFY\\\",\\\"price\\\":\\\"10.03\\\",\\\"quantity\\\":600}\",\"{\\\"action\\\":\\\"DELETE\\\",\\\"price\\\":\\\"10.02\\\",\\\"quantity\\\":0}\"]}]");
 
             // Case 2 with Order16.
             const json data16 = {{"time", 21},
@@ -186,7 +186,7 @@ namespace fep::src::matching_engine
                                  {"limit_price", "10.00"},
                                  {"order_type", "LIMIT"}};
             const auto &events12 = engine.Process(std::make_shared<Order>(data17.get<Order>()));
-            EXPECT_EQ(events12->to_str(), "{\"price\":\"10.01\",\"quantity\":200,\"type\":\"TRADE\"}/n{\"price\":\"10.01\",\"quantity\":100,\"type\":\"TRADE\"}/n{\"price\":\"10.00\",\"quantity\":500,\"type\":\"TRADE\"}/n[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"DELETE\\\",\\\"price\\\":\\\"10.00\\\",\\\"quantity\\\":0}\",\"{\\\"action\\\":\\\"DELETE\\\",\\\"price\\\":\\\"10.01\\\",\\\"quantity\\\":0}\"]},{\"ask\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"10.00\\\",\\\"quantity\\\":200}\"]}]");
+            EXPECT_EQ(events12->to_str(), "{\"price\":\"10.01\",\"quantity\":200,\"type\":\"TRADE\"}\n{\"price\":\"10.01\",\"quantity\":100,\"type\":\"TRADE\"}\n{\"price\":\"10.00\",\"quantity\":500,\"type\":\"TRADE\"}\n[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"DELETE\\\",\\\"price\\\":\\\"10.00\\\",\\\"quantity\\\":0}\",\"{\\\"action\\\":\\\"DELETE\\\",\\\"price\\\":\\\"10.01\\\",\\\"quantity\\\":0}\"]},{\"ask\":[\"{\\\"action\\\":\\\"ADD\\\",\\\"price\\\":\\\"10.00\\\",\\\"quantity\\\":200}\"]}]");
 
             // Case 4 with Order18.
             const json data18 = {{"time", 23},
@@ -237,7 +237,7 @@ namespace fep::src::matching_engine
                                 },
                                 {"order_type", "MARKET"}};
             const auto &events3 = engine.Process(std::make_shared<Order>(data5.get<Order>()));
-            EXPECT_EQ(events3->to_str(), "{\"price\":\"9.99\",\"quantity\":200,\"type\":\"TRADE\"}/n[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"MODIFY\\\",\\\"price\\\":\\\"9.99\\\",\\\"quantity\\\":300}\"]},{\"ask\":null}]");
+            EXPECT_EQ(events3->to_str(), "{\"price\":\"9.99\",\"quantity\":200,\"type\":\"TRADE\"}\n[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"MODIFY\\\",\\\"price\\\":\\\"9.99\\\",\\\"quantity\\\":300}\"]},{\"ask\":null}]");
 
             const json data10 = {{"time", 10},
                                  {"type", "NEW"},
@@ -250,7 +250,7 @@ namespace fep::src::matching_engine
                                  },
                                  {"order_type", "MARKET"}};
             const auto &events4 = engine.Process(std::make_shared<Order>(data10.get<Order>()));
-            EXPECT_EQ(events4->to_str(), "{\"price\":\"9.99\",\"quantity\":300,\"type\":\"TRADE\"}/n[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"DELETE\\\",\\\"price\\\":\\\"9.99\\\",\\\"quantity\\\":0}\"]},{\"ask\":null}]");
+            EXPECT_EQ(events4->to_str(), "{\"price\":\"9.99\",\"quantity\":300,\"type\":\"TRADE\"}\n[{\"type\":\"DEPTH_UPDATE\"},{\"bid\":[\"{\\\"action\\\":\\\"DELETE\\\",\\\"price\\\":\\\"9.99\\\",\\\"quantity\\\":0}\"]},{\"ask\":null}]");
 
             const json data1 = {{"time", 9},
                                 {"type", "NEW"},

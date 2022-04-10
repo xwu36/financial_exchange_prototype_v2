@@ -63,8 +63,8 @@ namespace fep::src::feed_event
         {
             trade_results.push_back(result.to_str());
         }
-        std::string results = absl::StrJoin(trade_results.begin(), trade_results.end(), "/n");
-        return absl::StrCat(results, "/n", this->depth_update_events.to_str());
+        std::string results = absl::StrJoin(trade_results.begin(), trade_results.end(), "\n");
+        return absl::StrCat(results, "\n", this->depth_update_events.to_str());
     }
 
 } // namespace fep::src::feed_event

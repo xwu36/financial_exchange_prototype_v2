@@ -11,6 +11,7 @@ cc_library(
 cc_library(
     name = "timestamp",
     hdrs = ["timestamp.h"],
+    srcs = ["timestamp.cc"],
 )
 
 cc_test(
@@ -18,7 +19,7 @@ cc_test(
     srcs = ["price4_test.cc"],
     deps = [
         "@com_google_googletest//:gtest_main",
-        "price4",
+        ":price4",
     ],
 )
 
@@ -27,6 +28,6 @@ cc_test(
     srcs = ["timestamp_test.cc"],
     deps = [
         "@com_google_googletest//:gtest_main",
-        "timestamp",
+        ":timestamp",
     ],
 )

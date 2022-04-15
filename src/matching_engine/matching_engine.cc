@@ -23,6 +23,7 @@ namespace fep::src::matching_engine
         using ::fep::src::order::OrderStatus;
         using ::fep::src::order::OrderType;
         using ::fep::src::order::PriceEntity;
+        using ::fep::src::order::TimeInForce;
 
         // Return true if replenish of the order triggers.
         bool MaybeReplenish(std::shared_ptr<Order> order)
@@ -134,6 +135,12 @@ namespace fep::src::matching_engine
                     {
                         break;
                     }
+                    // TODO: Add a unit test for it.
+                    if (new_order->time_in_force == TimeInForce::IOC)
+                    {
+                        break;
+                    }
+
                     order_to_content_map.insert({new_order->order_id, new_order});
                     std::shared_ptr<PriceEntity> price_entry = order_book_to_insert.InsertOrder(new_order);
                     new_order_price_post_quantity = price_entry->visible_quantity;

@@ -8,6 +8,7 @@ cc_library(
     hdrs = ["matching_engine.h"],
     srcs = ["matching_engine.cc"],
     deps = [
+        ":tick_size_rule",
         "//lib:timestamp",
         "//src/stock:symbol",
         "//src/feed_event:feed_event",
@@ -19,6 +20,7 @@ cc_library(
         "@com_google_absl//absl/status:statusor",
         "@com_google_absl//absl/status",
     ],
+    data = ["data/tick_size_rule.json"]
 )
 
 cc_test(

@@ -1,5 +1,6 @@
 #include <chrono>
 #include <condition_variable>
+#include <deque>
 #include <iostream>
 #include <memory>
 #include <mutex>
@@ -24,9 +25,10 @@ using ::nlohmann::json;
 
 std::mutex mu;
 std::condition_variable cond;
-bool events_published = true;
+std::deque<FeedEvents> buffer;
+const unsigned int maxBufferSize = 2;
+
 bool market_off = false;
-FeedEvents g_events;
 
 void RunMatchingEngine()
 {
@@ -37,28 +39,26 @@ void RunMatchingEngine()
   {
     std::cout << "Receive new order at " << fep::lib::now_in_secs() << std::endl;
     std::unique_lock<std::mutex> locker(mu);
-    cond.wait(locker, []
-              { return events_published; });
+    // cond.wait(locker, []
+    //           { return buffer.size() < maxBufferSize; });
 
-    matching_engine.Notify(std::make_shared<Order>(order),
-                           [&](absl::StatusOr<FeedEvents> feed_events)
-                           {
-                             if (feed_events.ok())
-                             {
-                               g_events = feed_events.value();
-                             }
-                             else
-                             {
-                               // TODO if feed_evnets not okay
-                               g_events = FeedEvents{};
-                             }
+    matching_engine.ProcessAndNotify(std::make_shared<Order>(order),
+                                     [&](absl::StatusOr<FeedEvents> feed_events)
+                                     {
+                                       if (feed_events.ok())
+                                       {
+                                         buffer.push_back(feed_events.value());
+                                       }
+                                       else
+                                       {
+                                         // TODO if feed_evnets not okay
+                                       }
 
-                             events_published = false;
-                             locker.unlock();
-                             cond.notify_one();
-                           });
+                                       locker.unlock();
+                                       cond.notify_one();
+                                     });
 
-    std::this_thread::sleep_for(std::chrono::seconds(5));
+    std::this_thread::sleep_for(std::chrono::seconds(1));
   }
   market_off = true;
 }
@@ -70,14 +70,15 @@ void RunPublisher()
   {
     std::unique_lock<std::mutex> locker(mu);
     cond.wait(locker, []()
-              { return !events_published; });
+              { return buffer.size() > 0; });
 
-    events_publisher.Publish(g_events);
-    events_published = true;
+    FeedEvents events = buffer.front();
+    events_publisher.Publish(events);
+    buffer.pop_front();
 
     locker.unlock();
     cond.notify_one();
-    std::this_thread::sleep_for(std::chrono::seconds(5));
+    std::this_thread::sleep_for(std::chrono::seconds(1));
   }
 }
 

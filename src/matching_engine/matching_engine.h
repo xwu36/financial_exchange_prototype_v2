@@ -25,7 +25,7 @@ namespace fep::src::matching_engine
     ~MatchingEngine() = default;
 
     absl::StatusOr<fep::src::feed_event::FeedEvents> Process(std::shared_ptr<fep::src::order::Order> order);
-    void Notify(std::shared_ptr<fep::src::order::Order> order, Callback callback)
+    void ProcessAndNotify(std::shared_ptr<fep::src::order::Order> order, Callback callback)
     {
       absl::StatusOr<fep::src::feed_event::FeedEvents> feed_events = Process(order);
       callback(feed_events);

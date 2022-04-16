@@ -26,41 +26,77 @@ using ::fep::src::order::Order;
 using ::fep::src::publisher::EventsPublisher;
 using ::nlohmann::json;
 
-std::mutex feed_mu;
+std::mutex g_feed_mu;
 std::condition_variable g_feed_cond;
 std::deque<FeedEvents> g_feed_buffer;
 const unsigned int maxBufferSize = 2;
 
-std::mutex market_mu;
-bool g_is_market_on = false;
+std::mutex g_market_mu;
+bool g_market_starts = false;
 std::condition_variable g_market_cond;
+
+constexpr char kNewYorkTimeZone[] = "America/New_York";
 
 void MarketStatusChecker()
 {
-  absl::TimeZone utc = absl::UTCTimeZone();
+  absl::TimeZone timezone;
+  absl::LoadTimeZone(kNewYorkTimeZone, &timezone);
   while (true)
   {
     std::this_thread::sleep_for(std::chrono::seconds(60));
 
-    const std::string now_str = absl::FormatTime("%H:%M", absl::Now(), utc);
+    const std::string now_str = absl::FormatTime("%H:%M", absl::Now(), timezone);
     LOG(INFO) << "Checking market status at " << now_str << "...";
-    std::unique_lock<std::mutex> locker(market_mu);
-
-    g_is_market_on = (now_str >= "09:00") && (now_str <= "16:00");
+    std::unique_lock<std::mutex> locker(g_market_mu);
+    g_market_starts = (now_str == "09:00");
     locker.unlock();
     g_market_cond.notify_one();
   }
 }
 
+void MatchAndPublish()
+{
+  while (true)
+  {
+    std::unique_lock<std::mutex> locker(g_market_mu);
+    g_market_cond.wait(locker, []()
+                       { return g_market_starts; });
+    LOG(INFO) << "Market starts!";
+    g_market_starts = false;
+    locker.unlock();
+    Run();
+  }
+}
+
+void Run()
+{
+  std::thread t1(RunMatchingEngine);
+  std::thread t2(RunPublisher);
+
+  t1.join();
+  t2.join();
+}
+
 void RunMatchingEngine()
 {
+  absl::TimeZone timezone;
+  absl::LoadTimeZone(kNewYorkTimeZone, &timezone);
+
   MatchingEngine matching_engine;
   std::vector<Order> orders = fep::src::util::ReadOrdersFromPath("src/main/data/orders.jsonl");
   // Loop through all the offers and process each of them.
   for (const Order &order : orders)
   {
-    std::cout << "Receive new order at " << fep::lib::now_in_secs() << std::endl;
-    std::unique_lock<std::mutex> locker(feed_mu);
+    LOG(INFO) << "Receive new order at " << fep::lib::now_in_secs();
+
+    absl::Time order_time = absl::FromUnixSeconds(order.timestamp_sec);
+    const std::string order_time_str = absl::FormatTime("%H:%M", order_time, timezone);
+    if (order_time_str > "16:00")
+    {
+      return;
+    }
+
+    std::unique_lock<std::mutex> locker(g_feed_mu);
     // g_feed_cond.wait(locker, []
     //           { return g_feed_buffer.size() < maxBufferSize; });
 
@@ -87,9 +123,9 @@ void RunMatchingEngine()
 void RunPublisher()
 {
   EventsPublisher events_publisher;
-  while (!g_is_market_on)
+  while (true)
   {
-    std::unique_lock<std::mutex> locker(feed_mu);
+    std::unique_lock<std::mutex> locker(g_feed_mu);
     g_feed_cond.wait(locker, []()
                      { return g_feed_buffer.size() > 0; });
 
@@ -98,22 +134,19 @@ void RunPublisher()
     g_feed_buffer.pop_front();
 
     locker.unlock();
-    g_feed_cond.notify_one();
+    // g_feed_cond.notify_one();
+
     std::this_thread::sleep_for(std::chrono::seconds(1));
   }
 }
 
-void Run()
-{
-  std::thread t1(RunMatchingEngine);
-  std::thread t2(RunPublisher);
-
-  t1.join();
-  t2.join();
-}
-
 int main()
 {
-  Run();
+  std::thread market_status_thread(MarketStatusChecker);
+  std::thread match_publish_thread(MatchAndPublish);
+
+  market_status_thread.join();
+  match_publish_thread.join();
+
   return 0;
 }

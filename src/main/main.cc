@@ -40,23 +40,23 @@ void RunMatchingEngine()
     cond.wait(locker, []
               { return events_published; });
 
-    matching_engine.Run(std::make_shared<Order>(order),
-                        [&](absl::StatusOr<FeedEvents> feed_events)
-                        {
-                          if (feed_events.ok())
-                          {
-                            g_events = feed_events.value();
-                          }
-                          else
-                          {
-                            // TODO if feed_evnets not okay
-                            g_events = FeedEvents{};
-                          }
+    matching_engine.Notify(std::make_shared<Order>(order),
+                           [&](absl::StatusOr<FeedEvents> feed_events)
+                           {
+                             if (feed_events.ok())
+                             {
+                               g_events = feed_events.value();
+                             }
+                             else
+                             {
+                               // TODO if feed_evnets not okay
+                               g_events = FeedEvents{};
+                             }
 
-                          events_published = false;
-                          locker.unlock();
-                          cond.notify_one();
-                        });
+                             events_published = false;
+                             locker.unlock();
+                             cond.notify_one();
+                           });
 
     std::this_thread::sleep_for(std::chrono::seconds(5));
   }

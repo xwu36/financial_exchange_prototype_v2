@@ -15,6 +15,7 @@ cc_library(
         "//src/order:order_book",
         "//src/order:order_parser",
         "//src/util:orders_reader",
+        "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/status:statusor",
         "@com_google_absl//absl/status",
     ],

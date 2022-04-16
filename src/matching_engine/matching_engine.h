@@ -19,7 +19,7 @@ namespace fep::src::matching_engine
   public:
     typedef std::function<void(absl::StatusOr<fep::src::feed_event::FeedEvents>)> Callback;
 
-    MatchingEngine() {}
+    MatchingEngine();
     MatchingEngine(const MatchingEngine &) = delete;
     MatchingEngine(MatchingEngine &&) = delete;
     ~MatchingEngine() = default;
@@ -39,6 +39,7 @@ namespace fep::src::matching_engine
     std::unordered_map<fep::src::stock::Symbol, fep::src::order::BidOrderBook> bid_order_books_;
     std::unordered_map<fep::src::stock::Symbol, fep::src::order::AskOrderBook> ask_order_books_;
     std::unordered_map<int64_t /*order_id*/, std::shared_ptr<fep::src::order::Order>> order_to_content_map_;
+    uint32_t lot_size_;
   };
 
 } // namespace fep::src::matching_engine

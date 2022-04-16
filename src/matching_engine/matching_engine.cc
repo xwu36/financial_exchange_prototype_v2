@@ -3,9 +3,12 @@
 #include <iostream>
 #include <fstream>
 
+#include "absl/flags/flag.h"
 #include "lib/timestamp.h"
 #include "src/order/order_parser.h"
 #include "src/util/orders_reader.h"
+
+ABSL_FLAG(uint32_t, lot_size, 100, "A lot size which shares must be a multiple of ");
 
 namespace fep::src::matching_engine
 {
@@ -194,6 +197,8 @@ namespace fep::src::matching_engine
             price_post_quantity = order_book.GetQuantityForPrice(order->price);
         }
     }
+
+    MatchingEngine::MatchingEngine() : lot_size_(absl::GetFlag(FLAGS_lot_size)) {}
 
     absl::StatusOr<FeedEvents> MatchingEngine::Process(std::shared_ptr<Order> order)
     {

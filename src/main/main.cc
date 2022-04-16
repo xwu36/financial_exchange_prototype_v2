@@ -8,6 +8,8 @@
 #include <thread>
 #include <vector>
 
+#include "absl/flags/flag.h"
+#include "absl/strings/str_cat.h"
 #include "absl/time/time.h"
 #include "absl/time/clock.h"
 #include "external/com_google_absl/absl/status/statusor.h"
@@ -25,6 +27,8 @@ using ::fep::src::matching_engine::MatchingEngine;
 using ::fep::src::order::Order;
 using ::fep::src::publisher::EventsPublisher;
 using ::nlohmann::json;
+
+ABSL_FLAG(std::string, path_prefix, "srcs/main/data/", "Directory which holds the order files");
 
 std::mutex g_feed_mu;
 std::condition_variable g_feed_cond;
@@ -54,36 +58,33 @@ void MarketStatusChecker()
   }
 }
 
-void MatchAndPublish()
-{
-  while (true)
-  {
-    std::unique_lock<std::mutex> locker(g_market_mu);
-    g_market_cond.wait(locker, []()
-                       { return g_market_starts; });
-    LOG(INFO) << "Market starts!";
-    g_market_starts = false;
-    locker.unlock();
-    Run();
-  }
-}
-
-void Run()
-{
-  std::thread t1(RunMatchingEngine);
-  std::thread t2(RunPublisher);
-
-  t1.join();
-  t2.join();
-}
-
 void RunMatchingEngine()
 {
   absl::TimeZone timezone;
   absl::LoadTimeZone(kNewYorkTimeZone, &timezone);
 
+  const std::string path_prefix = absl::GetFlag(FLAGS_path_prefix);
+  const std::string date_now = absl::FormatTime("%Y-%m-%d/", absl::Now(), timezone);
+  const std::string date_a_day_ago = absl::FormatTime("%Y-%m-%d/", absl::Now() - absl::Hours(24), timezone);
+  const std::string orders_to_process = absl::StrCat(path_prefix, date_now, "orders.jsonl");
+  const std::string unmatched_orders_a_day_ago = absl::StrCat(path_prefix, date_a_day_ago, "unmatched_orders.jsonl");
+  const std::string unmatched_orders_today = absl::StrCat(path_prefix, date_now, "unmatched_orders.jsonl");
+  LOG(INFO) << "The path of all offers to be processed today: " << orders_to_process;
+  LOG(INFO) << "The path of unmatched GTC offers from yesterday: " << unmatched_orders_a_day_ago;
+  LOG(INFO) << "The path of unmatched GTC offers for today: " << unmatched_orders_today;
+
   MatchingEngine matching_engine;
+
+  // Read yesterday's unmatched GTC orders.
+  absl::Status init_stats = matching_engine.InitOnMarketStarts(unmatched_orders_a_day_ago);
+  if (!init_stats.ok())
+  {
+    LOG(ERROR) << init_stats.message();
+  }
+
+  // Process today's orders.
   std::vector<Order> orders = fep::src::util::ReadOrdersFromPath("src/main/data/orders.jsonl");
+  // std::vector<Order> orders = fep::src::util::ReadOrdersFromPath(orders_to_process);
   // Loop through all the offers and process each of them.
   for (const Order &order : orders)
   {
@@ -93,6 +94,7 @@ void RunMatchingEngine()
     const std::string order_time_str = absl::FormatTime("%H:%M", order_time, timezone);
     if (order_time_str > "16:00")
     {
+      LOG(INFO) << "Market is closed!";
       return;
     }
 
@@ -109,6 +111,7 @@ void RunMatchingEngine()
                                        }
                                        else
                                        {
+                                         LOG(WARNING) << "order cannot be successfully processed.";
                                          // TODO if feed_evnets not okay
                                        }
 
@@ -117,6 +120,13 @@ void RunMatchingEngine()
                                      });
 
     std::this_thread::sleep_for(std::chrono::seconds(1));
+  }
+
+  // Clear the matching engine and output today's unmatched GTC orders.
+  absl::Status clear_status = matching_engine.ClearOnMarketEnds(unmatched_orders_today);
+  if (!clear_status.ok())
+  {
+    LOG(ERROR) << clear_status.message();
   }
 }
 
@@ -137,6 +147,29 @@ void RunPublisher()
     // g_feed_cond.notify_one();
 
     std::this_thread::sleep_for(std::chrono::seconds(1));
+  }
+}
+
+void Run()
+{
+  std::thread t1(RunMatchingEngine);
+  std::thread t2(RunPublisher);
+
+  t1.join();
+  t2.join();
+}
+
+void MatchAndPublish()
+{
+  while (true)
+  {
+    std::unique_lock<std::mutex> locker(g_market_mu);
+    g_market_cond.wait(locker, []()
+                       { return g_market_starts; });
+    LOG(INFO) << "Market starts!";
+    g_market_starts = false;
+    locker.unlock();
+    Run();
   }
 }
 

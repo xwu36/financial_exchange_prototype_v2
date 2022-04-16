@@ -6,6 +6,7 @@ cc_library(
     name = "events_publisher",
     hdrs = ["events_publisher.h"],
     deps = [
+        "@glog",
         "//src/feed_event:feed_event",
     ],
 )

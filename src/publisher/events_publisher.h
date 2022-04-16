@@ -3,6 +3,7 @@
 
 #include <iostream>
 
+#include "glog/logging.h"
 #include "src/feed_event/feed_event.h"
 
 namespace fep::src::publisher
@@ -18,7 +19,7 @@ namespace fep::src::publisher
 
         void Publish(const fep::src::feed_event::FeedEvents &events) const
         {
-            std::cout << events.to_str() << std::endl;
+            LOG(INFO) << events.to_str();
         };
     };
 

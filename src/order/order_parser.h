@@ -81,6 +81,74 @@ namespace fep::src::order
     }
   }
 
+  static void to_json(nlohmann::json &j, fep::src::order::Order &order)
+  {
+    j[kTimestampSec] = order.timestamp_sec;
+
+    switch (order.type)
+    {
+    case OrderStatus::NEW:
+      j[kType] = kNew;
+      break;
+    case OrderStatus::CANCEL:
+      j[kType] = kCancel;
+      break;
+    default:
+      break;
+    }
+
+    j[kOrderId] = order.order_id;
+    const auto symbol = fep::src::stock::SymbolToString.find(order.symbol);
+    if (symbol != fep::src::stock::SymbolToString.end())
+    {
+      j[kSymbol] = symbol->second;
+    }
+
+    switch (order.side)
+    {
+    case OrderSide::BUY:
+      j[kSide] = kBuy;
+      break;
+    case OrderSide::SELL:
+      j[kSide] = kSell;
+      break;
+    default:
+      break;
+    }
+
+    j[kQuantity] = order.quantity;
+    j[kLimitPrice] = order.price.to_str();
+
+    switch (order.order_type)
+    {
+    case OrderType::MARKET:
+      j[kOrderType] = kMarket;
+      break;
+    case OrderType::LIMIT:
+      j[kOrderType] = kLimit;
+      break;
+    case OrderType::ICEBERG:
+      j[kOrderType] = kIceberg;
+    default:
+      break;
+    }
+
+    switch (order.time_in_force)
+    {
+    case TimeInForce::DAY:
+      j[kTimeInForce] = kDay;
+      break;
+    case TimeInForce::IOC:
+      j[kTimeInForce] = kIoc;
+      break;
+    case TimeInForce::GTC:
+      j[kTimeInForce] = kGtc;
+      break;
+    default:
+      break;
+    }
+  }
+
 } // fep::src::order
 
 #endif

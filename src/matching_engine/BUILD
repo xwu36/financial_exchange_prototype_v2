@@ -13,7 +13,10 @@ cc_library(
         "//src/feed_event:feed_event",
         "//src/order:order",
         "//src/order:order_book",
+        "//src/order:order_parser",
+        "//src/util:orders_reader",
         "@com_google_absl//absl/status:statusor",
+        "@com_google_absl//absl/status",
     ],
 )
 

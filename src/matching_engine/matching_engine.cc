@@ -1,8 +1,11 @@
 #include "src/matching_engine/matching_engine.h"
 
 #include <iostream>
+#include <fstream>
 
 #include "lib/timestamp.h"
+#include "src/order/order_parser.h"
+#include "src/util/orders_reader.h"
 
 namespace fep::src::matching_engine
 {
@@ -238,6 +241,53 @@ namespace fep::src::matching_engine
         kv->second->deleted = true;
         order_to_content_map_.erase(order->order_id);
         return events;
+    }
+
+    // TODO: Add unit tests for this fucntion.
+    absl::Status MatchingEngine::InitOnMarketStarts(const std::string &order_path_a_day_ago)
+    {
+        const std::vector<Order> orders = fep::src::util::ReadOrdersFromPath(order_path_a_day_ago);
+        // Loop through all the offers and process each of them.
+        for (const auto &order : orders)
+        {
+            const auto &message = Process(std::make_shared<Order>(order));
+            if (!message.ok())
+            {
+                return message.status();
+            }
+        }
+        return absl::OkStatus();
+    }
+
+    // TODO: Add unit tests for this funtion.
+    absl::Status MatchingEngine::ClearOnMarketEnds(const std::string &output_path)
+    {
+        std::ofstream output(output_path, std::ios::app);
+        if (!output.is_open())
+        {
+            return absl::InvalidArgumentError("output path is not open.");
+        }
+        for (const auto &kv : order_to_content_map_)
+        {
+            if (kv.second == nullptr)
+            {
+                continue;
+            }
+            if (kv.second.get()->time_in_force != TimeInForce::GTC || kv.second.get()->deleted)
+            {
+                continue;
+            }
+            nlohmann::json jorder;
+            fep::src::order::to_json(jorder, *kv.second.get());
+            output << jorder << std::endl;
+        }
+        output.close();
+
+        order_to_content_map_.clear();
+        ask_order_books_.clear();
+        bid_order_books_.clear();
+
+        return absl::OkStatus();
     }
 
 } // namespace fep::src::matching_engine

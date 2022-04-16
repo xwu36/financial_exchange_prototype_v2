@@ -4,6 +4,7 @@
 #include <functional>
 #include <unordered_map>
 
+#include "external/com_google_absl/absl/status/status.h"
 #include "external/com_google_absl/absl/status/statusor.h"
 #include "src/feed_event/feed_event.h"
 #include "src/order/order.h"
@@ -29,6 +30,8 @@ namespace fep::src::matching_engine
       absl::StatusOr<fep::src::feed_event::FeedEvents> feed_events = Process(order);
       callback(feed_events);
     }
+    absl::Status InitOnMarketStarts(const std::string &order_path_a_day_ago);
+    absl::Status ClearOnMarketEnds(const std::string &output_path);
 
   private:
     absl::StatusOr<fep::src::feed_event::FeedEvents> Cancel(std::shared_ptr<fep::src::order::Order> order);

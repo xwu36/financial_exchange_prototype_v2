@@ -14,7 +14,9 @@ cc_binary(
         "//src/matching_engine:matching_engine",
         "//src/publisher:events_publisher",
         "@com_google_absl//absl/status:statusor",
+        "@com_google_absl//absl/time",
         "@com_github_nlohmann_json//:json",
+        "@glog",
     ],
     data = ["data/orders.jsonl"]
 )

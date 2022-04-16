@@ -15,6 +15,12 @@ git_repository(
     tag = "v0.5.0",
 )
 
+git_repository(
+    name = "com_github_gflags_gflags",
+    remote = "https://github.com/gflags/gflags.git",
+    tag = "v2.2.2",
+)
+
 http_archive(
     name = "com_github_nlohmann_json",
     build_file = "//third_party:json.BUILD", # see below

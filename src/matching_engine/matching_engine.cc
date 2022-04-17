@@ -210,9 +210,10 @@ namespace fep::src::matching_engine
 
     absl::StatusOr<FeedEvents> MatchingEngine::Process(std::shared_ptr<Order> order)
     {
-        if (!IsOfferValid(order))
+        const auto &valid_stats = IsOfferValid(order);
+        if (!valid_stats.ok())
         {
-            return absl::InvalidArgumentError("this order is not valid.");
+            return valid_stats;
         }
 
         if (order->type == OrderStatus::CANCEL)
@@ -306,10 +307,64 @@ namespace fep::src::matching_engine
         return absl::OkStatus();
     }
 
-    // Complete the code to check if an offer is valid.
-    bool MatchingEngine::IsOfferValid(const std::shared_ptr<Order> order)
+    // // TODO(): Add unit tests for this function.
+    absl::Status MatchingEngine::IsOfferValid(const std::shared_ptr<Order> order) const
     {
-        return true;
+        if (order->timestamp_sec <= 0)
+        {
+            return absl::InvalidArgumentError("order has a bad timestamp");
+        }
+        if (order->order_id <= 0)
+        {
+            return absl::InvalidArgumentError("order has a bad order id");
+        }
+
+        if (order->type == OrderStatus::NEW)
+        {
+            if (order->symbol == fep::src::stock::Symbol::UNKNOWN)
+            {
+                return absl::InvalidArgumentError("order has unknown symbol");
+            }
+            if (order->side == OrderSide::UNKNOWN)
+            {
+                return absl::InvalidArgumentError("order has unknown side");
+            }
+            if (order->quantity <= 0)
+            {
+                return absl::InvalidArgumentError("order quantity is less than 0");
+            }
+            if (order->order_type == OrderType::LIMIT && order->price <= fep::lib::Price4(0))
+            {
+                return absl::InvalidArgumentError("order price is less than 0");
+            }
+            if (order->order_type == OrderType::UNKNOWN)
+            {
+                return absl::InvalidArgumentError("order has unknown type");
+            }
+            if (order->quantity % lot_size_ != 0)
+            {
+                return absl::InvalidArgumentError("order quantity is not multiple of lot_size");
+            }
+            const auto ticks = tick_size_rule_.GetTicks();
+            const auto tick_itr = std::lower_bound(ticks.cbegin(), ticks.cend(), order->price,
+                                                   [](const Tick &lhs, const fep::lib::Price4 &price)
+                                                   {
+                                                       return lhs.from_price < price;
+                                                   }) -
+                                  1;
+            if (order->price.unscaled() % tick_itr->tick_size.unscaled() != 0)
+            {
+                return absl::InvalidArgumentError("order price doesn't meet tick_size");
+            }
+            return absl::OkStatus();
+        }
+
+        if (order->type == OrderStatus::CANCEL)
+        {
+            return absl::OkStatus();
+        }
+
+        return absl::InvalidArgumentError("order type unknown");
     }
 
 } // namespace fep::src::matching_engine

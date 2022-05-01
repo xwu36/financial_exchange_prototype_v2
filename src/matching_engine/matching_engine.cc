@@ -44,19 +44,11 @@ namespace fep::src::matching_engine
                 return false;
             }
 
-            // TODO(): hardcode the replenish mechanish for now.
-            if (order->hidden_quantity <= 100)
-            {
-                order->quantity = order->hidden_quantity;
-                order->hidden_quantity = 0;
-            }
-            else
-            {
-                order->quantity = (order->quantity + order->hidden_quantity) / 2;
-                order->hidden_quantity = order->hidden_quantity - order->quantity;
-            }
+            order->quantity = std::min(order->hidden_quantity, order->display_quantity);
+            order->hidden_quantity -= order->quantity;
 
-            order->timestamp_sec = fep::lib::now_in_secs();
+            // TODO: Timestamp needs to be updated?
+            // order->timestamp_sec = fep::lib::now_in_secs();
             return true;
         }
 

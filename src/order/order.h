@@ -66,6 +66,7 @@ namespace fep::src::order
     GTC
   };
 
+  // TODO: change Order to a class to make most of the variable private and immutable. 
   struct Order
   {
     int64_t timestamp_sec = 0;

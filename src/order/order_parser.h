@@ -59,11 +59,20 @@ namespace fep::src::order
       order.side = OrderSide::SELL;
     }
 
-    order.order_type = OrderType::LIMIT;
     const std::string order_type = GetValueForKey<std::string>(j, kOrderType, /*default_value=*/"");
-    if (order_type == kMarket)
+    if (order_type == kLimit)
+    {
+      order.order_type = OrderType::LIMIT;
+    }
+    else if (order_type == kMarket)
     {
       order.order_type = OrderType::MARKET;
+    }
+    else if (order_type == kIceberg)
+    {
+      // TODO: Add unit tests.
+      order.order_type = OrderType::ICEBERG;
+      order.display_quantity = order.quantity;
     }
 
     const std::string time_in_force = GetValueForKey<std::string>(j, kTimeInForce, /*default_value=*/"");
@@ -71,7 +80,7 @@ namespace fep::src::order
     {
       order.time_in_force = TimeInForce::DAY;
     }
-    else if (time_in_force == kIoc || order_type == kMarket)
+    else if (time_in_force == kIoc || order.order_type == OrderType::ICEBERG)
     {
       order.time_in_force = TimeInForce::IOC;
     }
@@ -118,6 +127,7 @@ namespace fep::src::order
 
     j[kQuantity] = order.quantity;
     j[kLimitPrice] = order.price.to_str();
+    j[kDisplayQuantity] = order.display_quantity;
 
     switch (order.order_type)
     {

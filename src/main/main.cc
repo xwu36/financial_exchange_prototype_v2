@@ -33,7 +33,7 @@ ABSL_FLAG(std::string, path_prefix, "srcs/main/data/", "Directory which holds th
 std::mutex g_feed_mu;
 std::condition_variable g_feed_cond;
 std::deque<FeedEvents> g_feed_buffer;
-const unsigned int maxBufferSize = 2;
+constexpr unsigned int maxBufferSize = 50;
 
 std::mutex g_market_mu;
 bool g_market_starts = false;

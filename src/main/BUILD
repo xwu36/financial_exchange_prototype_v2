@@ -2,6 +2,11 @@ load("@rules_cc//cc:defs.bzl", "cc_binary")
 
 package(default_visibility = ["//visibility:public"])
 
+filegroup(
+    name = "daily_orders",
+    srcs = glob(["data/*.jsonl"]),
+)
+
 cc_binary(
     name = "main",
     srcs = ["main.cc"],
@@ -20,5 +25,5 @@ cc_binary(
         "@com_github_nlohmann_json//:json",
         "@glog",
     ],
-    data = ["data/orders.jsonl"]
+    data = [":daily_orders"],
 )

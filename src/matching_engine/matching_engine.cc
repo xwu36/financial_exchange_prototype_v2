@@ -244,7 +244,10 @@ namespace fep::src::matching_engine
         }
 
         std::shared_ptr<PriceEntityUpdateEvent> update_event = GetUpdateEvent(detailed_order->price, detailed_order->side, price_pre_quantity, price_post_quantity);
-        FeedEvents events;
+        FeedEvents events;       
+        // TODO: Comment the folowing lines out for testing purpose.
+        // events.timestamp = fep::lib::now_in_secs();
+        // events.symbol = order->symbol;
         events.depth_update_events.events.push_back(update_event);
 
         kv->second->deleted = true;
